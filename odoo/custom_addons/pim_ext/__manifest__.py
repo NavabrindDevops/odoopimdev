@@ -21,6 +21,7 @@
         'wizard/attribute_group_wizard_views.xml',
         'wizard/attribute_wizard_views.xml',
         'views/pim_category_views.xml',
+        'views/pim_channels_views.xml',
     ],
     'assets': {
                 'web.assets_backend': [

@@ -5,8 +5,14 @@
             <field name="name">pim.categories.tree.view</field>
             <field name="model">pim.category</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false">
+                    <header>
+                        <button name="create_pim_category" type="object" class="btn-primary"
+                            string="Create Category" display="always"
+                            invisible="context.get('active_model', 'pim.category') != 'pim.category'"/>
+                    </header>
                     <field name="name"/>
+                    <field name="active" widget="boolean_toggle"/>
                 </tree>
             </field>
         </record>
@@ -15,11 +21,17 @@
             <field name="name">pim.categories.form.view</field>
             <field name="model">pim.category</field>
             <field name="arch" type="xml">
-                <form>
+                <form create="false">
                     <sheet>
                         <group>
                             <group>
                                 <field name="name"/>
+                                <field name="parent_id"
+                                       options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                                <field name="complete_name" string="Category Path" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="active" widget="boolean_toggle"/>
                             </group>
                         </group>
                     </sheet>
@@ -32,8 +44,25 @@
             </field>
         </record>
 
+        <record id="view_pim_category_filter" model="ir.ui.view">
+        <field name="name">Category</field>
+        <field name="model">pim.category</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Family Category">
+                <field name="parent_id"/>
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Parent Category" name="parent_group" domain="[]"
+                            context="{'group_by': 'parent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
         <record id="actions_pim_categories" model="ir.actions.act_window">
-            <field name="name">Categories</field>
+            <field name="name">Category</field>
             <field name="res_model">pim.category</field>
             <field name="view_mode">tree,form</field>
         </record>
