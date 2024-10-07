@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_tree_pim_categories" model="ir.ui.view">
+            <field name="name">pim.categories.tree.view</field>
+            <field name="model">pim.category</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_form_pim_categories" model="ir.ui.view">
+            <field name="name">pim.categories.form.view</field>
+            <field name="model">pim.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="actions_pim_categories" model="ir.actions.act_window">
+            <field name="name">Categories</field>
+            <field name="res_model">pim.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_pim_categories"
+                  name="Categories"
+                  action="actions_pim_categories"
+                  parent="pim_ext.pim_configuraion"
+                  sequence="40"/>
+    </data>
+</odoo>

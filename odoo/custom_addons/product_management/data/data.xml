@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Archive -->
+        <record id="product_template_archive" model="ir.actions.server">
+            <field name="name">Archive products</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    records.write({"active": False})
+            </field>
+        </record>
+        <!-- Restore -->
+        <record id="product_template_restore" model="ir.actions.server">
+            <field name="name">Restore products</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    records.write({"active": True})
+            </field>
+        </record>
+        <!-- Trigger the wizard to update internal category -->
+        <record id="product_template_update_category" model="ir.actions.server">
+            <field name="name">Update products category</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.change_prm_category_action").sudo().read()[0]
+            </field>
+        </record>
+        <!-- Trigger the wizard to change sale price -->
+        <record id="product_template_update_prm_price" model="ir.actions.server">
+            <field name="name">Update sales price</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.update_prm_price_action").sudo().read()[0]
+            </field>
+        </record>
+        <!-- Trigger the wizard to add or/and remove attribute value -->
+        <record id="product_template_update_attribute" model="ir.actions.server">
+            <field name="name">Update products attribute values</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.update_prm_attributes_action").sudo().read()[0]
+            </field>
+        </record>
+        <!-- Trigger the wizard to change product type -->
+        <record id="product_template_update_type" model="ir.actions.server">
+            <field name="name">Update products type</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.update_prm_product_type_action").sudo().read()[0]
+            </field>
+        </record>
+        <!-- Trigger the wizard to update product tags -->
+        <record id="product_template_update_tags" model="ir.actions.server">
+            <field name="name">Update products tags</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.update_prm_tags_action").sudo().read()[0]
+            </field>
+        </record>
+        <!-- Make product 'Sale Ok' -->
+        <record id="product_template_make_sale_ok" model="ir.actions.server">
+            <field name="name">Make products saleable</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    records.write({"sale_ok": True})
+            </field>
+        </record>
+        <!-- Make product NOT 'Sale Ok' -->
+        <record id="product_template_disable_sale_ok" model="ir.actions.server">
+            <field name="name">Make products not saleable</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    records.write({"sale_ok": False})
+            </field>
+        </record>
+        <!-- Duplicate records -->
+        <record id="product_template_duplicate" model="ir.actions.server">
+            <field name="name">Duplicate products</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="state">code</field>
+            <field name="code">
+for record in records:
+    record.copy()
+            </field>
+        </record>
+        <!-- Add the current user for followers -->
+        <record id="product_template_follow" model="ir.actions.server">
+            <field name="name">Subsribe for products</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    partner_id = env.user.partner_id.ids
+    records.message_subscribe(partner_ids=partner_id)
+            </field>
+        </record>
+        <!-- Remove the current user from followers -->
+        <record id="product_template_unfollow" model="ir.actions.server">
+            <field name="name">Unsubsribe from products</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    partner_id = env.user.partner_id.ids
+    records.message_unsubscribe(partner_ids=partner_id)
+            </field>
+        </record>
+        <!-- Trigger the wizard to add or/and remove followers -->
+        <record id="product_template_update_followers" model="ir.actions.server">
+            <field name="name">Update product followers</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.update_prm_followers_action").sudo().read()[0]
+            </field>
+        </record>
+        <!-- Trigger the wizard to add or/and optional products -->
+        <record id="product_template_update_optional_products" model="ir.actions.server">
+            <field name="name">Update optional products</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.update_prm_optional_products_action").sudo().read()[0]
+            </field>
+        </record>
+        <!-- Trigger the wizard to copy values from the master templates -->
+        <record id="product_template_copy_from_template" model="ir.actions.server">
+            <field name="name">Copy from template</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env.ref("product_management.copy_values_from_template_action").sudo().read()[0]
+            </field>
+        </record>
+
+    </data>
+</odoo>
