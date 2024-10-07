@@ -45,21 +45,21 @@
         </record>
 
         <record id="view_pim_category_filter" model="ir.ui.view">
-        <field name="name">Category</field>
-        <field name="model">pim.category</field>
-        <field name="priority" eval="15"/>
-        <field name="arch" type="xml">
-            <search string="Family Category">
-                <field name="parent_id"/>
-                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
-                <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Parent Category" name="parent_group" domain="[]"
-                            context="{'group_by': 'parent_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+            <field name="name">Category</field>
+            <field name="model">pim.category</field>
+            <field name="priority" eval="15"/>
+            <field name="arch" type="xml">
+                <search string="Family Category">
+                    <field name="parent_id"/>
+                    <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Parent Category" name="parent_group" domain="[]"
+                                context="{'group_by': 'parent_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
         <record id="actions_pim_categories" model="ir.actions.act_window">
             <field name="name">Category</field>

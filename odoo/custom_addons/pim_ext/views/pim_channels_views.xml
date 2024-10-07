@@ -42,6 +42,25 @@
         </field>
     </record>
 
+    <record id="view_pim_channels_filter" model="ir.ui.view">
+        <field name="name">Channels</field>
+        <field name="model">pim.channel</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Channels">
+                <field name="name"/>
+                <group expand="0" string="Group By">
+                    <filter string="Currency" name="currency_group" domain="[]"
+                            context="{'group_by': 'currency_id'}"/>
+                    <filter string="Locale" name="locale_group" domain="[]"
+                            context="{'group_by': 'locale_id'}"/>
+                    <filter string="Category Tree" name="category_tree_group" domain="[]"
+                            context="{'group_by': 'category_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <!-- Action to Open PIM Channels -->
     <record id="action_pim_channel" model="ir.actions.act_window">
         <field name="name">Channels</field>

@@ -5,7 +5,7 @@ from odoo.exceptions import UserError
 
 
 class ProductAttribute(models.Model):
-    _name = "product.attribute"
+    _name = "product.attribute" 
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Product Attribute"
     # if you change this _order, keep it in sync with the method
