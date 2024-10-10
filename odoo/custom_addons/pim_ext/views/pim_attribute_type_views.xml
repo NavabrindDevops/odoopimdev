@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
                     <div class="pim_oe_title">
-                        <h3 class="pim_create_attribute" style="text-align:center;">CREATE ATTRIBUTE</h3>
+                        <h3 class="pim_create_attribute" style="text-align:center;">Create Attribute</h3>
                         <h2 class="choose_pim_attribute_type" style="text-align:center;">Choose the attribute type</h2>
                     </div>
                         <!-- Use a flex layout with columns -->

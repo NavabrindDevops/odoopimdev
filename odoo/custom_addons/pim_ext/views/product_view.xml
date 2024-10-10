@@ -360,7 +360,7 @@
             </xpath>
             <xpath expr="//tree" position="inside">
                 <header>
-                    <button name="create_pim_attribute_type" type="object" class="btn-primary"
+                    <button name="create_pim_attribute_type" type="object" class="btn-primary o_create_attribute_button"
                             string="Create Attribute" display="always"
                             invisible="context.get('active_model', 'product.attribute') != 'product.attribute'"/>
                 </header>

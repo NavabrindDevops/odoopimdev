@@ -62,6 +62,12 @@
     justify-content: center;
 }
 
+.attribute_type_class {
+    border: 1px solid #d3d3d3;
+    width: 50%;
+    border-radius:5px;
+}
+
 @media screen and (max-width: 1440px) {
    /* .choose_pim_attribute_type {
         font-size: 24px;

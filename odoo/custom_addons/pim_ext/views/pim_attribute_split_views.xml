@@ -1,0 +1,216 @@
+<odoo>
+    <data>
+        <!-- Define the custom layout view -->
+        <record id="view_product_attribute_custom" model="ir.ui.view">
+            <field name="name">product.attribute.custom.layout</field>
+            <field name="model">pim.attribute.type</field>
+            <field name="arch" type="xml">
+                <form string="Attribute" create="false" edit="false">
+                    <div class="o_row">
+                        <div class="o_col_6" style="width: 60%; float: left; margin:auto; border:2px solid; border-color: #f8f9fa;">
+                            <field name="attribute_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
+                                <tree create="false" edit="false">
+                                    <field name="name"/>
+                                    <field name="display_type"/>
+                                    <field name="attribute_group"/>
+                                    <field name="attribute_types"/>
+                                    <field name="is_mandatory"/>
+                                    <field name="is_mandatory" widget="boolean_toggle"/>
+                                    <field name="is_required_in_clone" widget="boolean_toggle"/>
+                                    <field name="is_completeness" widget="boolean_toggle"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div class="o_col_6" style="width: 40%; float: left; margin:auto; border:1px solid; border-color: #f8f9fa;">
+                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <field name="is_invisible" invisible="1"/>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute" style="text-align:left;">Create Attribute</h2>
+                                </div>
+                                <div class="pim_oe_title" invisible="is_invisible">
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;">Choose the attribute type</h2>
+                                </div>
+                                    <!-- Use a flex layout with columns -->
+
+                                <div class="d-flex justify-content-center" invisible="is_invisible">
+                                    <div class="o_grid" style="display: flex; justify-content: space-between; gap: 20px; max-width: 1000px; margin: 10 auto;">
+            <!--                            row 1-->
+                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                            <!-- Button for Date -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_date" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-calendar fa-2x"></i>
+                                                    <span>Date</span>
+                                                </button>
+                                            </div>
+                                            <!-- Button for Multi-select -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_multiselect" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-plus-square fa-2x"></i>
+                                                    <span>Multi select</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_simple" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-mouse-pointer fa-2x"></i>
+                                                    <span>Simple select</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-dollar fa-2x"></i>
+                                                    <span>Price</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row2-->
+                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                            <!-- Button for File -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_file" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-file fa-2x"></i>
+                                                    <span>File</span>
+                                                </button>
+                                            </div>
+                                            <!-- Button for Number -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_number" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-1 fa-2x"></i>
+                                                    <span>Number</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_text" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-font fa-2x"></i>
+                                                    <span>Text</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_identifier" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-id-badge fa-2x"></i>
+                                                    <span>Identifier</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row3-->
+                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                            <div class="attribute-button">
+                                                <button name="action_select_text_area" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-text-height fa-2x"></i>
+                                                    <span>Text Area</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_image" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-image fa-2x"></i>
+                                                    <span>Image</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="attribute-button">
+                                                <button name="action_select_ref_data_multi" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-plus-square fa-2x"></i>
+                                                    <span>Reference data multi select</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-check fa-2x"></i>
+                                                    <span>Yes/No</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row4-->
+                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                            <div class="attribute-button">
+                                                <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-ruler fa-2x"></i>
+                                                    <span>Measurement</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="attribute-button">
+                                                <button name="action_select_ref_data_simple" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-mouse-pointer fa-2x"></i>
+                                                    <span>Reference data simple select</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row5-->
+                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <form>
+                                <div class="o_col_6" style="border:1px solid; border-color: #f8f9fa;" invisible="not is_invisible">
+                                   <div>
+                                       <sheet>
+                                           <div class="oe_title">
+                                               <h1><field name="type_name" readonly="1" class="oe_inline"/></h1>
+                                           </div>
+                                           <notebook>
+                                               <page name="type_properties" string="Properties">
+                                                   <div id="o_type_properties" class="d-lg-flex">
+                                                       <div id="o_type_properties_main" class="flex-grow-1">
+                                                           <group string="General Parameters">
+                                                               <label for="name" string="Attribute Name" style="font-weight:bold;"/>
+                                                           </group>
+                                                       </div>
+                                                   </div>
+                                                   <div>
+                                                       <field name="name" nolabel="1" placeholder="Enter attribute name" class="attribute_type_class"/>
+                                                   </div>
+                                                   <br/>
+                                                   <div>
+                                                       <div>
+                                                           <group>
+                                                               <label for="display_type" string="Type" style="font-weight:bold;"/>
+                                                           </group>
+                                                       </div>
+                                                   </div>
+                                                   <div>
+                                                       <field name="display_type" nolabel="1" readonly="1" class="attribute_type_class" style="padding:2px;"/>
+                                                   </div>
+                                                   <br/>
+                                                   <div id="o_type_properties">
+                                                       <div id="o_type_properties_main" class="flex-grow-1">
+                                                           <group>
+                                                               <label for="attribute_group" string="Attribute group"/>
+                                                           </group>
+                                                       </div>
+                                                   </div>
+                                                   <div>
+                                                       <field name="attribute_group" nolabel="1"
+                                                              options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
+                                                              class="attribute_type_class"/>
+                                                   </div>
+                                                   <br/><br/>
+                                                   <div>
+                                                       <button type="object" string="Save"
+                                                               name="create_attributes" class="oe_highlight"/>
+                                                   </div>
+                                               </page>
+                                               <page name="type_label_translation" string="Label Translations">
+                                               </page>
+                                           </notebook>
+                                       </sheet>
+                                   </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to open the custom view -->
+        <record id="action_products_attributes_custom" model="ir.actions.act_window">
+            <field name="name">Create Attribute</field>
+            <field name="res_model">pim.attribute.type</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_product_attribute_custom"/>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>

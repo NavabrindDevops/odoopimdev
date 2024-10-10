@@ -17,7 +17,6 @@ class FamilyProductsLine(models.Model):
     completeness_percent = fields.Float(compute="_compute_completeness_percent", string="Completeness")
 
     def _compute_completeness_percent(self):
-        print('dkjdkj')
         for rec in self:
             # required_family_fields = ['name', 'brand_id', 'supplier_id', 'manufacture_id', 'buyer_id', 'description',
             #                           'availability', 'gift', 'swatch', 'attribute1_id', 'attribute2_id', 'attribute3_id']

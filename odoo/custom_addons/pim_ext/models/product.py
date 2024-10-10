@@ -15,6 +15,7 @@ from odoo.tools import drop_view_if_exists
 
 class AttributeForm(models.Model):
      _inherit = 'product.attribute'
+     _rec_name = 'name'
 
 
      display_type = fields.Selection(
@@ -49,22 +50,36 @@ class AttributeForm(models.Model):
 
      attribute_types = fields.Selection([('basic', 'Basic'),
                                          ('optional', 'Optional')], string='Attribute Type')
+     attribute_types_id = fields.Many2one('pim.attribute.type', string='Attribute Type')
+
+     # def create_pim_attribute_type(self):
+     #      print('ffffffffff')
+     #      return {
+     #           "name": _("Create Attribute Type"),
+     #           "type": "ir.actions.act_window",
+     #           "res_model": "pim.attribute.type",
+     #           "target": "current",
+     #           "views": [[False, "form"]],
+     #      }
 
      def create_pim_attribute_type(self):
-          print('ffffffffff')
+          # Return the action to open the product.attribute custom layout
           return {
-               "name": _("Create Attribute Type"),
-               "type": "ir.actions.act_window",
-               "res_model": "pim.attribute.type",
-               "target": "current",
-               "views": [[False, "form"]],
+               'type': 'ir.actions.act_window',
+               'name': 'Create Attribute',
+               'res_model': 'pim.attribute.type',
+               'view_mode': 'form',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+               'target': 'current',
+               'context': {
+                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+               },
           }
 
      @api.constrains('name', 'value_ids')
      def check_attribute_name(self):
           pattern = "^(?=.*[a-zA-Z0-9])[A-Za-z0-9 ]+$"
           for rec in self:
-               print('recccccccccc', rec)
                name_count = self.search_count([('name', '=ilike', rec.name)])
                if name_count > 1:
                     raise ValidationError("Attribute name already exist")

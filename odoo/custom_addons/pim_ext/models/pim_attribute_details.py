@@ -16,7 +16,6 @@ class AttributeDetails(models.Model):
             self.code = self.name.replace(' ', '_')
 
     def action_confirm(self):
-        print('congoitmg')
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
