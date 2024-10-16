@@ -11,6 +11,7 @@ class FamilyProductsLine(models.Model):
     # ]
 
     product_id = fields.Many2one('product.template', 'SKU Name')
+    attribute_id = fields.Many2one('product.attribute', string='Attribute')
     # name = fields.Char('SKU Name')
     # default_code = fields.Integer('SKU #', default=lambda self: self.env['ir.sequence'].next_by_code('family.products'))
     families_id = fields.Many2one('family.attribute', 'Family')

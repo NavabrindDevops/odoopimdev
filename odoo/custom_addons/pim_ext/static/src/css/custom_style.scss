@@ -1,0 +1,274 @@
+.attribute-icon-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    background-color: #f9f9f9;
+}
+
+.attribute-icon-button i {
+    margin-bottom: 10px;
+}
+
+.attribute-icon-button span {
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.pim_oe_title {
+    max-width: 100%;
+}
+
+.pim_create_attribute {
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.choose_pim_attribute_type {
+    color: #111827;
+    font-size: 30px;
+    margin-bottom: 10px !important;
+}
+
+.container {
+  padding: 16px;
+}
+
+.label_res {
+    font-weight: bold;
+    padding-right: 154px;
+}
+
+.attribute_type .o_form_renderer {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+}
+.attribute_type .o_content {
+    background-color: #ffffff;
+    display: grid !important;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.attribute_type_class {
+    border: 1px solid #d3d3d3;
+    width: 70%;
+    border-radius:5px;
+}
+.page_form {
+    .o_content {
+        overflow-x: hidden;
+        > .o_form_renderer {
+            margin: 10px;
+            border: 1px solid #e6e9ec;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+        .o_list_renderer {
+            .o_list_table {
+                .o_list_actions_header {
+                    background-color: #F8F8F8;
+                }
+                thead {
+                    background-color: #F8F8F8;
+                    th {
+                        font-weight: 400;
+                        color: #424242;
+                    }
+                }
+                tbody {
+                    td {
+                        color: #111827;
+                    }
+                }
+            }
+        }
+        .pim_create_attribute {
+            text-align:left;
+            position: relative;
+            .attr_title {
+                color: #714B67;
+                font-weight: 400;
+                &:after {
+                    content: "";
+                    position: absolute;
+                    height: 1px;
+                    border-top: 1px solid #CECECE;
+                    width: -webkit-fill-available;
+                    top: 50%;
+                    margin-left: 10px;
+                }
+            }
+        }
+        .left-column {
+            width: 60%;
+            border:1px solid;
+            border-color: #D8DADD;
+            border-radius: 6px;
+            margin-right: 5px;
+            .o_list_renderer.o_renderer  {
+                border-radius: 6px 6px 0 0;
+            }
+        }
+        .right-column {
+            width: 40%;
+            border:1px solid;
+            border-color: #D8DADD;
+            border-radius: 6px;
+            margin-left: 5px;
+            padding: 10px;
+            > .o_form_renderer.o_form_nosheet {
+                border-radius: 6px;
+                padding: 0;
+            }
+            .attr_form {
+                .attr_properties {
+                    .attr_sheet {
+                        padding: 0;
+                        .o_form_sheet {
+                            padding: 0;
+                            border: unset;
+                        }
+                        .type_name {
+                            min-height: unset;
+                        }
+                    }
+                    .type_properties {
+                        .o_notebook_headers {
+                            overflow: visible;
+                            margin: 0;
+                            .nav.nav-tabs {
+                                padding: 0;
+                            }
+                            .nav-link {
+                                border-color: #D8DADD;
+                                padding: 6px 10px;
+                                border-radius: 0;
+                                &.active {
+                                    border-bottom-color: #ffffff;
+                                }
+                            }
+                        }
+                        .general_param {
+                            .o_horizontal_separator {
+                                margin: 0 !important;
+                                padding: 10px;
+                                background-color: #F7F7F7;
+                                border-radius: 6px 6px 0 0;
+                            }
+                            .o_form_label {
+                                font-weight: 400;
+                                font-style: italic;
+                                color: #111827;
+                            }
+                            .o_cell {
+                                padding: 0 10px;
+                            }
+                        }
+                        .o_notebook_content.tab-content {
+                            border-width: 0px 1px 1px 1px;
+                            border-color: #D8DADD;
+                            border-style: solid;
+                            border-radius: 0;
+                            .tab-pane {
+                                padding: 0;
+                                margin: 10px;
+                                .top_property {
+                                    border-radius: 6px 6px 0 0;
+                                    border-width: 1px 1px 0 1px;
+                                    border-style: solid;
+                                    border-color: #D8DADD;
+                                }
+                            }
+                        }
+                        .attr_form_values {
+                            padding: 0 10px 10px 10px;
+                            border-radius: 0 0 6px 6px;
+                            border-width: 0 1px 1px 1px;
+                            border-style: solid;
+                            border-color: #D8DADD;
+                            .o_form_label {
+                                font-weight: 400;
+                                font-style: italic;
+                                color: #111827;
+                                opacity: unset;
+                            }
+                            .attr_display_type {
+                                padding: 4px 8px;
+                            }
+                            .o_field_widget.attribute_type_class {
+                                margin-bottom: 14px;
+                                input {
+                                    border-bottom: 0;
+                                    padding: 4px 8px;
+                                }
+                            }
+                            .attr_creation {
+                                .dropdown-menu {
+                                    padding: 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.attr_types {
+    display: flex;
+    width:100%;
+    .grid_column {
+        width: 25%;
+        grid-template-rows: repeat(4, 1fr);
+        gap: 10px;
+        .attribute-button {
+            text-align: center;
+            margin-right: 10px;
+            height: 130px;
+        }
+    }
+}
+
+@media screen and (max-width: 1440px) {
+    .page_form .o_content .right-column .attr_form .attr_properties .type_properties .attr_form_values {
+        .attr_display_type {
+            padding: 2px 4px;
+        }
+        .o_field_widget.attribute_type_class input {
+            padding: 2px 4px;
+        }
+    }
+    .attr_types {
+        .grid_column {
+            .attribute-button {
+                height: 100px;
+            }
+        }
+    }
+   .choose_pim_attribute_type {
+        font-size: 24px;
+    }
+    .pim_create_attribute {
+        font-size: 12px;
+    }
+    .attribute-icon-button span {
+        font-size: 12px;
+        line-height: 1rem;
+    }
+    .attribute-icon-button {
+        border-radius: 6px;
+    }
+    .attribute-icon-button i {
+        font-size: 1em;
+    }
+}

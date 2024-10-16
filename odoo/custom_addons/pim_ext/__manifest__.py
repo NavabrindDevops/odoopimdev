@@ -21,13 +21,14 @@
         'views/pim_attribute_group_views.xml',
         'wizard/attribute_group_wizard_views.xml',
         'wizard/attribute_wizard_views.xml',
+        'wizard/attribute_variant_wizard_views.xml',
         'views/pim_category_views.xml',
         'views/pim_channels_views.xml',
 
     ],
     'assets': {
                 'web.assets_backend': [
-                    'pim_ext/static/src/css/custom_style.css',
+                    'pim_ext/static/src/css/custom_style.scss',
                     'pim_ext/static/src/js/chatter_position.js',
                     # 'pim_ext/static/src/js/split_attribute_view.js',
 

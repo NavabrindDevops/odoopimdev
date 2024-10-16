@@ -6,3 +6,4 @@ from . import pim_attribute_type
 from . import family_product_line
 from . import pim_category
 from . import pim_channels
+from . import family_variant_line

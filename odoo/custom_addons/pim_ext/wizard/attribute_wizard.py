@@ -12,3 +12,15 @@ class AddAttributeWizard(models.TransientModel):
 
     def add_attributes_to_family(self):
         print('dkfodkf')
+        family_id = self.attribute_family_id.id
+        print('famileeeeeee', family_id)
+        family = self.env['family.attribute'].browse(family_id)
+        print('dsdsdsd', family)
+
+        for attribute in self.attribute_ids:
+            print('dlkdlfd', attribute)
+            family.write({
+                'product_families_ids': [(0, 0, {
+                    'attribute_id': attribute.id,
+                })]
+            })

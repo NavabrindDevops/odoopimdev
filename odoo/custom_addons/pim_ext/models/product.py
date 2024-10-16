@@ -223,6 +223,7 @@ class ProductAttribute4(models.Model):
 class FamilyAttribute(models.Model):
      _name = 'family.attribute'
      _inherit = ['mail.thread', 'mail.activity.mixin']
+     _description = 'Family'
 
      name = fields.Char('Name', required=True, tracking=True)
      supplier_id = fields.Many2one('res.partner','Supplier')
@@ -244,7 +245,8 @@ class FamilyAttribute(models.Model):
      attribute4_id = fields.Many2one('product.attribute4','Attribute 4')
      asn_description = fields.Html('ASN Description')
      product_families_ids = fields.One2many('family.products.line', 'families_id', 'SKU', readonly=False)
-     
+     variant_line_ids = fields.One2many('family.variant.line', 'variant_familiy_id', 'Variants', readonly=False)
+
      def action_update(self):
           attribute_group = self.env['attribute.group'].search([("attribute_family_id", "in", self.id)])
           for record in attribute_group:
@@ -275,6 +277,15 @@ class FamilyAttribute(models.Model):
           return {
                'type': 'ir.actions.act_window',
                'res_model': 'add.attribute.wizard',
+               'view_mode': 'form',
+               'target': 'new',
+               'context': {'default_attribute_family_id': self.id},
+          }
+
+     def action__add_variant_wizard(self):
+          return {
+               'type': 'ir.actions.act_window',
+               'res_model': 'attribute.variant.wizard',
                'view_mode': 'form',
                'target': 'new',
                'context': {'default_attribute_family_id': self.id},

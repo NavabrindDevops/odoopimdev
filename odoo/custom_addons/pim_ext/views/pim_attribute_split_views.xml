@@ -5,9 +5,9 @@
             <field name="name">product.attribute.custom.layout</field>
             <field name="model">pim.attribute.type</field>
             <field name="arch" type="xml">
-                <form string="Attribute" create="false" edit="false">
-                    <div class="o_row">
-                        <div class="o_col_6" style="width: 60%; float: left; margin:auto; border:2px solid; border-color: #f8f9fa;">
+                <form string="Attribute" create="false" edit="false" class="page_form">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
                             <field name="attribute_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
                                 <tree create="false" edit="false">
                                     <field name="name"/>
@@ -21,11 +21,11 @@
                                 </tree>
                             </field>
                         </div>
-                        <div class="o_col_6" style="width: 40%; float: left; margin:auto; border:1px solid; border-color: #f8f9fa;">
+                        <div class="right-column">
                             <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
                                 <field name="is_invisible" invisible="1"/>
                                 <div class="pim_oe_title">
-                                    <h2 class="pim_create_attribute" style="text-align:left;">Create Attribute</h2>
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Create Attribute</span></h2>
                                 </div>
                                 <div class="pim_oe_title" invisible="is_invisible">
                                     <h2 class="choose_pim_attribute_type" style="text-align:left;">Choose the attribute type</h2>
@@ -33,9 +33,9 @@
                                     <!-- Use a flex layout with columns -->
 
                                 <div class="d-flex justify-content-center" invisible="is_invisible">
-                                    <div class="o_grid" style="display: flex; justify-content: space-between; gap: 20px; max-width: 1000px; margin: 10 auto;">
+                                    <div class="o_grid attr_types">
             <!--                            row 1-->
-                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                        <div class="d-grid grid_column">
                                             <!-- Button for Date -->
                                             <div class="attribute-button">
                                                 <button name="action_select_date" type="object" class="btn btn-light attribute-icon-button">
@@ -64,7 +64,7 @@
                                             </div>
                                         </div>
             <!--                            row2-->
-                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                        <div class="d-grid grid_column">
                                             <!-- Button for File -->
                                             <div class="attribute-button">
                                                 <button name="action_select_file" type="object" class="btn btn-light attribute-icon-button">
@@ -93,7 +93,7 @@
                                             </div>
                                         </div>
             <!--                            row3-->
-                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                        <div class="d-grid grid_column">
                                             <div class="attribute-button">
                                                 <button name="action_select_text_area" type="object" class="btn btn-light attribute-icon-button">
                                                     <i class="fa fa-text-height fa-2x"></i>
@@ -121,7 +121,7 @@
                                             </div>
                                         </div>
             <!--                            row4-->
-                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                        <div class="d-grid grid_column">
                                             <div class="attribute-button">
                                                 <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">
                                                     <i class="fa fa-ruler fa-2x"></i>
@@ -137,58 +137,55 @@
                                             </div>
                                         </div>
             <!--                            row5-->
-                                        <div style="display: flex; flex-direction: column; gap: 20px;">
-                                        </div>
                                     </div>
                                 </div>
                             </form>
                             <form>
-                                <div class="o_col_6" style="border:1px solid; border-color: #f8f9fa;" invisible="not is_invisible">
-                                   <div>
-                                       <sheet>
+                                <div class="o_col_6 attr_form" invisible="not is_invisible">
+                                   <div class="attr_properties">
+                                       <sheet class="attr_sheet">
                                            <div class="oe_title">
-                                               <h1><field name="type_name" readonly="1" class="oe_inline"/></h1>
+                                               <h1 class="type_name"><field name="type_name" readonly="1" class="oe_inline choose_pim_attribute_type"/></h1>
                                            </div>
-                                           <notebook>
+                                           <notebook class="type_properties">
                                                <page name="type_properties" string="Properties">
-                                                   <div id="o_type_properties" class="d-lg-flex">
+                                                   <div id="o_type_properties" class="d-lg-flex top_property">
                                                        <div id="o_type_properties_main" class="flex-grow-1">
-                                                           <group string="General Parameters">
+                                                           <group string="General Parameters" class="general_param">
                                                                <label for="name" string="Attribute Name" style="font-weight:bold;"/>
                                                            </group>
                                                        </div>
                                                    </div>
-                                                   <div>
-                                                       <field name="name" nolabel="1" placeholder="Enter attribute name" class="attribute_type_class"/>
-                                                   </div>
-                                                   <br/>
-                                                   <div>
+                                                   <div class="attr_form_values">
                                                        <div>
-                                                           <group>
-                                                               <label for="display_type" string="Type" style="font-weight:bold;"/>
-                                                           </group>
+                                                           <field name="name" nolabel="1" placeholder="Enter attribute name" class="attribute_type_class"/>
                                                        </div>
-                                                   </div>
-                                                   <div>
-                                                       <field name="display_type" nolabel="1" readonly="1" class="attribute_type_class" style="padding:2px;"/>
-                                                   </div>
-                                                   <br/>
-                                                   <div id="o_type_properties">
-                                                       <div id="o_type_properties_main" class="flex-grow-1">
-                                                           <group>
-                                                               <label for="attribute_group" string="Attribute group"/>
-                                                           </group>
+                                                       <div>
+                                                           <div>
+                                                               <group>
+                                                                   <label for="display_type" string="Type" style="font-weight:bold;"/>
+                                                               </group>
+                                                           </div>
                                                        </div>
-                                                   </div>
-                                                   <div>
-                                                       <field name="attribute_group" nolabel="1"
-                                                              options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
-                                                              class="attribute_type_class"/>
-                                                   </div>
-                                                   <br/><br/>
-                                                   <div>
-                                                       <button type="object" string="Save"
-                                                               name="create_attributes" class="oe_highlight"/>
+                                                       <div>
+                                                           <field name="display_type" nolabel="1" readonly="1" class="attribute_type_class attr_display_type"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="attribute_group" string="Attribute group"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="attribute_group" nolabel="1"
+                                                                  options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+                                                       <div class="attr_creation">
+                                                           <button type="object" string="Save"
+                                                                   name="create_attributes" class="oe_highlight"/>
+                                                       </div>
                                                    </div>
                                                </page>
                                                <page name="type_label_translation" string="Label Translations">

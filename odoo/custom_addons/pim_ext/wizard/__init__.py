@@ -4,3 +4,4 @@ from . import product
 from . import mass_edit
 from . import attribute_group_wizard
 from . import attribute_wizard
+from . import attribute_variant_wzard

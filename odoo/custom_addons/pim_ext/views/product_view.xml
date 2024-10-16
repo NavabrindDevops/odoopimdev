@@ -44,102 +44,132 @@
                             .o_group .o_wrap_label .o_form_label{font-weight:250; font-size:12px;}
                             .o_tag{font-size:var(--Tag-font-size, -2.1875rem);}
                         </style>
+                        <div class="oe_title">
+                            <h1><field name="name" class="oe_inline" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
 
-                        <group col="3"> 
-                            <group style="font-size: 11px !important;width: 40%;">  
-                                <separator string="Product Family Information" style="background-color: grey;color: white;"/>
-                                <group>
-                                    <field name="name"/>
-                                    <field name="attributes_group_ids" string="Groups" widget="many2many_tags"
-                                                            options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
-                                    <field name="buyer_id"/>
-                                    <field name="availability"/>
-                                </group>
-                                <group>
-                                    <field name="supplier_id"/>
-                                    <field name="brand_id"/>
-                                    <field name="manufacture_id"/>
-                                    <field name="swatch"/>
-                                    <field name="gift"/>
-                                </group>
-                                <group>
-                                    <field name="attribute1_id"/>
-                                    <field name="attribute2_id"/>
-                                </group>
-                                <group>
-                                    <field name="attribute3_id"/>
-                                    <field name="attribute4_id"/>
-                                </group>
-                                <group string="ASN description">
-                                    <field name="asn_description" nolabel="1" colspan="4"/>
-                                </group>
-                            </group>
-                            <group style="font-size: 11px !important;"> 
-                                <separator string="Categories &amp; Relationship" style="background-color: grey;color: white;"/>
-                                    <notebook colspan="2">
-                                        <page string="Taxonomy" name="taxonomy">
-                                            <field name="taxonomy_ids"/>
-                                            <field name="attch_ids" widget="many2many_binary"/>
-                                        </page>
-                                        <page string="Related" name="related">
-                                            <p>Link this family another related family</p>
-                                        </page>
-                                        <page string="Complementary" name="complementary">
-                                            <p>Link family to one or more categories with complementary products</p>
-                                            <field name= "complementary_categ_ids"/>
-                                        </page>
-                                        <page string="Substitute" name="substitute">
-                                            <p>Link this family to other families which can replace it, ideal for situations where an item is out of stock or a different price point is prefered</p>
-                                        </page>
-                                        <page string="Assets" name="assets">
-                                        </page>
-                                    </notebook>
-                            </group>
-                            <group style="font-size: 11px !important;width: 22%;">
-                                <separator string="Photography" style="background-color: grey;color: white;"/>
-                                 <div class="o_td_label">
-                                        <label for="product_image" string=""/>
-                                </div>
-                                <field name="product_image" widget="image" nolabel="1"/>
-                            </group>
-                      </group>
+<!--                        <group col="3">-->
+<!--                            <group style="font-size: 11px !important;width: 40%;">-->
+<!--                                <separator string="Product Family Information" style="background-color: grey;color: white;"/>-->
+<!--                                <group>-->
+<!--                                    <field name="name"/>-->
+<!--                                    <field name="attributes_group_ids" string="Groups" widget="many2many_tags"-->
+<!--                                                            options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>-->
+<!--                                    <field name="buyer_id"/>-->
+<!--                                    <field name="availability"/>-->
+<!--                                </group>-->
+<!--                                <group>-->
+<!--                                    <field name="supplier_id"/>-->
+<!--                                    <field name="brand_id"/>-->
+<!--                                    <field name="manufacture_id"/>-->
+<!--                                    <field name="swatch"/>-->
+<!--                                    <field name="gift"/>-->
+<!--                                </group>-->
+<!--                                <group>-->
+<!--                                    <field name="attribute1_id"/>-->
+<!--                                    <field name="attribute2_id"/>-->
+<!--                                </group>-->
+<!--                                <group>-->
+<!--                                    <field name="attribute3_id"/>-->
+<!--                                    <field name="attribute4_id"/>-->
+<!--                                </group>-->
+<!--                                <group string="ASN description">-->
+<!--                                    <field name="asn_description" nolabel="1" colspan="4"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                            <group style="font-size: 11px !important;">-->
+<!--                                <separator string="Categories &amp; Relationship" style="background-color: grey;color: white;"/>-->
+<!--                                    <notebook colspan="2">-->
+<!--                                        <page string="Taxonomy" name="taxonomy">-->
+<!--                                            <field name="taxonomy_ids"/>-->
+<!--                                            <field name="attch_ids" widget="many2many_binary"/>-->
+<!--                                        </page>-->
+<!--                                        <page string="Related" name="related">-->
+<!--                                            <p>Link this family another related family</p>-->
+<!--                                        </page>-->
+<!--                                        <page string="Complementary" name="complementary">-->
+<!--                                            <p>Link family to one or more categories with complementary products</p>-->
+<!--                                            <field name= "complementary_categ_ids"/>-->
+<!--                                        </page>-->
+<!--                                        <page string="Substitute" name="substitute">-->
+<!--                                            <p>Link this family to other families which can replace it, ideal for situations where an item is out of stock or a different price point is prefered</p>-->
+<!--                                        </page>-->
+<!--                                        <page string="Assets" name="assets">-->
+<!--                                        </page>-->
+<!--                                    </notebook>-->
+<!--                            </group>-->
+<!--                            <group style="font-size: 11px !important;width: 22%;">-->
+<!--                                <separator string="Photography" style="background-color: grey;color: white;"/>-->
+<!--                                 <div class="o_td_label">-->
+<!--                                        <label for="product_image" string=""/>-->
+<!--                                </div>-->
+<!--                                <field name="product_image" widget="image" nolabel="1"/>-->
+<!--                            </group>-->
+<!--                      </group>-->
                       <group >
-                          <div style="display:flex; gap:10px; width:max-content;">
-                              <button name="action_open_attribute_group_wizard" type="object"
-                                      string="Add By Groups" class="oe_button btn-primary"/>
-                              <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>
-                          </div>
+<!--                          <div style="display:flex; gap:10px; width:max-content;">-->
+<!--                              <button name="action_open_attribute_group_wizard" type="object"-->
+<!--                                      string="Add By Groups" class="oe_button btn-primary"/>-->
+<!--                              <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>-->
+<!--                          </div>-->
 <!--                           <button id="create_sku" name="%(pim_ext.action_add_products)d" type="action" string="+SKU" class="oe_highlight"/>-->
 <!--                          <button id="update_products" name="%(pim_ext.action_multi_select_products)d" type="action" string="Mass Edit" class="oe_highlight"/>                           -->
-                          <field name='product_family_ids' nolabel="1" colspan="2" invisible="1">
-                              <tree editable="bottom" widget="section_and_note_one2many" string="SKU" limit="200" create="0">
-                                  <field name="select_sku"/>
-                                  <field name="default_code" string="SKU #"/>
-                                  <field name="mpn_number"/>
-                                  <field name="attribute1_id"/>
-                                  <field name="attribute1_val"/>
-                                  <field name="attribute2_id"/>
-                                  <field name="attribute2_val"/>
-                                  <field name="attribute3_id"/>
-                                  <field name="attribute3_val"/>
-                                  <field name="attribute4_id"/>
-                                  <field name="attribute4_val"/>
-                                  <field name="status"/>
-                                  <field name="origin"/>
-                                  <field name="po_min"/>
-                                  <field name="po_max"/>
-                                  <field name="p65"/>   
-                                  <field name="product_id" optional="hide"/>
-                              </tree>
-                          </field>
+<!--                          <field name='product_family_ids' nolabel="1" colspan="2" invisible="1">-->
+<!--                              <tree editable="bottom" widget="section_and_note_one2many" string="SKU" limit="200" create="0">-->
+<!--                                  <field name="select_sku"/>-->
+<!--                                  <field name="default_code" string="SKU #"/>-->
+<!--                                  <field name="mpn_number"/>-->
+<!--                                  <field name="attribute1_id"/>-->
+<!--                                  <field name="attribute1_val"/>-->
+<!--                                  <field name="attribute2_id"/>-->
+<!--                                  <field name="attribute2_val"/>-->
+<!--                                  <field name="attribute3_id"/>-->
+<!--                                  <field name="attribute3_val"/>-->
+<!--                                  <field name="attribute4_id"/>-->
+<!--                                  <field name="attribute4_val"/>-->
+<!--                                  <field name="status"/>-->
+<!--                                  <field name="origin"/>-->
+<!--                                  <field name="po_min"/>-->
+<!--                                  <field name="po_max"/>-->
+<!--                                  <field name="p65"/>-->
+<!--                                  <field name="product_id" optional="hide"/>-->
+<!--                              </tree>-->
+<!--                          </field>-->
                       </group>
                     <notebook>
-                        <page name="attibute_list" string="Attribute Line">
+                        <page name="attibute_list" string="Attributes">
+                            <br/>
+                            <div style="display:flex; gap:10px; width:max-content;">
+                                <button name="action_open_attribute_group_wizard" type="object"
+                                      string="Add By Groups" class="oe_button btn-primary"/>
+                                <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>
+                            </div>
+                            <br/>
                             <field name="product_families_ids">
-                                <tree editable="bottom">
-                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>
-                                    <field name="product_id"/>
+                                <tree edit="false" create="false">
+<!--                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>-->
+<!--                                    <field name="product_id" invisible="1"/>-->
+                                    <field name="attribute_id"/>
                                     <field name="completeness_percent" widget="progressbar_extended" optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="variant_rec" string="Variants">
+                            <br/>
+                            <div style="display:flex; gap:10px; width:max-content;">
+                                <button name="action__add_variant_wizard" type="object" string="Add Variant" class="oe_button btn-primary"/>
+                            </div>
+                            <br/>
+                            <field name="variant_line_ids">
+                                <tree create="false" edit="false">
+<!--                                    <field name="variant_id" string="Variant" invisible="1"/>-->
+                                    <field name="name"/>
+                                    <field name="variant_ids" string="Variants" widget="many2many_tags"/>
                                 </tree>
                             </field>
                         </page>
@@ -244,6 +274,7 @@
                 <group expand="0" string="Group By">
                     <filter string="Attribute Group Name" name="attribute_group" domain="[]" context="{'group_by': 'name'}"/>
                 </group>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
             </search>
         </field>
     </record>
