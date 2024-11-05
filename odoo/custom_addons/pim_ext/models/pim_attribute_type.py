@@ -39,13 +39,13 @@ class PIMAttributeType(models.Model):
           help="The display type used in the Product Configurator.")
 
      def create_attributes(self):
-          for rec in self:
+          if all([self.name, self.display_type, self.attribute_group]):
                res = self.env['product.attribute'].create({
-                    'name': rec.name,
-                    'display_type': rec.display_type,
-                    'attribute_group': rec.attribute_group.id,
+                    'name': self.name,
+                    'display_type': self.display_type,
+                    'attribute_group': self.attribute_group.id,
                     'value_ids': [(0, 0, {
-                         'name': 'test',
+                         'name': self.display_type.replace('_',' '),
                     })]
                })
           return{
@@ -54,7 +54,7 @@ class PIMAttributeType(models.Model):
                'view_mode':'tree,form',
                'target': 'current',
                'context': {'no_breadcrumbs': True},
-          }
+               }
 
 
      def action_select_date(self):
