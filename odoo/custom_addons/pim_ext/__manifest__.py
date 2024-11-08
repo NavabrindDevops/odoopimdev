@@ -24,6 +24,7 @@
         'wizard/attribute_variant_wizard_views.xml',
         'views/pim_category_views.xml',
         'views/pim_channels_views.xml',
+        'views/pim.xml',
 
     ],
     'assets': {

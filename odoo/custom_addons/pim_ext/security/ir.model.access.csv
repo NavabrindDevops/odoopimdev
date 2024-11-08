@@ -24,6 +24,9 @@ access_pim_attribute_family_variant_line,pim.attributes.family.variant.line,mode
 access_pim_category,pim.category.users,model_pim_category,,1,1,1,1
 access_pim_channels,pim.channels.users,model_pim_channel,,1,1,1,1
 
+access_product_management,product.management,model_product_management,,1,1,1,1
+
+
 
 
 

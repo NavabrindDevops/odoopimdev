@@ -7,3 +7,4 @@ from . import family_product_line
 from . import pim_category
 from . import pim_channels
 from . import family_variant_line
+from . import pim
