@@ -14,7 +14,6 @@
                                     <field name="display_type"/>
                                     <field name="attribute_group"/>
                                     <field name="attribute_types"/>
-                                    <field name="is_mandatory"/>
                                     <field name="is_mandatory" widget="boolean_toggle"/>
                                     <field name="is_required_in_clone" widget="boolean_toggle"/>
                                     <field name="is_completeness" widget="boolean_toggle"/>
@@ -187,7 +186,7 @@
                                                                    name="create_attributes" class="oe_highlight"/>
                                                        </div>
                                                    </div>
-                                               </page>
+                                               </page invisible="1">
                                                <page name="type_label_translation" string="Label Translations">
                                                </page>
                                            </notebook>

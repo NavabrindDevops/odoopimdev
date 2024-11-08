@@ -57,9 +57,9 @@ class AttributeForm(models.Model):
 
      def _compute_completness(self):
           for rec in self:
-               data = rec.search_read([('id','=',rec._origin.id)],fields=['attribute_type_id','display_type','attribute_types_id','attribute_types','attribute_group','is_mandatory','is_required_in_clone','attribute_types'])
+               data = rec.search_read([('id','=',rec._origin.id)],fields=['attribute_type_id','display_type','attribute_types_id','attribute_group','is_mandatory','is_required_in_clone','attribute_types'])
                false_count = sum(1 for d in data for value in d.values() if value != False)
-               rec.completed_in_percent = (false_count/8) * 100
+               rec.completed_in_percent = (false_count/7) * 100
      
 
      # def create_pim_attribute_type(self):
