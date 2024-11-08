@@ -186,8 +186,8 @@
                                                                    name="create_attributes" class="oe_highlight"/>
                                                        </div>
                                                    </div>
-                                               </page invisible="1">
-                                               <page name="type_label_translation" string="Label Translations">
+                                               </page>
+                                               <page name="type_label_translation" string="Label Translations" invisible="1">
                                                </page>
                                            </notebook>
                                        </sheet>
