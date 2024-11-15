@@ -42,35 +42,24 @@ class AttributeForm(models.Model):
           ],
           required=True,
           help="The display type used in the Product Configurator.")
-     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', required=True, tracking=True)
+     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', tracking=True)
      attribute_type_id = fields.Many2one('pim.attribute.type', string='PIM Attribute Type')
      is_mandatory = fields.Boolean(string='Mandatory', default=False)
      is_required_in_clone = fields.Boolean(string='Required in Clone', default=True)
      is_completeness = fields.Boolean(string='Completeness')
+     original_name = fields.Char('Previous Name')
 
      attribute_types = fields.Selection([('basic', 'Basic'),
                                          ('optional', 'Optional')], string='Attribute Type')
      attribute_types_id = fields.Many2one('pim.attribute.type', string='Attribute Type')
-
-     
      completed_in_percent = fields.Float('Completed Progressbar',compute="_compute_completness")
 
      def _compute_completness(self):
           for rec in self:
-               data = rec.search_read([('id','=',rec._origin.id)],fields=['attribute_type_id','display_type','attribute_types_id','attribute_group','is_mandatory','is_required_in_clone','attribute_types'])
+               data = rec.search_read([('id','=',rec._origin.id)],fields=['attribute_type_id','display_type','attribute_types_id','attribute_types','attribute_group','is_mandatory','is_required_in_clone'])
                false_count = sum(1 for d in data for value in d.values() if value != False)
                rec.completed_in_percent = (false_count/7) * 100
-     
-
-     # def create_pim_attribute_type(self):
-     #      print('ffffffffff')
-     #      return {
-     #           "name": _("Create Attribute Type"),
-     #           "type": "ir.actions.act_window",
-     #           "res_model": "pim.attribute.type",
-     #           "target": "current",
-     #           "views": [[False, "form"]],
-     #      }
+               # raise ValidationError(false_count/8)
 
      def create_pim_attribute_type(self):
           # Return the action to open the product.attribute custom layout
@@ -97,6 +86,8 @@ class AttributeForm(models.Model):
                     raise ValidationError("Attribute Name should be AlphaNumeric")
                if not rec.value_ids:
                     raise ValidationError("Please fill the Attribute values for dropdown")
+
+
 
      def write(self, vals):
           user_group = self.env.user.has_group('pim_ext.group_general_user')
@@ -135,7 +126,7 @@ class Attributegroup(models.Model):
      _name = 'attribute.group'
      _inherit = ['mail.thread', 'mail.activity.mixin']
 
-     name = fields.Char('Name', required=True, )
+     name = fields.Char('Name', required=True,)
      active = fields.Boolean('Active', default=True)
      attributes_ids = fields.One2many('product.attribute', 'attribute_group', string='Attributes', required=True, tracking=True, store=True)
      attribute_family_id = fields.Many2many('family.attribute', string='Attribute Family', required=True, tracking=True, store=True)
@@ -209,6 +200,8 @@ class FamilyProducts(models.Model):
      attribute4_id = fields.Many2one('product.attribute4','',related='family_id.attribute4_id',)
      attribute4_val = fields.Char('Attribute 4')
      select_sku = fields.Boolean('Select')
+
+
 
 class ProductAttribute(models.Model):
      _name = 'product.attribute1'

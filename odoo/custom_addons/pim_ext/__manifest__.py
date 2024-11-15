@@ -25,15 +25,21 @@
         'views/pim_category_views.xml',
         'views/pim_channels_views.xml',
         'views/pim.xml',
+        'views/brand.xml',
+        'views/product_select_family.xml',
+
+        # 'views/ir_ui_view.xml',
 
     ],
     'assets': {
                 'web.assets_backend': [
                     'pim_ext/static/src/css/custom_style.scss',
                     'pim_ext/static/src/js/chatter_position.js',
+                    'pim_ext/static/src/js/view_button.js',
+                    # 'pim_ext/static/src/js/dis_button.js',
+                    'pim_ext/static/src/xml/view_button.xml',
+
                     # 'pim_ext/static/src/js/split_attribute_view.js',
-
-
                 ],
         },
     'installable': True,

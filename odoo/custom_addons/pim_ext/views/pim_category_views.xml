@@ -61,7 +61,7 @@
             </field>
         </record>
 
-        <record id="actions_pim_categories" model="ir.actions.act_window">
+        <record id="action_pim_categories" model="ir.actions.act_window">
             <field name="name">Category</field>
             <field name="res_model">pim.category</field>
             <field name="view_mode">tree,form</field>
@@ -69,7 +69,7 @@
 
         <menuitem id="menu_pim_categories"
                   name="Categories"
-                  action="actions_pim_categories"
+                  action="action_pim_categories"
                   parent="pim_ext.pim_configuraion"
                   sequence="40"/>
     </data>

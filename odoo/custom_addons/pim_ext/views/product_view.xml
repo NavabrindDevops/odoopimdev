@@ -316,6 +316,7 @@
             </xpath>
             <xpath expr="//form/sheet/group/group[@name='ecommerce_main_fields']/field[@name='visibility']" position="after">
                 <field name="attribute_types"/>
+                <field name="original_name" invisible="1"/>
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
@@ -411,7 +412,9 @@
                 <field name="attribute_types"/>
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
+<!--                <field name="is_completeness" widget="boolean_toggle"/>-->
                 <field name="completed_in_percent" widget="progressbar"/>
+
             </xpath>
         </field>
     </record>

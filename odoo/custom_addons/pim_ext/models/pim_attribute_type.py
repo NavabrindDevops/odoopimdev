@@ -53,8 +53,19 @@ class PIMAttributeType(models.Model):
                'res_model': 'product.attribute',
                'view_mode':'tree,form',
                'target': 'current',
-               'context': {'no_breadcrumbs': True},
+               'context': {'no_breadcrumbs': False},
                }
+
+
+
+     # def cancel_attributes(self):
+     #      return{
+     #           'type': 'ir.actions.act_window',
+     #           'res_model': 'product.attribute',
+     #           'view_mode':'tree,form',
+     #           'target': 'current',
+     #           'context': {'no_breadcrumbs': True},
+     #      }
 
 
      def action_select_date(self):

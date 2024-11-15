@@ -52,7 +52,7 @@
                 </page>
             </notebook>
             <xpath expr="//field[@name='product_attribute_id']" position="before">
-                <control><create class="btn btn-primary" name="add_line_control" string="Add Attribute"/></control>
+                <control><create class="btn btn-primary" name="add_line_control" string="Add Attribute Group"/></control>
             </xpath>
         </field>
     </record>

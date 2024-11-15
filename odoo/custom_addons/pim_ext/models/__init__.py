@@ -8,3 +8,5 @@ from . import pim_category
 from . import pim_channels
 from . import family_variant_line
 from . import pim
+from . import brand
+from . import product_family_select

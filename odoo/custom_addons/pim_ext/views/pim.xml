@@ -5,7 +5,12 @@
             <field name="name">Product Management</field>
             <field name="model">product.management</field>
             <field name="arch" type="xml">
-                <tree js_class="button_in_tree">
+                <tree create="false">
+                    <header>
+                    <button name="pim_product_creation" type="object" class="btn-primary"
+                        string="Create" display="always"
+                        />
+                    </header>
                     <field name="name" optional="show"/>
                     <field name="sku" optional="show"/>
                     <field name="barcode" optional="show"/>
@@ -13,6 +18,7 @@
                     <field name="pim_category_id" optional="show"/>
                     <field name="chennel_id" optional="show"/>
                     <field name="revision" optional="show"/>
+                    <field name="active" optional="show"/>
                 </tree>
             </field>
         </record>
@@ -31,6 +37,9 @@
                                 <field name="description"/>
                                 <field name="barcode"/>
                                 <field name="active"/>
+                                <field name="pim_category_id"/>
+                                <field name="family_id"/>
+
                             </group>
                             <group string="Pricing And Inventory">
                                 <field name="lst_price"/>

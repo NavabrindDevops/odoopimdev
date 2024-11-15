@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_tree_product_brand" model="ir.ui.view">
+            <field name="name">product.brand.tree.view</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="name"/>
+                    <field name="website"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_form_product_brand" model="ir.ui.view">
+            <field name="name">product.brand.form.view</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <sheet>
+                        <field name="brand_logo" widget='image' class="oe_avatar" options='{"preview_image": "avatar_128"}'/>
+
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="website"/>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="actions_product_brand" model="ir.actions.act_window">
+            <field name="name">product.brand</field>
+            <field name="res_model">product.brand</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem id="pim_brands_view_main"
+                  name="Brand"
+                  action="actions_product_brand"
+                  parent="pim_ext.pim_configuraion"
+                  sequence="60"/>
+
+    </data>
+</odoo>

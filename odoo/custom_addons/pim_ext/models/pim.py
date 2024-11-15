@@ -30,3 +30,17 @@ class ProductManagement(models.Model):
     revision_date = fields.Date(string="Revision Date")
 
 
+    def pim_product_creation(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create Attribute',
+            'res_model': 'product.family.select',
+            'view_mode': 'form',
+            'view_id': self.env.ref('pim_ext.view_product_family_select_customs').id,
+            'target': 'current',
+            'context': {
+                # 'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+            },
+        }
+
+
