@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+
+<t t-name="pim_toggle_button.PimDiscontinueButtonListView" t-inherit="web.ListView" t-inherit-mode="primary" owl="1">
+        <xpath expr="//Layout" position="attributes">
+            <attribute name="className">'prm-content'</attribute>
+        </xpath>
+
+        <xpath expr="//t[@t-foreach='archInfo.headerButtons']" position="after">
+            <t t-if="props.showButtons">
+                <t t-if="props.domain=='active,in,false,true'">
+                     <button type="object" class="fa fa-toggle-on" t-on-click="() => this.hidearchived()"/>
+                </t>
+                <t t-else="">
+                    <button type="object" class="fa fa-toggle-off" t-on-click="() => this.showarchived()"/>
+                </t>
+                <p style="margin-bottom: 0;font-weight: 700;">Discontinued</p>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

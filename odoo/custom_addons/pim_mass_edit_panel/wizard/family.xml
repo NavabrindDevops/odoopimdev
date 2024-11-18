@@ -1,0 +1,26 @@
+
+<odoo>
+
+ <record id="family_wizard_form_view" model="ir.ui.view">
+        <field name="name">family.wizard.form.view</field>
+        <field name="model">family.wizard</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+<!--                            <field name="product_ids" widget="many2many_tags" invisible="1"/>-->
+                            <field name="family_id" options="{'no_delete': True,'no_create':True}">
+
+                            </field>
+                    </group>
+                </sheet>
+                <footer>
+<!--                    <field name="mode" invisible="1"/>-->
+                    <button name="add_taxonomy" type="object" string="Submit" />
+<!--                    <button name="add_complementary" type="object" string="Submit" class="custombutton" invisible="mode!='add_comp'"/>-->
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

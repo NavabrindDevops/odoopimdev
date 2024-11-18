@@ -1,0 +1,39 @@
+
+<odoo>
+
+ <record id="category_wizard_form_view" model="ir.ui.view">
+        <field name="name">category.wizard.form.view</field>
+        <field name="model">category.wizard</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+<!--                            <field name="product_ids" widget="many2many_tags" invisible="1"/>-->
+                            <field name="category_id" options="{'no_delete': True,'no_create':True}">
+
+                            </field>
+                    </group>
+                </sheet>
+                <footer>
+<!--                    <field name="mode" invisible="1"/>-->
+                    <button name="add_taxonomy" type="object" string="Submit" />
+<!--                    <button name="add_complementary" type="object" string="Submit" class="custombutton" invisible="mode!='add_comp'"/>-->
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="custom_pop_message_wizard_view_form" model="ir.ui.view">
+            <field name="name">custom.pop.message.form</field>
+            <field name="model">custom.pop.message</field>
+            <field name="arch" type="xml">
+                <form string="Custom POP Message">
+                    <field name="name" readonly="1"/>
+                    <footer>
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+</odoo>

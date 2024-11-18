@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+<t t-name="pim_mass_edit_panel.MassEditPanel" owl="1">
+        <div class="jstr-navigation-panel jstr-hide-mobile jstr-hide-tablet right-control-panel" t-if="records">
+            <div class="control-panel-head">Control Panel</div>
+            <div class="control-panel">
+                <button class="familybutton fa fa-plus-circle"
+                        t-on-click="() => this.onClickExport()">Export Family</button>
+            </div>
+            <!--            <div class="control-panel">-->
+            <!--                 <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickImport()">Import Family</button>-->
+            <!--             </div>-->
+            <div class="control-panel">
+                    <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickAddCatgeory()">Add Category</button>
+                </div>
+            <div class="control-panel">
+                        <button class="familybutton fa fa-plus-circle"
+                                t-on-click="() => this.onclickAddFamily()">Add Family</button>
+                    </div>
+
+<!--            <t t-if="records==1 and sku_len">-->
+<!--                 <div class="control-panel">-->
+<!--                     <button class="familybutton fa fa-plus-circle"-->
+<!--                             t-on-click="() => this.onClickCloneSKU()">Clone SKU of the Family</button>-->
+<!--                 </div>-->
+<!--&lt;!&ndash;                <t t-if="family_count &gt; 1">&ndash;&gt;-->
+<!--                    <div class="control-panel">-->
+<!--                        <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickMoveSKU()">Move Family SKU to Existing Family</button>-->
+<!--                    </div>-->
+<!--                </t>-->
+<!--                <t t-else="">-->
+<!--                    <div class="control-panel">-->
+<!--                       <button class="redbutton" disabled="disabled">Move Family SKU to Existing Family</button>-->
+<!--                </div>-->
+<!--                </t>-->
+
+<!--                <div class="control-panel">-->
+<!--                     <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickMoveSKUnewfamily()">Move Family SKU to new Family</button>-->
+<!--                 </div>-->
+<!--            </t>-->
+<!--            <t t-else="">-->
+<!--                <div class="control-panel">-->
+<!--                    <button class="redbutton" disabled="disabled">Clone SKU of the Family</button>-->
+<!--                </div>-->
+<!--                <div class="control-panel">-->
+<!--                       <button class="redbutton" disabled="disabled">Move Family SKU to Existing Family</button>-->
+<!--                </div>-->
+<!--                <div class="control-panel">-->
+<!--                       <button class="redbutton" disabled="disabled">Move Family SKU to new Family</button>-->
+<!--                    </div>-->
+<!--            </t>-->
+<!--            <div class="control-panel">-->
+<!--            <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickSubstitutefamily()">Add Substitute Family</button>-->
+<!--            </div>-->
+<!--            <div class="control-panel">-->
+<!--            <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickComplementaryCategory()">Add Complementary Category</button>-->
+<!--            </div>-->
+        </div>
+    </t>
+
+
+
+
+<t t-name="pim_mass_edit_panel.ProductRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary" owl="1">
+        <xpath expr="//div[hasclass('o_list_renderer')]" position="after">
+                <MassEditPanel t-props="getProductManagerProps()"/>
+        </xpath>
+    </t>
+</templates>
+
+

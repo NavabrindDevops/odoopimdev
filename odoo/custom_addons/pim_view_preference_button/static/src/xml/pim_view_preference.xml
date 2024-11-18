@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+    <t t-name="button.ListView.Buttons" t-inherit="web.ListView.Buttons">
+       <xpath expr="//div[hasclass('o_list_buttons')]" position="after">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+<!--                  <t t-if="button_name"><t t-esc="button_name"/></t>-->
+                  <t t-set="selected_name" t-value="selected_view_name" />
+                  <t t-if="selected_name"><t t-esc="selected_name"/></t>
+                  <t t-else="">Default View</t>
+              </button>
+                <div id="listViewDataList" class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="padding: 10px;">
+                    <span id="custom_lists" class="custom_lists p-0 ">
+                    <ul class="list-unstyled list_names" style="margin-bottom: 0;">
+<!--                        <t t-set="default" t-value="state.selected_view" />-->
+                        <div t-foreach="state.views_list" t-as="l" t-key="l.name" style="margin-left: 10px;">
+<!--                            <p><t t-esc="l.name"/></p>-->
+                        <t t-if="l.active">
+                        <li class="view_list checked" style="padding: 5px;display: flex;justify-content: space-between;cursor: pointer;">
+                            <div><span t-on-click="customList" t-attf-id='{{l.view_id}}' t-attf-class='{{l.name}} text-truncate'><t t-esc="l.name"/></span></div>
+                            <div><i t-on-click="updateList" t-attf-id='{{l.view_id}}' class='ms-1 o_icon_right fa fa-cloud-upload' title='Update grid'/></div>
+                            <div><i t-on-click="RemoveList" t-attf-id='{{l.view_id}}' class='ms-1 o_icon_right fa fa-trash-o' title='Delete item'/></div>
+
+                        </li>
+                        </t>
+                        <t t-else="">
+                            <li class="view_list" style="padding: 5px;display: flex;justify-content: space-between;cursor: pointer;">
+                            <div><span t-on-click="customList" t-attf-id='{{l.view_id}}' t-attf-class='{{l.name}} text-truncate'><t t-esc="l.name"/></span></div>
+                            <div><i t-on-click="RemoveList" t-attf-id='{{l.view_id}}' class='ms-1 o_icon_right fa fa-trash-o' title='Delete item'/></div>
+                            </li>
+                        </t>
+                        </div>
+                        <div role="separator" class="dropdown-divider"/>
+                        <t t-set="record" t-value="default_view" />
+<!--                        <t t-if="default">-->
+<!--                            <li class="view_list checked" t-attf-id="{{record}}" style="padding: 5px;display: flex;justify-content: space-between;cursor: pointer;">-->
+<!--                                <div><span t-on-click="DefaultListview"  t-attf-id="{{record}}" t-attf-class="{{record}} text-truncate">Default View</span></div>-->
+<!--                            </li>-->
+<!--                        </t>-->
+<!--                        <t t-else="">-->
+                            <li t-attf-id="{{record}}" style="padding: 5px;display: flex;justify-content: space-between;cursor: pointer;margin-left: 10px;">
+                            <div><span t-on-click="DefaultListview"  t-attf-id="{{record}}" t-attf-class="{{record}} text-truncate">Default View</span></div>
+                        </li>
+<!--                        </t>-->
+<!---->
+                    </ul>
+                    </span>
+                    <div role="separator" class="dropdown-divider"/>
+                    <div class="dropdown-item text-truncate" description="Save current search">
+                        <div class="px-3 py-2">
+                            <input type="text"
+                                   class="o_input"
+                                   placeholder="Listview.."
+                                   t-ref="description"
+                                   t-model.trim="state.description"
+                                   t-on-keydown="onInputKeydown"/>
+                        </div>
+                        <div class="px-3 py-2">
+                            <button class="o_save_favorites btn btn-primary w-100" t-on-click="saveFavorites">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div>
+<!--<t t-if="props.showButtons">-->
+<!--                <div class="o-checkbox list-check o_field_discontinued o_boolean_toggle form-switch">-->
+<!--                    <label class="list-check-label" for="toggle-discontinued"-->
+<!--                           style="display:flex; align-items:center; padding: 5px;">-->
+<!--                        <input-->
+<!--                                type="checkbox"-->
+<!--                                class="form-check-input"-->
+<!--                                id="toggle-discontinued"-->
+<!--                                t-on-click="() => props.domain == 'active,in,false,true' ? this.hidearchived() : this.showarchived()"-->
+<!--                                t-att-checked="props.domain == 'active,in,false,true'"-->
+<!--                        />-->
+<!--                        <span class="list-check-label" style="margin-left: 5px; font-weight: 700;">Discontinued</span>-->
+<!--                    </label>-->
+<!--                </div>-->
+<!--            </t>-->
+           </div>
+       </xpath>
+   </t>
+
+
+
+</templates>
