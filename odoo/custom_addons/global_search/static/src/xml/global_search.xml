@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="global_search.SearchBar" t-inherit="web.NavBar.SectionsMenu" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_menu_sections')]" position="after">
+            <t t-set="current_name" t-value="menu_name"/>
+            <t t-if="current_name == 'Product Management'">
+<!--                 <div class="o_global_search">-->
+<!--                <input type="text" class="o_global_search_input" id="search_input"-->
+<!--                       accesskey="Q" placeholder="Enter Product Information..." role="searchbox" t-on-input="onSearchInputVal"/>-->
+<!--                     <div class="dropdown-menu search_sugest" id="search_sugest" style="margin-top:30px;padding: 0;min-width: 30rem;" >-->
+<!--                                        <li class="dropdown-item family_id_dropdown p-0" id="family_id_dropdown">-->
+<!--                                            <div class="family_search" id="family_search">-->
+<!--                                            </div>-->
+<!--                                        </li>-->
+<!--&lt;!&ndash;                                        <li class="dropdown-item brand_dropdown p-0" id="brand_dropdown"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <li class="dropdown-item supplier_search p-0" id="supplier_search"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <li class="dropdown-item sku_name_search p-0" id="sku_name_search"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <li class="dropdown-item sku_id_search p-0" id="sku_id_search"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <li class="dropdown-item custom_field_search p-0" id="custom_field_search"/>&ndash;&gt;-->
+<!--                                        <li class="dropdown-item family_dropdown p-0" id="family_dropdown"/>-->
+<!--        &lt;!&ndash;                                <li class="dropdown-item show_all_list" id="show_all_list">&ndash;&gt;-->
+<!--        &lt;!&ndash;                                    <div id="all_list_count" class="all_list_count" t-on-click="onShowResults">Show All Results</div>&ndash;&gt;-->
+<!--        &lt;!&ndash;                                </li>&ndash;&gt;-->
+<!--                                        <li class="dropdown-item results_not_found" id="results_not_found">No results found.</li>-->
+<!--                                    </div>-->
+
+<!--            </div>-->
+                <div class="search_view" style="padding-right: 5px;">
+                    <div class="search_bar" style="margin:auto;">
+                        <div class="o_searchview d-flex input-group" role="search">
+                            <div class="o_searchview form-control d-print-contents d-flex align-items-center py-1" role="search"
+                                 aria-autocomplete="list" style="border: unset;">
+                                <i class="o_searchview_icon d-print-none oi oi-search me-2" role="img" aria-label="Search..."
+                                   title="Search..."/>
+                                <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1">
+                                    <input type="text"
+                                           class="o_input d-print-none flex-grow-1 w-auto border-0 custom_search_input" id="custom_search_input"
+                                           accesskey="Q" placeholder="Enter Product Information..." role="searchbox" t-on-input="onSearchInputVal"/>
+                                    <div class="dropdown-menu search_sugest" id="search_sugest" style="margin-top:30px;padding: 0;min-width: 20rem;" >
+                                        <li class="dropdown-item family_id_dropdown p-0" id="family_id_dropdown">
+                                            <div class="family_search" id="family_search">
+                                            </div>
+                                        </li>
+                                        <li class="dropdown-item brand_dropdown p-0" id="brand_dropdown"/>
+                                        <li class="dropdown-item supplier_search p-0" id="supplier_search"/>
+                                        <li class="dropdown-item sku_name_search p-0" id="sku_name_search"/>
+                                        <li class="dropdown-item sku_id_search p-0" id="sku_id_search"/>
+                                        <li class="dropdown-item category_list_search p-0" id="category_list_search"/>
+                                        <li class="dropdown-item family_dropdown p-0" id="family_dropdown"/>
+        <!--                                <li class="dropdown-item show_all_list" id="show_all_list">-->
+        <!--                                    <div id="all_list_count" class="all_list_count" t-on-click="onShowResults">Show All Results</div>-->
+        <!--                                </li>-->
+                                        <li class="dropdown-item results_not_found" id="results_not_found">No results found.</li>
+                                    </div>
+                                </div>
+                                <button class="o_facet_remove oi oi-close btn btn-link py-0 px-2 text-danger button_close"
+                                        id ="button_close"
+                                    role="button"
+                                    aria-label="Remove"
+                                    title="Remove"
+                                    t-on-click="ButtonCancel"
+                                    style="display:none;"
+                                />
+                            </div>
+<!--                            <div><t t-esc="menu_name"/></div>-->
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+</templates>
