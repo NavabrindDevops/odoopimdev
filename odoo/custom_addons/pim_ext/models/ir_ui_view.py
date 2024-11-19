@@ -57,10 +57,14 @@ class IrView(models.Model):
                 'active': True,
                 'arch': """
                     <xpath expr="//tree" position="replace">
-                        <tree string="Product" js_class="button_in_tree">
-                            <field name="name"/>
-                            %s
-                        </tree>
+                        <tree create="false" string="Product" js_class="button_in_tree">
+                        <header>
+                            <button name="pim_product_creation" type="object" class="btn-primary"
+                                string="Create" display="always"/>
+                        </header>
+                        <field name="name"/>
+                        %s
+                    </tree>
                     </xpath>""" % fields_xml_new,
                 'custom_filter': filter_name,
             })
