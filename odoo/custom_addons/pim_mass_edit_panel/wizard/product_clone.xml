@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="clone_product_wizard_form" model="ir.ui.view">
+        <field name="name">clone.product.wizard.form.view</field>
+        <field name="model">clone.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Clone Product Wizard">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="count" widget="numeric_step"/>
+                            <field name="active_product_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="product_line_ids" string="">
+                                <tree editable="bottom">
+                                    <field name="field_id" string="Select Field" options="{'no_create': True}" domain="[('model', '=', 'product.management')]"/>
+                                    <field name="clone_wizard_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="clone_product" type="object" string="Clone Product" class="btn-primary"/>
+                    <button string="Discard" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

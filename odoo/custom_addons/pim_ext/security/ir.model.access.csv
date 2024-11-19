@@ -28,6 +28,9 @@ access_product_management,product.management,model_product_management,,1,1,1,
 access_product_family_select,product.family.select,model_product_family_select,,1,1,1,1
 
 access_product_brand,product.brand,model_product_brand,,1,1,1,1
+access_general_attribute,general.attribute,model_general_attribute,,1,1,1,1
+access_supplier_info,supplier.info,model_supplier_info,,1,1,1,1
+
 
 
 

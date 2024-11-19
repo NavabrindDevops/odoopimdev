@@ -10,3 +10,5 @@ from . import family_variant_line
 from . import pim
 from . import brand
 from . import product_family_select
+from . import general_attributes
+from . import supplier

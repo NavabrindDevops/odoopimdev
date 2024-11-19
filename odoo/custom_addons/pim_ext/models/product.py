@@ -42,7 +42,7 @@ class AttributeForm(models.Model):
           ],
           required=True,
           help="The display type used in the Product Configurator.")
-     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', tracking=True)
+     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', required=True, tracking=True)
      attribute_type_id = fields.Many2one('pim.attribute.type', string='PIM Attribute Type')
      is_mandatory = fields.Boolean(string='Mandatory', default=False)
      is_required_in_clone = fields.Boolean(string='Required in Clone', default=True)

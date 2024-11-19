@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="product_managemnt_tree_view" model="ir.ui.view">
+        <record id="product_management_tree_view" model="ir.ui.view">
             <field name="name">Product Management</field>
             <field name="model">product.management</field>
             <field name="arch" type="xml">

@@ -11,6 +11,7 @@
     'data' : [
             'wizard/category.xml',
             'wizard/family.xml',
+            'wizard/product_clone.xml',
             'security/ir.model.access.csv',
     ],
 'assets': {

@@ -20,38 +20,38 @@
                                 t-on-click="() => this.onclickAddFamily()">Add Family</button>
                     </div>
 
-<!--            <t t-if="records==1 and sku_len">-->
-<!--                 <div class="control-panel">-->
-<!--                     <button class="familybutton fa fa-plus-circle"-->
-<!--                             t-on-click="() => this.onClickCloneSKU()">Clone SKU of the Family</button>-->
-<!--                 </div>-->
-<!--&lt;!&ndash;                <t t-if="family_count &gt; 1">&ndash;&gt;-->
-<!--                    <div class="control-panel">-->
-<!--                        <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickMoveSKU()">Move Family SKU to Existing Family</button>-->
-<!--                    </div>-->
-<!--                </t>-->
-<!--                <t t-else="">-->
-<!--                    <div class="control-panel">-->
-<!--                       <button class="redbutton" disabled="disabled">Move Family SKU to Existing Family</button>-->
-<!--                </div>-->
-<!--                </t>-->
+<t t-if="records">
+                 <div class="control-panel">
+                     <button class="familybutton fa fa-plus-circle"
+                             t-on-click="() => this.onClickCloneProduct()">Clone Product</button>
+                 </div>
+                <t t-if="family_count &gt; 1">
+                    <div class="control-panel">
+                        <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickMoveSKU()">Move Family SKU to Existing Family</button>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="control-panel">
+                       <button class="redbutton" disabled="disabled">Move Family SKU to Existing Family</button>
+                </div>
+                </t>
 
-<!--                <div class="control-panel">-->
-<!--                     <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickMoveSKUnewfamily()">Move Family SKU to new Family</button>-->
-<!--                 </div>-->
-<!--            </t>-->
-<!--            <t t-else="">-->
-<!--                <div class="control-panel">-->
-<!--                    <button class="redbutton" disabled="disabled">Clone SKU of the Family</button>-->
-<!--                </div>-->
-<!--                <div class="control-panel">-->
-<!--                       <button class="redbutton" disabled="disabled">Move Family SKU to Existing Family</button>-->
-<!--                </div>-->
-<!--                <div class="control-panel">-->
-<!--                       <button class="redbutton" disabled="disabled">Move Family SKU to new Family</button>-->
-<!--                    </div>-->
-<!--            </t>-->
-<!--            <div class="control-panel">-->
+                <div class="control-panel">
+                     <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickMoveSKUnewfamily()">Move Family SKU to new Family</button>
+                 </div>
+            </t>
+            <t t-else="">
+                <div class="control-panel">
+                    <button class="redbutton" disabled="disabled">Clone Product</button>
+                </div>
+                <div class="control-panel">
+                       <button class="redbutton" disabled="disabled">Move Family SKU to Existing Family</button>
+                </div>
+                <div class="control-panel">
+                       <button class="redbutton" disabled="disabled">Move Family SKU to new Family</button>
+                    </div>
+            </t>
+            <!--            <div class="control-panel">-->
 <!--            <button class="familybutton fa fa-plus-circle" t-on-click="() => this.onClickSubstitutefamily()">Add Substitute Family</button>-->
 <!--            </div>-->
 <!--            <div class="control-panel">-->

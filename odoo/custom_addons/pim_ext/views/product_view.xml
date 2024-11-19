@@ -288,16 +288,16 @@
     </record>
 
     <menuitem id="menu_pim_attribute_action"
-    action="product.attribute_action" name="Attributes"
-    parent="pim_configuraion" sequence="20"/>
+              action="product.attribute_action" name="Attributes"
+              parent="product_management.menu_product_management_conf" sequence="20"/>
 
     <menuitem id="menu_pim_attribute_action2"
-    action="action_attribute_group_view" name="Attributes Groups"
-    parent="pim_configuraion" sequence="10"/>
+              action="action_attribute_group_view" name="Attributes Groups"
+              parent="product_management.menu_product_management_conf" sequence="10"/>
 
     <menuitem id="menu_pim_attribute_action3"
-    action="action_family_view" name="Families"
-    parent="pim_configuraion" sequence="30"/>
+              action="action_family_view" name="Families"
+              parent="product_management.menu_product_management_conf" sequence="30"/>
 
 
 <!--    Inherit Attribute Form-->

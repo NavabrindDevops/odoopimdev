@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_suppliers_form_view" model="ir.ui.view">
+        <field name="name">suppliers.list.form</field>
+        <field name="model">supplier.info</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="completeness" widget="progressbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Supplier Informations">
+                            <field name="name"/>
+                            <field name="street"/>
+                            <field name="city"/>
+                            <field name="website"/>
+                            <field name="notes" placeholder="Enter notes..."/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_suppliers_tree_view" model="ir.ui.view">
+        <field name="name">suppliers.list.view</field>
+        <field name="model">supplier.info</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="street"/>
+                <field name="city"/>
+                <field name="website"/>
+                <field name="notes" optional="hide"/>
+                <field name="completeness" widget="progressbar" nolabel="1" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_supplier_info" model="ir.actions.act_window">
+        <field name="name">Manage Suppliers</field>
+        <field name="res_model">supplier.info</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_product_suppliers"
+          action="action_supplier_info" name="Suppliers" groups="base.group_user"
+          parent="product_management.menu_product_management_conf" sequence="60"/>
+
+</odoo>

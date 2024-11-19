@@ -3,3 +3,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_category_wizard_user,category.wizard.users,model_category_wizard,,1,1,1,1
 access_family_wizard_user,family.wizard.users,model_family_wizard,,1,1,1,1
 access_custom_pop_message_wizard_user,custom.pop.message.users,model_custom_pop_message,,1,1,1,1
+
+
+access_clone_product_wizard,clone.product.wizard,model_clone_product_wizard,,1,1,1,1
+access_clone_product_lines,clone.product.lines,model_clone_product_lines,,1,1,1,1

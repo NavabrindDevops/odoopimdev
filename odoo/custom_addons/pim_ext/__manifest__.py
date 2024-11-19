@@ -11,6 +11,7 @@
     'depends': ['base', 'sale', 'product','stock','product_management','website_sale'],
     'data': [
         'security/ir.model.access.csv',
+        'data/general_attributes_data.xml',
         'wizard/product_view.xml',
         'wizard/mass_edit_view.xml',
         'views/pim_attribute_split_views.xml',
@@ -27,6 +28,8 @@
         'views/pim.xml',
         'views/brand.xml',
         'views/product_select_family.xml',
+	'views/general_attributes.xml',
+        'views/supplier.xml',
 
         # 'views/ir_ui_view.xml',
 

@@ -108,6 +108,33 @@ export class MassEditPanel extends Component {
                 .filter((field) => field.exportable !== false)
         );
     }
+
+    async onClickCloneProduct() {
+        try {
+            const selectedRecords = this.props.currentSelection.map(record => record.resId);
+            const viewId = await this.orm.call('clone.product.wizard', 'get_clone_product_view_id', []);
+            return this.actionService.doAction({
+                name: "Clone Product",
+                type: "ir.actions.act_window",
+                res_model: "clone.product.wizard",
+                view_mode: "form",
+                target: "new",
+                views: [[viewId, "form"]],
+                context: {
+                    default_active_product_ids: selectedRecords,
+                },
+            });
+        }
+        catch (error) {
+            this.env.services.notification.add('An error occurred while opening the Clone Product Wizard.', {
+                type: 'danger',
+            });
+            console.error("Error Details:", error);
+        }
+    }
+
+
+
     async getExportedFields(model, import_compat, parentParams) {
         return await this.rpc("/web/export/get_fields", {
             ...parentParams,
