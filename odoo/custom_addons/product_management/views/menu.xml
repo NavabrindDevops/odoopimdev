@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <odoo>
 
-    <menuitem name="Product Management"
+    <menuitem name="PIM"
               id="menu_product_management_main"
               sequence="40"
               groups="product_management.group_product_management_user,base.group_system"
               web_icon="product_management,static/description/icon.png"
     />
-    <menuitem name="Product Management"
+    <menuitem name="Manage"
               id="menu_product_management"
               parent="menu_product_management_main"
               action="product_management.product_product_mntn_action"
               sequence="10"
               groups="product_management.group_product_management_user,base.group_system"
     />
-    <menuitem name="Configuration"
+    <menuitem name="Masters"
               id="menu_product_management_conf"
               parent="menu_product_management_main"
               sequence="50"
