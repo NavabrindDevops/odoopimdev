@@ -98,6 +98,9 @@ height: fill-available;
 .o_main_navbar .o_menu_sections .o_nav_entry, .o_main_navbar .o_menu_sections .dropdown-toggle {
 color: #fff;
 border-radius: 5px;
+height: -moz-available;
+height: -webkit-fill-available;
+height: fill-available;
 }
 .o_main_navbar .o_menu_sections {
 gap: 2px;

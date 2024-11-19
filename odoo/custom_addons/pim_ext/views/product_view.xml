@@ -320,7 +320,7 @@
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
-                <field name="completed_in_percent" widget="progressbar"/>
+                <!-- <field name="completed_in_percent" widget="progressbar"/> -->
             </xpath>
             <xpath expr="//field[@name='sequence']" position="before">
                 <control><create class="btn btn-primary" name="add_line_control" string="Add Attribute Value"/></control>
@@ -413,7 +413,7 @@
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
 <!--                <field name="is_completeness" widget="boolean_toggle"/>-->
-                <field name="completed_in_percent" widget="progressbar"/>
+                <!-- <field name="completed_in_percent" widget="progressbar"/> -->
 
             </xpath>
         </field>
