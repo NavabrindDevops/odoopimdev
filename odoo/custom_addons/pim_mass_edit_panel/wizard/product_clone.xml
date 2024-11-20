@@ -9,14 +9,10 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="count" widget="numeric_step"/>
+                            <field name="count"/>
                             <field name="active_product_ids" widget="many2many_tags" invisible="1"/>
-                            <field name="product_line_ids" string="">
-                                <tree editable="bottom">
-                                    <field name="field_id" string="Select Field" options="{'no_create': True}" domain="[('model', '=', 'product.management')]"/>
-                                    <field name="clone_wizard_id" column_invisible="1"/>
-                                </tree>
-                            </field>
+                            <field name="field_ids" string="Fields" options="{'no_create': True}" widget="many2many_tags"
+                                   placeholder="Select Fields..."/>
                         </group>
                     </group>
                 </sheet>
