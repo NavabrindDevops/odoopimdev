@@ -31,6 +31,9 @@ access_product_brand,product.brand,model_product_brand,,1,1,1,1
 access_general_attribute,general.attribute,model_general_attribute,,1,1,1,1
 access_supplier_info,supplier.info,model_supplier_info,,1,1,1,1
 
+access_delete_family_wizard,delete.family.wizard,model_delete_family_wizard,,1,1,1,1
+
+
 
 
 

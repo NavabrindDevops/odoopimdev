@@ -228,6 +228,8 @@ class FamilyAttribute(models.Model):
      _inherit = ['mail.thread', 'mail.activity.mixin']
      _description = 'Family'
 
+     code = fields.Char(string="Code",required=True,
+                          readonly=True, default=lambda self: _('New'))
      name = fields.Char('Name', required=True, tracking=True)
      supplier_id = fields.Many2one('res.partner','Supplier')
      brand_id = fields.Many2one('brand.attribute','Brand')
@@ -249,6 +251,26 @@ class FamilyAttribute(models.Model):
      asn_description = fields.Html('ASN Description')
      product_families_ids = fields.One2many('family.products.line', 'families_id', 'SKU', readonly=False)
      variant_line_ids = fields.One2many('family.variant.line', 'variant_familiy_id', 'Variants', readonly=False)
+
+     @api.model
+     def create(self, vals):
+          vals['code'] = self.env['ir.sequence'].next_by_code(
+               'family.attribute') or _('New')
+          res = super(FamilyAttribute, self).create(vals)
+          return res
+
+     def delete_family(self):
+
+          return {
+               'type': 'ir.actions.act_window',
+               'res_model': 'delete.family.wizard',
+               'view_mode': 'form',
+               'target': 'new',
+               'context': {
+                    'default_current_family_id': self.id,
+                    'default_current_family' : self._origin.id,
+                    },
+          }
 
      def action_update(self):
           attribute_group = self.env['attribute.group'].search([("attribute_family_id", "in", self.id)])

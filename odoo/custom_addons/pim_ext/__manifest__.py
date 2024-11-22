@@ -12,7 +12,10 @@
     'data': [
         'security/ir.model.access.csv',
         'data/general_attributes_data.xml',
+        'data/sequence.xml',
+        'data/server_actions.xml',
         'wizard/product_view.xml',
+        'wizard/delete_family.xml',
         'wizard/mass_edit_view.xml',
         'views/pim_attribute_split_views.xml',
         'views/product_view.xml',
@@ -40,9 +43,9 @@
                     'pim_ext/static/src/css/custom_style.css',
 
                     'pim_ext/static/src/js/chatter_position.js',
-                    'pim_ext/static/src/js/view_button.js',
+                    # 'pim_ext/static/src/js/view_button.js',
                     # 'pim_ext/static/src/js/dis_button.js',
-                    'pim_ext/static/src/xml/view_button.xml',
+                    # 'pim_ext/static/src/xml/view_button.xml',
 
                     # 'pim_ext/static/src/js/split_attribute_view.js',
                 ],
