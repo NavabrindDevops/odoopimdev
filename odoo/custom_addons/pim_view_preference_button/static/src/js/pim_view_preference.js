@@ -267,5 +267,5 @@ registry.category("views").add("button_in_tree", {
    ...listView,
    Renderer: ProductListRenderer,
    Controller: ProductListController,
-   buttonTemplate: "button_sale.ListView.Buttons",
+   buttonTemplate: "button.ListView.Buttons",
 });
