@@ -1,0 +1,8 @@
+<templates id="template" xml:space="preserve">
+    <t t-name="CustomImportAction" t-inherit="base_import.ImportAction" t-inherit-mode="extension">
+        <xpath expr="//a[@href='https://www.odoo.com/documentation/17.0/applications/general/export_import_data.html']" position="after">
+            <br/>
+            <button class="btn btn-primary" t-on-click="_example_excel_sheet">Download Sample Attachment</button>
+        </xpath>
+    </t>
+</templates>
