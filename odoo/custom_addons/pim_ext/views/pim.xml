@@ -15,7 +15,7 @@
                     <field name="sku" optional="show"/>
                     <field name="barcode" optional="show"/>
                     <field name="family_id" optional="show"/>
-                    <field name="pim_category_id" optional="show"/>
+                    <field name="pim_category_id" optional="show" widget="many2many_tags"/>
                     <field name="chennel_id" optional="show"/>
                     <field name="revision" optional="show"/>
                     <field name="active" optional="show"/>
@@ -37,7 +37,7 @@
                                 <field name="description"/>
                                 <field name="barcode"/>
                                 <field name="active"/>
-                                <field name="pim_category_id"/>
+                                <field name="pim_category_id" widget="many2many_tags"/>
                                 <field name="family_id"/>
 
                             </group>

@@ -68,9 +68,9 @@
         </record>
 
         <menuitem id="menu_pim_categories"
-                  name="Categories"
-                  action="action_pim_categories"
-                  parent="pim_ext.pim_configuraion"
-                  sequence="40"/>
+          name="Manage Categories"
+          action="action_pim_categories"
+          parent="product_management.menu_product_management_conf"
+          sequence="40"/>
     </data>
 </odoo>

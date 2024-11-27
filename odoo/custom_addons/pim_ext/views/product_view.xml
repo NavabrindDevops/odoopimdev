@@ -195,6 +195,9 @@
                             invisible="context.get('active_model', 'family.attribute') != 'family.attribute'"/>
                     </header>
                     <field name="name"/>
+                    <field name="description"/>
+                    <button name="edit_family" string = " " icon="fa-edit" type="object" />
+                    <button name="delete_family" string = " " icon="fa-trash-o" type="object" />
                 </tree>
             </field>
         </record>

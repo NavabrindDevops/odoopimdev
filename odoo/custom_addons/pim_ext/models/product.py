@@ -230,6 +230,8 @@ class FamilyAttribute(models.Model):
 
      code = fields.Char(string="Code",required=True,
                           readonly=True, default=lambda self: _('New'))
+     description = fields.Text(string="Description")
+
      name = fields.Char('Name', required=True, tracking=True)
      supplier_id = fields.Many2one('res.partner','Supplier')
      brand_id = fields.Many2one('brand.attribute','Brand')
@@ -259,6 +261,11 @@ class FamilyAttribute(models.Model):
           res = super(FamilyAttribute, self).create(vals)
           return res
 
+     
+     def edit_family(self):
+          pass
+     
+     
      def delete_family(self):
 
           return {

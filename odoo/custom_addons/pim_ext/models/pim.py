@@ -16,7 +16,7 @@ class ProductManagement(models.Model):
     active = fields.Boolean(string="Active")
 
     family_id = fields.Many2one("family.attribute", string="Family")
-    pim_category_id = fields.Many2one("pim.category", string="Category")
+    pim_category_id = fields.Many2many("pim.category", string="Category")
     chennel_id = fields.Many2one("pim.channel", string="Channel")
 
     #Pricing & Inventory
