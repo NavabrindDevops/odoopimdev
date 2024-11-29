@@ -43,6 +43,8 @@
                     'pim_ext/static/src/css/custom_style.css',
 
                     'pim_ext/static/src/js/chatter_position.js',
+                    'pim_ext/static/src/js/create_button.js',
+                    'pim_ext/static/src/xml/create_button.xml',
                     # 'pim_ext/static/src/js/view_button.js',
                     # 'pim_ext/static/src/js/dis_button.js',
                     # 'pim_ext/static/src/xml/view_button.xml',

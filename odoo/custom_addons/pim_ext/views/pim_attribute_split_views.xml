@@ -180,7 +180,32 @@
                                                                   options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
                                                                   class="attribute_type_class"/>
                                                        </div>
-                                                       <div class="attr_creation">
+                                                   </div>
+                                               </page>
+                                               <page name="type_label_translation" string="Label Translations" invisible="1">
+                                               </page>
+                                               <page name="type_general_info" string="General">
+                                                   <div id="o_type_properties" class="d-lg-flex top_property">
+                                                       <div id="o_type_properties_main" class="flex-grow-1">
+                                                           <group string="Information" class="general_param"/>
+                                                       </div>
+                                                   </div>
+                                                   <div class="attr_form_values">
+                                                       <div>
+                                                           <div>
+                                                               <label for="is_mandatory" string="Mandatory" style="font-weight:bold;"/>
+                                                               <field name="is_mandatory" style="padding-left: 9%;"/>
+                                                           </div>
+                                                           <div style="margin-top: 15px;">
+                                                               <label for="is_required_in_clone" string="Required For Clone" style="font-weight:bold;"/>
+                                                               <field name="is_required_in_clone" style="padding-left: 2%;"/>
+                                                           </div>
+                                                           <div style="margin-top: 15px;">
+                                                               <label for="is_completeness" string="Completeness" style="font-weight:bold;"/>
+                                                               <field name="is_completeness" style="padding-left: 6.5%;"/>
+                                                           </div>
+                                                       </div>
+                                                       <div class="attr_creation" style="margin-top: 16px;">
                                                            <button type="object" string="Save"
                                                                    name="create_attributes" class="oe_highlight"/>
 <!--                                                           <button type="object" string="Cancal"-->

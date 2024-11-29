@@ -13,6 +13,7 @@ class PimCategory(models.Model):
     _order = 'complete_name'
 
     name = fields.Char(string='Name', required=True, translate=True)
+    code = fields.Char(string='Code')
     active = fields.Boolean('Active', default=True)
     complete_name = fields.Char(
         'Complete Name', compute='_compute_complete_name', recursive=True,
@@ -22,6 +23,16 @@ class PimCategory(models.Model):
     # child_id = fields.One2many('family.category', 'parent_id', string='Children Categories')
     # is_primary = fields.Boolean()
 
+    
+    
+    @api.model
+    def create(self, vals):
+        vals['code'] = self.env['ir.sequence'].next_by_code(
+            'pim.category') or None
+        res = super(PimCategory, self).create(vals)
+        return res
+
+    
     @api.depends('name', 'parent_id.complete_name')
     def _compute_complete_name(self):
         for category in self:

@@ -45,101 +45,19 @@
                             .o_tag{font-size:var(--Tag-font-size, -2.1875rem);}
                         </style>
                         <div class="oe_title">
-                            <h1><field name="code" class="oe_inline" readonly="1"/></h1>
+                            <h1><field name="name" class="oe_inline" readonly="1"/></h1>
                         </div>
                         <group>
                             <group>
                                 <field name="name"/>
+                                <field name="code" readonly="1"/>
+                                <field name="description"/>
                             </group>
                         </group>
 
-<!--                        <group col="3">-->
-<!--                            <group style="font-size: 11px !important;width: 40%;">-->
-<!--                                <separator string="Product Family Information" style="background-color: grey;color: white;"/>-->
-<!--                                <group>-->
-<!--                                    <field name="name"/>-->
-<!--                                    <field name="attributes_group_ids" string="Groups" widget="many2many_tags"-->
-<!--                                                            options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>-->
-<!--                                    <field name="buyer_id"/>-->
-<!--                                    <field name="availability"/>-->
-<!--                                </group>-->
-<!--                                <group>-->
-<!--                                    <field name="supplier_id"/>-->
-<!--                                    <field name="brand_id"/>-->
-<!--                                    <field name="manufacture_id"/>-->
-<!--                                    <field name="swatch"/>-->
-<!--                                    <field name="gift"/>-->
-<!--                                </group>-->
-<!--                                <group>-->
-<!--                                    <field name="attribute1_id"/>-->
-<!--                                    <field name="attribute2_id"/>-->
-<!--                                </group>-->
-<!--                                <group>-->
-<!--                                    <field name="attribute3_id"/>-->
-<!--                                    <field name="attribute4_id"/>-->
-<!--                                </group>-->
-<!--                                <group string="ASN description">-->
-<!--                                    <field name="asn_description" nolabel="1" colspan="4"/>-->
-<!--                                </group>-->
-<!--                            </group>-->
-<!--                            <group style="font-size: 11px !important;">-->
-<!--                                <separator string="Categories &amp; Relationship" style="background-color: grey;color: white;"/>-->
-<!--                                    <notebook colspan="2">-->
-<!--                                        <page string="Taxonomy" name="taxonomy">-->
-<!--                                            <field name="taxonomy_ids"/>-->
-<!--                                            <field name="attch_ids" widget="many2many_binary"/>-->
-<!--                                        </page>-->
-<!--                                        <page string="Related" name="related">-->
-<!--                                            <p>Link this family another related family</p>-->
-<!--                                        </page>-->
-<!--                                        <page string="Complementary" name="complementary">-->
-<!--                                            <p>Link family to one or more categories with complementary products</p>-->
-<!--                                            <field name= "complementary_categ_ids"/>-->
-<!--                                        </page>-->
-<!--                                        <page string="Substitute" name="substitute">-->
-<!--                                            <p>Link this family to other families which can replace it, ideal for situations where an item is out of stock or a different price point is prefered</p>-->
-<!--                                        </page>-->
-<!--                                        <page string="Assets" name="assets">-->
-<!--                                        </page>-->
-<!--                                    </notebook>-->
-<!--                            </group>-->
-<!--                            <group style="font-size: 11px !important;width: 22%;">-->
-<!--                                <separator string="Photography" style="background-color: grey;color: white;"/>-->
-<!--                                 <div class="o_td_label">-->
-<!--                                        <label for="product_image" string=""/>-->
-<!--                                </div>-->
-<!--                                <field name="product_image" widget="image" nolabel="1"/>-->
-<!--                            </group>-->
-<!--                      </group>-->
+
                       <group >
-<!--                          <div style="display:flex; gap:10px; width:max-content;">-->
-<!--                              <button name="action_open_attribute_group_wizard" type="object"-->
-<!--                                      string="Add By Groups" class="oe_button btn-primary"/>-->
-<!--                              <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>-->
-<!--                          </div>-->
-<!--                           <button id="create_sku" name="%(pim_ext.action_add_products)d" type="action" string="+SKU" class="oe_highlight"/>-->
-<!--                          <button id="update_products" name="%(pim_ext.action_multi_select_products)d" type="action" string="Mass Edit" class="oe_highlight"/>                           -->
-<!--                          <field name='product_family_ids' nolabel="1" colspan="2" invisible="1">-->
-<!--                              <tree editable="bottom" widget="section_and_note_one2many" string="SKU" limit="200" create="0">-->
-<!--                                  <field name="select_sku"/>-->
-<!--                                  <field name="default_code" string="SKU #"/>-->
-<!--                                  <field name="mpn_number"/>-->
-<!--                                  <field name="attribute1_id"/>-->
-<!--                                  <field name="attribute1_val"/>-->
-<!--                                  <field name="attribute2_id"/>-->
-<!--                                  <field name="attribute2_val"/>-->
-<!--                                  <field name="attribute3_id"/>-->
-<!--                                  <field name="attribute3_val"/>-->
-<!--                                  <field name="attribute4_id"/>-->
-<!--                                  <field name="attribute4_val"/>-->
-<!--                                  <field name="status"/>-->
-<!--                                  <field name="origin"/>-->
-<!--                                  <field name="po_min"/>-->
-<!--                                  <field name="po_max"/>-->
-<!--                                  <field name="p65"/>-->
-<!--                                  <field name="product_id" optional="hide"/>-->
-<!--                              </tree>-->
-<!--                          </field>-->
+
                       </group>
                     <notebook>
                         <page name="attibute_list" string="Attributes">
@@ -195,6 +113,7 @@
                             invisible="context.get('active_model', 'family.attribute') != 'family.attribute'"/>
                     </header>
                     <field name="name"/>
+                    <field name="code"/>
                     <field name="description"/>
                     <button name="edit_family" string = " " icon="fa-edit" type="object" />
                     <button name="delete_family" string = " " icon="fa-trash-o" type="object" />
@@ -309,7 +228,15 @@
         <field name="model">product.attribute</field>
         <field name="inherit_id" ref="product.product_attribute_view_form"/>
         <field name="arch" type="xml">
-
+            <xpath expr="//form//sheet" position="before">
+                <header>
+                    <button name="action_publish_attribute" type="object" string="Publish Attribute" class="btn-primary"
+                            invisible="state != 'unpublish'"/>
+<!--                    <button name="action_update_publish_attribute" type="object" string="Update Attribute" class="btn-primary"-->
+<!--                            invisible="state != 'publish'"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible="unpublish,publish"/>
+                </header>
+            </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="attribute_group" options="{'no_create_edit': 1, 'no_quick_create': 1}"/>
                 <field name="attribute_type_id" invisible="1"/>
@@ -318,12 +245,12 @@
                 <field name="display_type" readonly="1" string="Type"/>
             </xpath>
             <xpath expr="//form/sheet/group/group[@name='ecommerce_main_fields']/field[@name='visibility']" position="after">
-                <field name="attribute_types"/>
+<!--                <field name="attribute_types"/>-->
                 <field name="original_name" invisible="1"/>
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
-                <!-- <field name="completed_in_percent" widget="progressbar"/> -->
+<!--                <field name="completed_in_percent" widget="progressbar"/>-->
             </xpath>
             <xpath expr="//field[@name='sequence']" position="before">
                 <control><create class="btn btn-primary" name="add_line_control" string="Add Attribute Value"/></control>
@@ -367,8 +294,8 @@
                     <filter name="group_attribute_type" string="Type" domain="[]" context="{'group_by': 'display_type'}"/>
                 </group>
                 <separator/>
-                <filter name="basic_attribute_type" string="Basic Attribute Type" domain="[('attribute_types', '=', 'basic')]"/>
-                <filter name="optional_attribute_type" string="Optional Attribute Type" domain="[('attribute_types', '=', 'optional')]"/>
+<!--                <filter name="basic_attribute_type" string="Basic Attribute Type" domain="[('attribute_types', '=', 'basic')]"/>-->
+<!--                <filter name="optional_attribute_type" string="Optional Attribute Type" domain="[('attribute_types', '=', 'optional')]"/>-->
 			</search>
 		</field>
 	</record>
@@ -412,11 +339,12 @@
             </xpath>
             <xpath expr="//field[@name='display_type']" position="after">
                 <field name="attribute_group"/>
-                <field name="attribute_types"/>
+<!--                <field name="attribute_types"/>-->
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
-<!--                <field name="is_completeness" widget="boolean_toggle"/>-->
-                <!-- <field name="completed_in_percent" widget="progressbar"/> -->
+                <field name="is_completeness" widget="boolean_toggle"/>
+                <field name="state" widget="badge" decoration-success="state == 'publish'" decoration-danger="state == 'unpublish'"/>
+<!--                <field name="completed_in_percent" widget="progressbar"/>-->
 
             </xpath>
         </field>

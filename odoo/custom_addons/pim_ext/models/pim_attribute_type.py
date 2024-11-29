@@ -13,7 +13,10 @@ class PIMAttributeType(models.Model):
      attribute_ids = fields.One2many('product.attribute', 'attribute_types_id', string='Attributes')
      is_invisible=fields.Boolean(default=False, string='Invisible Types')
      attribute_group = fields.Many2one('attribute.group', string='Attribute Group', tracking=True)
-
+     attribute_types = fields.Selection([('basic', 'Basic'), ('optional', 'Optional')], string='Attribute Type')
+     is_mandatory = fields.Boolean(string='Mandatory', default=False)
+     is_required_in_clone = fields.Boolean(string='Required in Clone', default=True)
+     is_completeness = fields.Boolean(string='Completeness')
      display_type = fields.Selection(
           selection=[
                ('radio', 'Radio'),
@@ -39,23 +42,25 @@ class PIMAttributeType(models.Model):
           help="The display type used in the Product Configurator.")
 
      def create_attributes(self):
-          if all([self.name, self.display_type, self.attribute_group]):
+          if all([self.name, self.display_type]):
                res = self.env['product.attribute'].create({
                     'name': self.name,
                     'display_type': self.display_type,
                     'attribute_group': self.attribute_group.id,
+                    'is_mandatory': self.is_mandatory,
+                    'is_required_in_clone': self.is_required_in_clone,
+                    'is_completeness': self.is_completeness,
                     'value_ids': [(0, 0, {
-                         'name': self.display_type.replace('_',' '),
+                         'name': self.display_type.replace('_', ' '),
                     })]
                })
-          return{
+          return {
                'type': 'ir.actions.act_window',
                'res_model': 'product.attribute',
                'view_mode':'tree,form',
                'target': 'current',
                'context': {'no_breadcrumbs': False},
-               }
-
+          }
 
 
      # def cancel_attributes(self):

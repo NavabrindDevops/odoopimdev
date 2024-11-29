@@ -6,7 +6,7 @@ import {_t} from "@web/core/l10n/translation";
 import { ExportDataDialog } from "@web/views/view_dialogs/export_data_dialog";
 const defaultFamilyFields = ["name","description",'product_families_ids'];
 const defaultAttributeFields = ['name','attribute_group','display_type','attribute_types','is_mandatory','is_required_is_clone','is_completeness','value_ids']
-const defaultAttributeGroup = ['name','product_attribute_id']
+const defaultAttributeGroup = ['name','attribute_group_line_ids']
 const defaultBrandExportFields = ['name','website','description']
 const defaultSupplierExportFields = ["name","website","name",
                                "street","city","website","notes"]

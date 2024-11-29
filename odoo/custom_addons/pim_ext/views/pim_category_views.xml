@@ -2,48 +2,60 @@
 <odoo>
     <data>
         <record id="view_tree_pim_categories" model="ir.ui.view">
-            <field name="name">pim.categories.tree.view</field>
-            <field name="model">pim.category</field>
-            <field name="arch" type="xml">
-                <tree create="false">
-                    <header>
-                        <button name="create_pim_category" type="object" class="btn-primary"
-                            string="Create Category" display="always"
-                            invisible="context.get('active_model', 'pim.category') != 'pim.category'"/>
-                    </header>
-                    <field name="name"/>
-                    <field name="active" widget="boolean_toggle"/>
-                </tree>
-            </field>
-        </record>
+    <field name="name">pim.categories.tree.view</field>
+    <field name="model">pim.category</field>
+    <field name="arch" type="xml">
+        <tree create="false">
+            <header>
+                <button name="create_pim_category" type="object" class="btn-primary"
+                    string="Create Category" display="always"
+                    invisible="context.get('active_model', 'pim.category') != 'pim.category'"/>
+            </header>
+            <field name="sequence_id"/>
+            <field name="name"/>
+            <field name="parent_id"/>
+            <field name="complete_name"/>
+            <field name="active" widget="boolean_toggle"/>
+        </tree>
+    </field>
+</record>
 
-        <record id="view_form_pim_categories" model="ir.ui.view">
-            <field name="name">pim.categories.form.view</field>
-            <field name="model">pim.category</field>
-            <field name="arch" type="xml">
-                <form create="false">
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="name"/>
-                                <field name="parent_id"
-                                       options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
-                                <field name="complete_name" string="Category Path" readonly="1"/>
-                            </group>
-                            <group>
-                                <field name="active" widget="boolean_toggle"/>
-                            </group>
-                        </group>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
-                </form>
-            </field>
-        </record>
+<record id="view_form_pim_categories" model="ir.ui.view">
+    <field name="name">pim.categories.form.view</field>
+    <field name="model">pim.category</field>
+    <field name="arch" type="xml">
+        <form create="false">
+            <sheet>
+            <style>
+                .o_group .o_wrap_label .o_form_label{font-weight:250; font-size:12px;}
+                .o_tag{font-size:var(--Tag-font-size, -2.1875rem);}
+            </style>
+            <div class="oe_title">
+                <h1><field name="name" class="oe_inline" readonly="1"/></h1>
+            </div>
+                <group>
+                    <group>
+                         <field name="code" readonly="1"/>
+                        <field name="name"/>
+                        <field name="parent_id"
+                               options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                        <field name="complete_name" string="Category Path" readonly="1"/>
 
+
+                    </group>
+                    <group>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </group>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+        </form>
+    </field>
+</record>
         <record id="view_pim_category_filter" model="ir.ui.view">
             <field name="name">Category</field>
             <field name="model">pim.category</field>

@@ -11,6 +11,9 @@ from odoo.exceptions import UserError, ValidationError
 import traceback,pdb,inspect
 
 from odoo.tools import drop_view_if_exists
+import logging
+_logger = logging.getLogger(__name__)
+
 
 
 class AttributeForm(models.Model):
@@ -42,7 +45,7 @@ class AttributeForm(models.Model):
           ],
           required=True,
           help="The display type used in the Product Configurator.")
-     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', required=True, tracking=True)
+     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', tracking=True)
      attribute_type_id = fields.Many2one('pim.attribute.type', string='PIM Attribute Type')
      is_mandatory = fields.Boolean(string='Mandatory', default=False)
      is_required_in_clone = fields.Boolean(string='Required in Clone', default=True)
@@ -53,6 +56,112 @@ class AttributeForm(models.Model):
                                          ('optional', 'Optional')], string='Attribute Type')
      attribute_types_id = fields.Many2one('pim.attribute.type', string='Attribute Type')
      completed_in_percent = fields.Float('Completed Progressbar',compute="_compute_completness")
+     state = fields.Selection([('unpublish', 'Unpublish'), ('publish', 'Publish')], string='Status', default='unpublish')
+
+     def action_publish_attribute(self):
+          for record in self:
+               if not record.attribute_group:
+                    raise ValidationError("Alert!! Please select the group of the '%s' attribute." % record.name)
+               if record.state == 'unpublish':
+                    if record.name:
+                         field_name = f"x_{record.name.strip().replace(' ', '_').lower()}"
+                         field_type = None
+                         field_data = {}
+                         if record.display_type == 'text':
+                              field_type = 'char'
+                         elif record.display_type == 'textarea':
+                              field_type = 'text'
+                         elif record.display_type == 'number':
+                              field_type = 'integer'
+                         elif record.display_type == 'file':
+                              field_type = 'binary'
+                         elif record.display_type == 'image':
+                              field_type = 'binary'
+                         elif record.display_type == 'simple_select':
+                              field_type = 'selection'
+                         elif record.display_type == 'date':
+                              field_type = 'date'
+                         if not field_type:
+                              continue
+
+                         field_data.update({
+                              'name': field_name,
+                              'field_description': record.name,
+                              'ttype': field_type,
+                              'model_id': self.env.ref('pim_ext.model_product_management').id,
+                              'state': 'manual',
+                         })
+                         create_field = self.env['ir.model.fields'].create(field_data)
+                         if field_type == 'selection' and record.value_ids:
+                              for value in record.value_ids:
+                                   sel_value = value.name.strip().replace(' ', '_').lower()
+                                   sel_name = value.name
+                                   self.env['ir.model.fields.selection'].create({
+                                        'name': sel_name,
+                                        'value': sel_value,
+                                        'field_id': create_field.id
+                                   })
+                         view = self.env.ref('pim_ext.product_managemnt_form_view')
+                         widget = "image" if record.display_type == "image" else ""
+                         widget_attribute = f' widget="{widget}"' if widget else ""
+                         new_field_xml = f'<field name="{field_name}"{widget_attribute} optional="hide" required="False"/>'
+                         arch_value = f"""
+                         <xpath expr="//field[@name='special_price_end_date']" position="after">
+                             {new_field_xml}
+                         </xpath>
+                         """
+                         self.env['ir.ui.view'].sudo().create({
+                              'name': f'add_field_{field_name}_to_product_management',
+                              'type': 'form',
+                              'model': view.model,
+                              'inherit_id': view.id,
+                              'arch': arch_value,
+                         })
+                         group_line = self.env['attribute.group.lines'].search([
+                              ('attr_group_id', '=', record.attribute_group.id),
+                              ('product_attribute_id', '=', record.id)
+                         ], limit=1)
+
+                         if not group_line:
+                              self.env['attribute.group.lines'].create({
+                                   'attr_group_id': record.attribute_group.id,
+                                   'product_attribute_id': record.id,
+                                   'display_type': record.display_type,
+                              })
+
+                         record.write({'state': 'publish'})
+
+
+     # def action_update_publish_attribute(self):
+     #      for record in self:
+     #           if not record.original_name:
+     #                record.original_name = record.name
+     #                print(record.original_name, 'originalllllllllllllll')
+     #
+     #           if record.name != record.original_name:
+     #                field_name = f"x_{record.original_name.strip().replace(' ', '_').lower()}"
+     #                ir_field = self.env['ir.model.fields'].sudo().search([
+     #                     ('name', '=', field_name),
+     #                     ('model_id', '=', self.env.ref('pim_ext.model_product_management').id)
+     #                ], limit=1)
+     #                if ir_field:
+     #                     ir_field.write({
+     #                          'field_description': record.name,
+     #                     })
+     #                     new_field_name = f"x_{record.name.strip().replace(' ', '_').lower()}"
+     #                     self.env.cr.execute(f"""
+     #                     ALTER TABLE product_management RENAME COLUMN {field_name} TO {new_field_name}
+     #                 """)
+     #                record.original_name = record.name
+     #      return {
+     #           'type': 'ir.actions.client',
+     #           'tag': 'display_notification',
+     #           'params': {
+     #                'message': 'Attributes updated successfully, including related fields!',
+     #                'type': 'success',
+     #                'sticky': False,
+     #           },
+     #      }
 
      def _compute_completness(self):
           for rec in self:
@@ -163,7 +272,7 @@ class AttributeGroupLine(models.Model):
                ('color', 'Color'),
                ('multi', 'Multi-checkbox (option)'),
           ],
-          related='product_attribute_id.display_type',
+
           help="The display type used in the Product Configurator.")
 
 
@@ -233,6 +342,8 @@ class FamilyAttribute(models.Model):
      description = fields.Text(string="Description")
 
      name = fields.Char('Name', required=True, tracking=True)
+     description = fields.Text(string="Description")
+
      supplier_id = fields.Many2one('res.partner','Supplier')
      brand_id = fields.Many2one('brand.attribute','Brand')
      manufacture_id = fields.Many2one('manufacturer.attribute','Manufacturer')
@@ -254,10 +365,11 @@ class FamilyAttribute(models.Model):
      product_families_ids = fields.One2many('family.products.line', 'families_id', 'SKU', readonly=False)
      variant_line_ids = fields.One2many('family.variant.line', 'variant_familiy_id', 'Variants', readonly=False)
 
+
      @api.model
      def create(self, vals):
           vals['code'] = self.env['ir.sequence'].next_by_code(
-               'family.attribute') or _('New')
+               'family.attribute') or None
           res = super(FamilyAttribute, self).create(vals)
           return res
 
