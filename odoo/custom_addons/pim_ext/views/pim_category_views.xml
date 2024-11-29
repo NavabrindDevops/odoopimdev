@@ -11,7 +11,7 @@
                     string="Create Category" display="always"
                     invisible="context.get('active_model', 'pim.category') != 'pim.category'"/>
             </header>
-            <field name="sequence_id"/>
+            <field name="code"/>
             <field name="name"/>
             <field name="parent_id"/>
             <field name="complete_name"/>
