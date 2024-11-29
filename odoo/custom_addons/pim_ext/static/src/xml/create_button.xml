@@ -5,7 +5,7 @@
     <t t-name="button.ListView.create" t-inherit="web.ControlPanel" t-inherit-mode="extension">
        <xpath expr="//div[hasclass('o_cp_pager')]" position="after">
             <div>
-                <t t-if="state.model === 'family.attribute'">
+                <t t-if="model_name === 'family.attribute'">
                     <button type="button" class="btn btn-secondary">
                         <i class="fa fa-lg fa-plus "></i> Create
                     </button>
