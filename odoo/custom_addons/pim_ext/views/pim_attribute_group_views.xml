@@ -46,6 +46,7 @@
                             <field name="product_attribute_id" string="Attribute" required="1"
                                    options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="display_type" string="Type"/>
+                            <field name="enable" force_save="1"/>
                         </tree>
                     </field>
                 </page>

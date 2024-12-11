@@ -239,6 +239,7 @@
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="attribute_group" options="{'no_create_edit': 1, 'no_quick_create': 1}"/>
+                <field name="position_ref_field_id" options="{'no_create_edit': 1, 'no_quick_create': 1}"/>
                 <field name="attribute_type_id" invisible="1"/>
             </xpath>
             <xpath expr="//form/sheet/group/group[1]/field[@name='display_type']" position="replace">

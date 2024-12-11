@@ -58,6 +58,11 @@ class AttributeForm(models.Model):
      completed_in_percent = fields.Float('Completed Progressbar',compute="_compute_completness")
      state = fields.Selection([('unpublish', 'Unpublish'), ('publish', 'Publish')], string='Status', default='unpublish')
 
+
+     position_ref_field_id = fields.Many2one("ir.model.fields", string="Position After", domain="[('model_id.model','=','product.management')]")
+
+
+
      def action_publish_attribute(self):
           for record in self:
                if not record.attribute_group:
@@ -104,9 +109,9 @@ class AttributeForm(models.Model):
                          view = self.env.ref('pim_ext.product_managemnt_form_view')
                          widget = "image" if record.display_type == "image" else ""
                          widget_attribute = f' widget="{widget}"' if widget else ""
-                         new_field_xml = f'<field name="{field_name}"{widget_attribute} optional="hide" required="False"/>'
+                         new_field_xml = f'<field name="{field_name}"{widget_attribute}  required="False"/>'
                          arch_value = f"""
-                         <xpath expr="//field[@name='special_price_end_date']" position="after">
+                         <xpath expr="//field[@name='{self.position_ref_field_id.name}']" position="after">
                              {new_field_xml}
                          </xpath>
                          """
@@ -249,7 +254,7 @@ class AttributeGroupLine(models.Model):
      _name = 'attribute.group.lines'
 
      attr_group_id = fields.Many2one('attribute.group', string='Attribute Group')
-     product_attribute_id = fields.Many2one('product.attribute', string='Product Attribute', ondelete='cascade', index=True)
+     product_attribute_id = fields.Many2one('product.attribute', string='Product Attribute')
      display_type = fields.Selection(
           selection=[
                ('radio', 'Radio'),
@@ -275,6 +280,33 @@ class AttributeGroupLine(models.Model):
 
           help="The display type used in the Product Configurator.")
 
+     enable = fields.Boolean(string="Enable", default=True)
+
+
+
+     @api.onchange('enable')
+     def _onchange_enable(self):
+          if self.product_attribute_id:
+               attribute_name = f"x_{self.product_attribute_id.name.lower().replace(' ', '_')}"
+               name = f"add_field_{attribute_name}_to_product_management"
+               attribute_view_exist = self.env['ir.ui.view'].search(
+                    [('name', '=ilike', name), ('active', '!=', None)])
+               arch = self._arch(attribute_name,self.enable)
+               if attribute_view_exist.arch:
+                    attribute_view_exist.arch = arch
+
+
+
+     def _arch(self,attribute_name,active):
+          if active == False:
+               new_field_xml = f'<field name="{attribute_name}" invisible="True"/>'
+          else:
+               new_field_xml = f'<field name="{attribute_name}"/>'
+          arch = f"""
+                       <xpath expr="//field[@name='{self.product_attribute_id.position_ref_field_id.name}']" position="after">
+                                                          %s
+                                                  </xpath>""" % new_field_xml
+          return arch
 
 class ManufacturerAttribute(models.Model):
      _name = 'manufacturer.attribute'
