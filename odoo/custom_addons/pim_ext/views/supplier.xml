@@ -44,6 +44,20 @@
         </field>
     </record>
 
+    <record id="search_suppplier_information" model="ir.ui.view">
+        <field name="name">search.supplier.information</field>
+        <field name="model">supplier.info</field>
+        <field name="arch" type="xml">
+            <search string="Supplier Info">
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('street', 'ilike', self),
+                 ('city', 'ilike', self),('website', 'ilike', self)]"/>
+                <field name="street"/>
+                <field name="city"/>
+                <field name="website"/>
+            </search>
+        </field>
+    </record>
+
     <record id="action_supplier_info" model="ir.actions.act_window">
         <field name="name">Manage Suppliers</field>
         <field name="res_model">supplier.info</field>
