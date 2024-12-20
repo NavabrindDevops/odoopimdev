@@ -39,6 +39,9 @@
             <xpath expr="//form/sheet/group/field[@name='name']" position="after">
                 <field name="active" widget="boolean_toggle"/>
             </xpath>
+            <xpath expr="//form/sheet/group/field[@name='active']" position="after">
+                <field name="description"/>
+            </xpath>
             <notebook>
                 <page name="Attributes">
                     <field name="attribute_group_line_ids" widget="one2many">
@@ -52,7 +55,7 @@
                 </page>
             </notebook>
             <xpath expr="//field[@name='product_attribute_id']" position="before">
-                <control><create class="btn btn-primary" name="add_line_control" string="Add Attribute Group"/></control>
+                <control><create class="btn btn-primary" name="add_line_control" string="Add Attribute"/></control>
             </xpath>
         </field>
     </record>

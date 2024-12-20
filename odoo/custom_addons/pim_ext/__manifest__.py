@@ -10,6 +10,7 @@
     'category': 'product',
     'depends': ['base', 'sale', 'product','stock','product_management','website_sale'],
     'data': [
+        'security/group_security.xml',
         'security/ir.model.access.csv',
         'data/general_attributes_data.xml',
         'data/sequence.xml',

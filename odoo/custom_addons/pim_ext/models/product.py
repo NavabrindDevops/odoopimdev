@@ -28,16 +28,18 @@ class AttributeForm(models.Model):
                ('file', 'File'),
                ('identifier', 'Identifier'),
                ('image', 'Image'),
-               ('measurement', 'Measurement'),
+               # ('measurement', 'Measurement'),
                ('multi_select', 'Multi Select'),
-               ('number', 'Number'),
+               ('multi_checkbox', 'Multi Checkbox'),
+               ('link', 'Link'),
+               ('number', 'Integer'),
                ('price', 'Price'),
                ('ref_data_multi', 'Reference Data Multi Select'),
                ('ref_data_simple_select', 'Reference Data Simple Select'),
                ('simple_select', 'Simple Select'),
                ('text', 'Text'),
                ('textarea', 'Text Area'),
-               ('yes_no', 'Yes/No'),
+               ('yes_no', 'Checkbox'),
                ('pills', 'Pills'),
                ('select', 'Select'),
                ('color', 'Color'),
@@ -49,6 +51,7 @@ class AttributeForm(models.Model):
      attribute_type_id = fields.Many2one('pim.attribute.type', string='PIM Attribute Type')
      is_mandatory = fields.Boolean(string='Mandatory', default=False)
      is_required_in_clone = fields.Boolean(string='Required in Clone', default=True)
+     is_cloning = fields.Boolean(string='Cloning', default=True)
      is_completeness = fields.Boolean(string='Completeness')
      original_name = fields.Char('Previous Name')
 
@@ -170,7 +173,7 @@ class AttributeForm(models.Model):
 
      def _compute_completness(self):
           for rec in self:
-               data = rec.search_read([('id','=',rec._origin.id)],fields=['attribute_type_id','display_type','attribute_types_id','attribute_types','attribute_group','is_mandatory','is_required_in_clone'])
+               data = rec.search_read([('id','=',rec._origin.id)],fields=['attribute_type_id','display_type','attribute_types_id','attribute_types','attribute_group','is_mandatory','is_required_in_clone', 'is_cloning'])
                false_count = sum(1 for d in data for value in d.values() if value != False)
                rec.completed_in_percent = (false_count/7) * 100
                # raise ValidationError(false_count/8)
@@ -241,6 +244,7 @@ class Attributegroup(models.Model):
      _inherit = ['mail.thread', 'mail.activity.mixin']
 
      name = fields.Char('Name', required=True,)
+     description = fields.Text(string='Description')
      active = fields.Boolean('Active', default=True)
      attributes_ids = fields.One2many('product.attribute', 'attribute_group', string='Attributes', required=True, tracking=True, store=True)
      attribute_family_id = fields.Many2many('family.attribute', string='Attribute Family', required=True, tracking=True, store=True)
@@ -248,6 +252,34 @@ class Attributegroup(models.Model):
 
      def create_pim_attribute_groups(self):
           print('grouppppppppppp')
+
+     @api.model
+     def create(self, vals):
+          record = super(Attributegroup, self).create(vals)
+          record._check_unique_attributes()
+          return record
+
+     @api.model
+     def write(self, vals):
+          print('fko9444444444', vals)
+          res = super(Attributegroup, self).write(vals)
+          if 'attribute_group_line_ids' in vals:
+               self._check_unique_attributes()
+          return res
+
+     @api.constrains('attribute_group_line_ids')
+     def _check_unique_attributes(self):
+          for record in self:
+               attributes_in_group = record.attribute_group_line_ids.mapped('product_attribute_id')
+               for attribute in attributes_in_group:
+                    other_groups = self.env['attribute.group'].search([
+                         ('id', '!=', record.id),
+                         ('attribute_group_line_ids.product_attribute_id', '=', attribute.id)
+                    ])
+                    if other_groups:
+                         raise ValidationError(
+                              f"The attribute '{attribute.name}' is already assigned to another attribute group."
+                         )
 
 
 class AttributeGroupLine(models.Model):

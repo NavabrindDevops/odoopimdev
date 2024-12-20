@@ -16,6 +16,7 @@ class PIMAttributeType(models.Model):
      attribute_types = fields.Selection([('basic', 'Basic'), ('optional', 'Optional')], string='Attribute Type')
      is_mandatory = fields.Boolean(string='Mandatory', default=False)
      is_required_in_clone = fields.Boolean(string='Required in Clone', default=True)
+     is_cloning = fields.Boolean(string='Cloning', default=True)
      is_completeness = fields.Boolean(string='Completeness')
      display_type = fields.Selection(
           selection=[
@@ -26,14 +27,15 @@ class PIMAttributeType(models.Model):
                ('image', 'Image'),
                ('measurement', 'Measurement'),
                ('multi_select', 'Multi Select'),
-               ('number', 'Number'),
+               ('link', 'Link'),
+               ('number', 'Integer'),
                ('price', 'Price'),
                ('ref_data_multi', 'Reference Data Multi Select'),
                ('ref_data_simple_select', 'Reference Data Simple Select'),
                ('simple_select', 'Simple Select'),
                ('text', 'Text'),
                ('textarea', 'Text Area'),
-               ('yes_no', 'Yes/No'),
+               ('yes_no', 'Checkbox'),
                ('pills', 'Pills'),
                ('select', 'Select'),
                ('color', 'Color'),
@@ -49,6 +51,7 @@ class PIMAttributeType(models.Model):
                     'attribute_group': self.attribute_group.id,
                     'is_mandatory': self.is_mandatory,
                     'is_required_in_clone': self.is_required_in_clone,
+                    'is_cloning': self.is_cloning,
                     'is_completeness': self.is_completeness,
                     'value_ids': [(0, 0, {
                          'name': self.display_type.replace('_', ' '),
@@ -141,19 +144,35 @@ class PIMAttributeType(models.Model):
                },
           }
 
-     def action_select_measurement(self):
+     # def action_select_measurement(self):
+     #      self.ensure_one()
+     #      return {
+     #           'type': 'ir.actions.act_window',
+     #           'name': 'Measurement Attribute',
+     #           'res_model': 'pim.attribute.type',
+     #           'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+     #           'view_mode': 'form',
+     #           'context': {
+     #                'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+     #                'default_is_invisible': True,
+     #                'default_display_type': 'measurement',
+     #                'default_type_name': 'Measurement',
+     #           },
+     #      }
+
+     def action_select_link(self):
           self.ensure_one()
           return {
                'type': 'ir.actions.act_window',
-               'name': 'Measurement Attribute',
+               'name': 'Link',
                'res_model': 'pim.attribute.type',
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
                     'default_attribute_ids': self.env['product.attribute'].search([]).ids,
                     'default_is_invisible': True,
-                    'default_display_type': 'measurement',
-                    'default_type_name': 'Measurement',
+                    'default_display_type': 'link',
+                    'default_type_name': 'Link',
                },
           }
 
@@ -185,7 +204,7 @@ class PIMAttributeType(models.Model):
                     'default_attribute_ids': self.env['product.attribute'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'number',
-                    'default_type_name': 'Number',
+                    'default_type_name': 'Integer',
                },
           }
 
@@ -234,6 +253,54 @@ class PIMAttributeType(models.Model):
                     'default_is_invisible': True,
                     'default_display_type': 'ref_data_simple_select',
                     'default_type_name': 'Ref Data Simple Select Attribute',
+               },
+          }
+
+     def action_select_multi_checkbox(self):
+          self.ensure_one()
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Multi Checkbox',
+               'res_model': 'pim.attribute.type',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+               'view_mode': 'form',
+               'context': {
+                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_is_invisible': True,
+                    'default_display_type': 'multi_checkbox',
+                    'default_type_name': 'Multi Checkbox',
+               },
+          }
+
+     def action_select_multi_color(self):
+          self.ensure_one()
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Color',
+               'res_model': 'pim.attribute.type',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+               'view_mode': 'form',
+               'context': {
+                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_is_invisible': True,
+                    'default_display_type': 'color',
+                    'default_type_name': 'Color',
+               },
+          }
+
+     def action_select_radio(self):
+          self.ensure_one()
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Radio',
+               'res_model': 'pim.attribute.type',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+               'view_mode': 'form',
+               'context': {
+                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_is_invisible': True,
+                    'default_display_type': 'radio',
+                    'default_type_name': 'Radio',
                },
           }
 
@@ -297,7 +364,7 @@ class PIMAttributeType(models.Model):
                     'default_attribute_ids': self.env['product.attribute'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'yes_no',
-                    'default_type_name': 'yes/No',
+                    'default_type_name': 'Checkbox',
                },
           }
 

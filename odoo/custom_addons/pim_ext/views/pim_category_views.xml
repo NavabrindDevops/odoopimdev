@@ -62,12 +62,21 @@
             <field name="priority" eval="15"/>
             <field name="arch" type="xml">
                 <search string="Family Category">
+                    <field name="code"/>
+                    <field name="name"/>
                     <field name="parent_id"/>
+                    <field name="complete_name"/>
                     <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
                     <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
                     <group expand="0" string="Group By">
+                        <filter string="Code" name="category_code" domain="[]"
+                                context="{'group_by': 'code'}"/>
+                        <filter string="Name" name="category_name" domain="[]"
+                                context="{'group_by': 'name'}"/>
                         <filter string="Parent Category" name="parent_group" domain="[]"
                                 context="{'group_by': 'parent_id'}"/>
+                        <filter string="Complete Name" name="parent_complete_name" domain="[]"
+                                context="{'group_by': 'complete_name'}"/>
                     </group>
                 </search>
             </field>

@@ -54,6 +54,12 @@
                 <field name="street"/>
                 <field name="city"/>
                 <field name="website"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="supplier_name" domain="[]" context="{'group_by': 'name'}"/>
+                    <filter string="Street" name="supplier_street" domain="[]" context="{'group_by': 'street'}"/>
+                    <filter string="City" name="supplier_city" domain="[]" context="{'group_by': 'city'}"/>
+                    <filter string="Website" name="supplier_website" domain="[]" context="{'group_by': 'website'}"/>
+                </group>
             </search>
         </field>
     </record>

@@ -129,7 +129,11 @@
         <field name="arch" type="xml">
             <search string="Family Attribute">
                 <group expand="0" string="Group By">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="description"/>
                     <filter string="Family Group Name" name="family_attribute" domain="[]" context="{'group_by': 'name'}"/>
+                    <filter string="Code" name="family_code" domain="[]" context="{'group_by': 'code'}"/>
                 </group>
             </search>
         </field>
@@ -156,6 +160,7 @@
                             <field name="name"/>
                             <field name="attribute_family_id" widget="many2many_tags"/>
                         </group>
+
                         <notebook>
                             <page>
                                 <field name="attributes_ids" mode="tree,form">
@@ -193,6 +198,7 @@
         <field name="priority" eval="15"/>
         <field name="arch" type="xml">
             <search string="Attribute Group">
+                <field name="name"/>
                 <group expand="0" string="Group By">
                     <filter string="Attribute Group Name" name="attribute_group" domain="[]" context="{'group_by': 'name'}"/>
                 </group>
@@ -250,6 +256,7 @@
                 <field name="original_name" invisible="1"/>
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
+                <field name="is_cloning" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
 <!--                <field name="completed_in_percent" widget="progressbar"/>-->
             </xpath>
@@ -290,9 +297,22 @@
 		<field name="model">product.attribute</field>
 		<field name="arch" type="xml">
 			<search>
+                <field name="name"/>
+                <field name="display_type"/>
+                <field name="attribute_group"/>
+                <filter string="Mandatory" name="filter_mandatory" domain="[('is_mandatory', '=', True)]"/>
+                <filter string="Required in clone" name="filter_required_in_clone" domain="[('is_required_in_clone', '=', True)]"/>
+                <filter string="Cloning" name="filter_cloning" domain="[('is_cloning', '=', True)]"/>
+                <filter string="Completeness" name="filter_completeness" domain="[('is_completeness', '=', True)]"/>
                 <group expand="0" string="Group By">
+                    <filter name="group_name" string="Name" domain="[]" context="{'group_by': 'name'}"/>
                     <filter name="group_attribute_rec" string="Attribute Group" domain="[]" context="{'group_by': 'attribute_group'}"/>
                     <filter name="group_attribute_type" string="Type" domain="[]" context="{'group_by': 'display_type'}"/>
+
+                    <filter name="group_mandatory" string="Mandatory" domain="[]" context="{'group_by': 'is_mandatory'}"/>
+                    <filter name="group_required_in_clone" string="Required in clone" domain="[]" context="{'group_by': 'is_required_in_clone'}"/>
+                    <filter name="group_cloning" string="Cloning" domain="[]" context="{'group_by': 'is_cloning'}"/>
+                    <filter name="group_completeness" string="Completeness" domain="[]" context="{'group_by': 'is_completeness'}"/>
                 </group>
                 <separator/>
 <!--                <filter name="basic_attribute_type" string="Basic Attribute Type" domain="[('attribute_types', '=', 'basic')]"/>-->
@@ -343,6 +363,7 @@
 <!--                <field name="attribute_types"/>-->
                 <field name="is_mandatory" widget="boolean_toggle"/>
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
+                <field name="is_cloning" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
                 <field name="state" widget="badge" decoration-success="state == 'publish'" decoration-danger="state == 'unpublish'"/>
 <!--                <field name="completed_in_percent" widget="progressbar"/>-->

@@ -41,7 +41,22 @@
             </field>
         </record>
 
-
+        <record id="search_product_brand_information" model="ir.ui.view">
+            <field name="name">search.product.brand.info</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <search string="Product Brand">
+                    <field name="name" filter_domain="['|', ('name', 'ilike', self)"/>
+                    <field name="website"/>
+                    <field name="description"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Name" name="product_brand_name" domain="[]" context="{'group_by': 'name'}"/>
+                        <filter string="Website" name="product_brand_website" domain="[]" context="{'group_by': 'website'}"/>
+                        <filter string="Description" name="product_brand_description" domain="[]" context="{'group_by': 'description'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
         <record id="actions_product_brand" model="ir.actions.act_window">
             <field name="name">Product Brand</field>
