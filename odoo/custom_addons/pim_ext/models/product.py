@@ -378,6 +378,12 @@ class AttributeGroupLine(models.Model):
      _name = 'attribute.group.lines'
 
      attr_group_id = fields.Many2one('attribute.group', string='Attribute Group')
+     used_attribute_ids = fields.Many2many(
+          'product.attribute',
+          compute='_compute_used_attribute_ids',
+          string='Used Attributes',
+          store=False
+     )
      product_attribute_id = fields.Many2one('product.attribute', string='Product Attribute', domain="[('id', 'not in', used_attribute_ids)]")
      display_type = fields.Selection(
           selection=[
@@ -407,13 +413,6 @@ class AttributeGroupLine(models.Model):
      enable = fields.Boolean(string="Enable", default=True)
      value_per_channel = fields.Boolean(string="Value per channel", default=False)
      value_per_locale = fields.Boolean(string="Value per locale", default=False)
-
-     used_attribute_ids = fields.Many2many(
-          'product.attribute',
-          compute='_compute_used_attribute_ids',
-          string='Used Attributes',
-          store=False
-     )
 
      @api.depends('attr_group_id', 'product_attribute_id')
      def _compute_used_attribute_ids(self):
