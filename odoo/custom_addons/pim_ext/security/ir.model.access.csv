@@ -33,6 +33,9 @@ access_supplier_info,supplier.info,model_supplier_info,,1,1,1,1
 
 access_delete_family_wizard,delete.family.wizard,model_delete_family_wizard,,1,1,1,1
 
+access_attribute_group_unlink_wizard,access_attribute_group_unlink_wizard,model_attribute_group_unlink_wizard,,1,1,1,1
+
+
 
 
 

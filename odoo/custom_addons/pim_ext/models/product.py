@@ -7,11 +7,13 @@ from email.policy import default
 from markupsafe import Markup
 
 from odoo import models, api, fields,_
+from odoo.addons.test_impex.models import field
 from odoo.exceptions import UserError, ValidationError
 import traceback,pdb,inspect
 
 from odoo.tools import drop_view_if_exists
 import logging
+from googletrans import Translator
 _logger = logging.getLogger(__name__)
 
 
@@ -249,44 +251,134 @@ class Attributegroup(models.Model):
      attributes_ids = fields.One2many('product.attribute', 'attribute_group', string='Attributes', required=True, tracking=True, store=True)
      attribute_family_id = fields.Many2many('family.attribute', string='Attribute Family', required=True, tracking=True, store=True)
      attribute_group_line_ids = fields.One2many('attribute.group.lines', 'attr_group_id', string='Attribute group line')
+     attribute_code = fields.Selection([('medias', 'Medias')], string="Code")
+     attribute_code_rec = fields.Char(string='Code')
+     attribute_label = fields.Char(string='English', compute="_compute_label_translation")
+     parent_id = fields.Many2one(
+          'attribute.group',
+          string='Parent Group',
+          ondelete='cascade',
+     )
+     child_ids = fields.One2many(
+          'attribute.group',
+          'parent_id',
+          compute='_compute_child_ids',
+          string='Sub-groups'
+     )
+
+     @api.depends('attribute_code_rec')
+     def _compute_label_translation(self):
+          translator = Translator()
+          for record in self:
+               if record.attribute_code_rec:
+                    try:
+                         user_lang = self.env.user.lang
+                         lang_rec = self.env['res.lang'].search([('code', '=', user_lang)], limit=1)
+                         src_lang = lang_rec.url_code
+                         translation = translator.translate(record.attribute_code_rec, src=src_lang, dest='en')
+                         record.attribute_label = translation.text.capitalize()
+                    except Exception as e:
+                         record.attribute_label = 'Error in translation'
+               else:
+                    record.attribute_label = ''
+
+     # this is for loading tree view in while click edit button
+     def _compute_child_ids(self):
+          for record in self:
+               record.child_ids = self.env['attribute.group'].search([])
+
+     def attribute_group_unlink(self):
+          print('deleteeeeeeeeeee')
+
+     # attribute group edit button
+     def attribute_group_open_form_view(self):
+          all_attribute_group_ids = self.env['attribute.group'].search([]).ids
+          self.ensure_one()
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Edit Attribute Group',
+               'res_model': 'attribute.group',
+               'view_mode': 'form',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_groups_custom').id,
+               'context': {'no_breadcrumbs': True},
+               'res_id': self.id,
+          }
+
+     # delete button group
+     def attribute_group_unlink(self):
+          return {
+               'name': 'Confirm Deletion',
+               'type': 'ir.actions.act_window',
+               'res_model': 'attribute.group.unlink.wizard',
+               'view_mode': 'form',
+               'target': 'new',
+               'context': {'default_group_id': self.id},
+          }
+
+
+     def action_back_to_menu(self):
+          return {
+               'type': 'ir.actions.client',
+               'tag': 'reload',
+               'params': {
+                    'menu_id': 442,
+               },
+          }
+
+     def save_attributes(self):
+          return {
+               'type': 'ir.actions.act_window',
+               'view_mode': 'form',
+               'res_model': 'attribute.group',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_groups_custom').id,
+               'res_id': self.id,
+               'context': {'no_breadcrumbs': True},
+               'target': 'current',
+          }
+
+     # def attribute_group_unlink(self):
+     #      print('dskjncccccccc')
+     #      self.unlink()
+     #      return {'type': 'ir.actions.client', 'tag': 'reload'}
 
      def create_pim_attribute_groups(self):
           print('grouppppppppppp')
 
-     @api.model
-     def create(self, vals):
-          record = super(Attributegroup, self).create(vals)
-          record._check_unique_attributes()
-          return record
-
-     @api.model
-     def write(self, vals):
-          print('fko9444444444', vals)
-          res = super(Attributegroup, self).write(vals)
-          if 'attribute_group_line_ids' in vals:
-               self._check_unique_attributes()
-          return res
-
-     @api.constrains('attribute_group_line_ids')
-     def _check_unique_attributes(self):
-          for record in self:
-               attributes_in_group = record.attribute_group_line_ids.mapped('product_attribute_id')
-               for attribute in attributes_in_group:
-                    other_groups = self.env['attribute.group'].search([
-                         ('id', '!=', record.id),
-                         ('attribute_group_line_ids.product_attribute_id', '=', attribute.id)
-                    ])
-                    if other_groups:
-                         raise ValidationError(
-                              f"The attribute '{attribute.name}' is already assigned to another attribute group."
-                         )
+     # @api.model
+     # def create(self, vals):
+     #      print('fkdjfkdfd', vals)
+     #      record = super(Attributegroup, self).create(vals)
+     #      record._check_unique_attributes()
+     #      return record
+     #
+     # @api.model
+     # def write(self, vals):
+     #      print('fko9444444444', vals)
+     #      res = super(Attributegroup, self).write(vals)
+     #      if 'attribute_group_line_ids' in vals:
+     #           self._check_unique_attributes()
+     #      return res
+     #
+     # @api.constrains('attribute_group_line_ids')
+     # def _check_unique_attributes(self):
+     #      for record in self:
+     #           attributes_in_group = record.attribute_group_line_ids.mapped('product_attribute_id')
+     #           for attribute in attributes_in_group:
+     #                other_groups = self.env['attribute.group'].search([
+     #                     ('id', '!=', record.id),
+     #                     ('attribute_group_line_ids.product_attribute_id', '=', attribute.id)
+     #                ])
+     #                if other_groups:
+     #                     raise ValidationError(
+     #                          f"The attribute '{attribute.name}' is already assigned to another attribute group."
+     #                     )
 
 
 class AttributeGroupLine(models.Model):
      _name = 'attribute.group.lines'
 
      attr_group_id = fields.Many2one('attribute.group', string='Attribute Group')
-     product_attribute_id = fields.Many2one('product.attribute', string='Product Attribute')
+     product_attribute_id = fields.Many2one('product.attribute', string='Product Attribute', domain="[('id', 'not in', used_attribute_ids)]")
      display_type = fields.Selection(
           selection=[
                ('radio', 'Radio'),
@@ -313,8 +405,22 @@ class AttributeGroupLine(models.Model):
           help="The display type used in the Product Configurator.")
 
      enable = fields.Boolean(string="Enable", default=True)
+     value_per_channel = fields.Boolean(string="Value per channel", default=False)
+     value_per_locale = fields.Boolean(string="Value per locale", default=False)
 
+     used_attribute_ids = fields.Many2many(
+          'product.attribute',
+          compute='_compute_used_attribute_ids',
+          string='Used Attributes',
+          store=False
+     )
 
+     @api.depends('attr_group_id', 'product_attribute_id')
+     def _compute_used_attribute_ids(self):
+          """Compute all attributes already assigned to groups."""
+          all_used_attributes = self.env['attribute.group.lines'].search([]).mapped('product_attribute_id')
+          for line in self:
+               line.used_attribute_ids = all_used_attributes
 
      @api.onchange('enable')
      def _onchange_enable(self):
@@ -327,8 +433,6 @@ class AttributeGroupLine(models.Model):
                if attribute_view_exist.arch:
                     attribute_view_exist.arch = arch
 
-
-
      def _arch(self,attribute_name,active):
           if active == False:
                new_field_xml = f'<field name="{attribute_name}" invisible="True"/>'
@@ -339,6 +443,25 @@ class AttributeGroupLine(models.Model):
                                                           %s
                                                   </xpath>""" % new_field_xml
           return arch
+
+
+class AttributeGroupUnlinkWizard(models.TransientModel):
+    _name = 'attribute.group.unlink.wizard'
+    _description = 'Wizard to Confirm Deletion of Attribute Group'
+
+    group_id = fields.Many2one('attribute.group', string="Attribute Group")
+
+    def confirm_unlink(self):
+        if self.group_id:
+             self.group_id.unlink()
+        return {
+             'type': 'ir.actions.client',
+             'tag': 'reload',
+             'params': {
+                  'menu_id': 442,
+             },
+        }
+
 
 class ManufacturerAttribute(models.Model):
      _name = 'manufacturer.attribute'
@@ -351,6 +474,7 @@ class BrandAttribute(models.Model):
      _inherit = ['mail.thread', 'mail.activity.mixin']
 
      name = fields.Char('Name', required=True, tracking=True)
+
       
 class FamilyProducts(models.Model):
      _name = 'family.products'
@@ -375,16 +499,17 @@ class FamilyProducts(models.Model):
      select_sku = fields.Boolean('Select')
 
 
-
 class ProductAttribute(models.Model):
      _name = 'product.attribute1'
 
      name = fields.Char('Name', required=True)
-     
+
+
 class ProductAttribute2(models.Model):
      _name = 'product.attribute2'
 
      name = fields.Char('Name', required=True)
+
 
 class ProductAttribute3(models.Model):
      _name = 'product.attribute3'
@@ -395,6 +520,7 @@ class ProductAttribute4(models.Model):
      _name = 'product.attribute4'
 
      name = fields.Char('Name', required=True)
+
 
 class FamilyAttribute(models.Model):
      _name = 'family.attribute'
@@ -429,19 +555,16 @@ class FamilyAttribute(models.Model):
      product_families_ids = fields.One2many('family.products.line', 'families_id', 'SKU', readonly=False)
      variant_line_ids = fields.One2many('family.variant.line', 'variant_familiy_id', 'Variants', readonly=False)
 
-
      @api.model
      def create(self, vals):
           vals['code'] = self.env['ir.sequence'].next_by_code(
                'family.attribute') or None
           res = super(FamilyAttribute, self).create(vals)
           return res
-
      
      def edit_family(self):
           pass
-     
-     
+
      def delete_family(self):
 
           return {
@@ -498,6 +621,7 @@ class FamilyAttribute(models.Model):
                'target': 'new',
                'context': {'default_attribute_family_id': self.id},
           }
+
 
 class ProductProduct(models.Model):
      _inherit = 'product.product'

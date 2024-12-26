@@ -17,6 +17,16 @@ class FamilyProductsLine(models.Model):
     families_id = fields.Many2one('family.attribute', 'Family')
     completeness_percent = fields.Float(compute="_compute_completeness_percent", string="Completeness")
 
+    product_id_stored = fields.Integer(string="SKU #", compute='_compute_product_id')
+
+    @api.depends('product_id')
+    def _compute_product_id(self):
+        for record in self:
+            if record.product_id:
+                record.product_id_stored = record.product_id.id
+            else:
+                record.product_id_stored = False
+
     def _compute_completeness_percent(self):
         for rec in self:
             # required_family_fields = ['name', 'brand_id', 'supplier_id', 'manufacture_id', 'buyer_id', 'description',

@@ -71,7 +71,8 @@
                             <field name="product_families_ids">
                                 <tree edit="false" create="false">
 <!--                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>-->
-<!--                                    <field name="product_id" invisible="1"/>-->
+                                    <field name="product_id"/>
+                                    <field name="product_id_stored"/>
                                     <field name="attribute_id"/>
                                     <field name="completeness_percent" widget="progressbar_extended" optional="hide"/>
                                 </tree>
@@ -187,6 +188,8 @@
                 <tree string="Attribute Group">
                     <field name="name"/>
                     <field name="active" widget="boolean_toggle"/>
+                    <button name="attribute_group_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
+                    <button name="attribute_group_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
                 </tree>
             </field>
         </record>
@@ -344,7 +347,7 @@
             </xpath>
             <xpath expr="//tree" position="inside">
                 <header>
-                    <button name="create_pim_attribute_type" type="object" class="btn-primary o_create_attribute_button"
+                    <button name="create_pim_attribute_type" type="object" class="btn-primary"
                             string="Create Attribute" display="always"
                             invisible="context.get('active_model', 'product.attribute') != 'product.attribute'"/>
                 </header>
@@ -417,6 +420,26 @@
                     </t>
                 </templates>
             </kanban>
+        </field>
+    </record>
+
+    <record id="view_attribute_group_unlink_wizard_form" model="ir.ui.view">
+        <field name="name">attribute.group.unlink.wizard.form</field>
+        <field name="model">attribute.group.unlink.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Deletion">
+                <group>
+                    <div style="justify-content: center; align-items: center; white-space: nowrap; margin: 10px 0;">
+                        <p style="margin: 0; font-size: 14px;">
+                            Are you sure you want to delete this attribute group?
+                        </p>
+                    </div>
+                </group>
+                <footer>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    <button string="Delete" class="btn-primary" type="object" name="confirm_unlink"/>
+                </footer>
+            </form>
         </field>
     </record>
 

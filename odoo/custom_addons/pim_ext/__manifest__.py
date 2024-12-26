@@ -34,6 +34,7 @@
         'views/product_select_family.xml',
 	'views/general_attributes.xml',
         'views/supplier.xml',
+        'views/pim_attribute_group_split_views.xml',
 
         # 'views/ir_ui_view.xml',
 
