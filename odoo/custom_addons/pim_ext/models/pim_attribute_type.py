@@ -75,6 +75,14 @@ class PIMAttributeType(models.Model):
      #           'context': {'no_breadcrumbs': True},
      #      }
 
+     def action_back_to_menu_attribute(self):
+          return {
+               'type': 'ir.actions.client',
+               'tag': 'reload',
+               'params': {
+                    'menu_id': 441,
+               },
+          }
 
      def action_select_date(self):
           self.ensure_one()

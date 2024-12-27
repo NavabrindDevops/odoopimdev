@@ -22,6 +22,9 @@
                         </div>
                         <div class="right-column">
                             <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_menu_attribute"/>
+                                </header>
                                 <field name="is_invisible" invisible="1"/>
                                 <div class="pim_oe_title">
                                     <h2 class="pim_create_attribute"><span class="attr_title">Create Attribute</span></h2>
