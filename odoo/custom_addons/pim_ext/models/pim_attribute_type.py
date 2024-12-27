@@ -43,6 +43,8 @@ class PIMAttributeType(models.Model):
           ],
           help="The display type used in the Product Configurator.")
 
+     code = fields.Char(string='Code')
+
      def create_attributes(self):
           if all([self.name, self.display_type]):
                res = self.env['product.attribute'].create({
