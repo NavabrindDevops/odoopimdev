@@ -45,13 +45,49 @@ class PIMAttributeType(models.Model):
 
      code = fields.Char(string='Code')
 
+     unique_value = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Unique Value',
+          default='no'
+     )
+
+     value_per_channel = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Value per channel',
+          default='no'
+     )
+
+     value_per_locale = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Value per locale',
+          default='no'
+     )
+
+     usable_in_grid = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Usable in grid',
+          default='no'
+     )
+
+     locale_specific = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Locale specific',
+          default='no'
+     )
+
      def create_attributes(self):
           if all([self.name, self.display_type]):
                res = self.env['product.attribute'].create({
                     'name': self.name,
                     'display_type': self.display_type,
                     'attribute_group': self.attribute_group.id,
+                    'code': self.code,
                     'is_mandatory': self.is_mandatory,
+                    'unique_value': self.unique_value,
+                    'value_per_channel': self.value_per_channel,
+                    'value_per_locale': self.value_per_locale,
+                    'usable_in_grid': self.usable_in_grid,
+                    'locale_specific': self.locale_specific,
                     'is_required_in_clone': self.is_required_in_clone,
                     'is_cloning': self.is_cloning,
                     'is_completeness': self.is_completeness,

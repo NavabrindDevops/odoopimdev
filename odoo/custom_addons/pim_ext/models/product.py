@@ -66,6 +66,33 @@ class AttributeForm(models.Model):
 
      position_ref_field_id = fields.Many2one("ir.model.fields", string="Position After", domain="[('model_id.model','=','product.management')]")
 
+     code = fields.Char(string='Code')
+
+     unique_value = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Unique Value',
+     )
+
+     value_per_channel = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Value per channel',
+     )
+
+     value_per_locale = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Value per locale',
+     )
+
+     usable_in_grid = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Usable in grid',
+     )
+
+     locale_specific = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Locale specific',
+     )
+
 
 
      def action_publish_attribute(self):

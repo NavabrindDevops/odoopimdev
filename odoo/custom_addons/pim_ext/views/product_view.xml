@@ -261,6 +261,8 @@
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
                 <field name="is_cloning" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
+
+
 <!--                <field name="completed_in_percent" widget="progressbar"/>-->
             </xpath>
             <xpath expr="//field[@name='sequence']" position="before">
@@ -291,6 +293,27 @@
                         <field name="name" readonly="1"/>
                     </h1>
                 </div>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='attribute_values']" position="after">
+                <page string="General Parameters" name="genral_params">
+                    <form>
+                        <sheet>
+                            <group>
+                                <group>
+                                    <field name="code" readonly="1" string="Code"/>
+                                    <field name="unique_value" readonly="1" string="Unique Value"/>
+                                    <field name="value_per_channel" readonly="1" string="Value per channel"/>
+                                </group>
+                                <group>
+                                    <field name="value_per_locale" readonly="1" string="Value per locale"/>
+                                    <field name="usable_in_grid" readonly="1" string="Usable in grid"/>
+                                    <field name="locale_specific" readonly="1" string="Locale specific"/>
+                                </group>
+                            </group>
+                        </sheet>
+                    </form>
+                </page>
             </xpath>
         </field>
     </record>
