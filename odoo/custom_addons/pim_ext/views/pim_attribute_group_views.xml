@@ -40,7 +40,7 @@
                 <field name="active" widget="boolean_toggle"/>
             </xpath>
             <xpath expr="//form/sheet/group/field[@name='active']" position="after">
-                <field name="description"/>
+                <field name="description" placeholder="add description(optional)"/>
             </xpath>
             <notebook>
                 <page name="Properties">
