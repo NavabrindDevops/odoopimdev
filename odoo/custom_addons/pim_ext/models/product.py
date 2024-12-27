@@ -384,7 +384,7 @@ class AttributeGroupLine(models.Model):
           string='Used Attributes',
           store=False
      )
-     product_attribute_id = fields.Many2one('product.attribute', string='Product Attribute', domain="[('id', 'not in', used_attribute_ids)]")
+     product_attribute_id = fields.Many2one('product.attribute', string='Product Attribute')
      display_type = fields.Selection(
           selection=[
                ('radio', 'Radio'),
