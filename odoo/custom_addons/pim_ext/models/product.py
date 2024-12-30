@@ -93,6 +93,68 @@ class AttributeForm(models.Model):
           string='Locale specific',
      )
 
+     master_attribute_ids = fields.One2many(
+          'product.attribute',
+          'parent_id',
+          compute='_compute_master_attribute_ids',
+          string='Attributes'
+     )
+
+     parent_id = fields.Many2one(
+          'product.attribute',
+          string='Parent Group',
+          ondelete='cascade',
+     )
+
+     # this is for loading tree view in while click edit button
+     def _compute_master_attribute_ids(self):
+          for record in self:
+               record.master_attribute_ids = self.env['product.attribute'].search([])
+
+     def save_attributes(self):
+          return {
+               'type': 'ir.actions.act_window',
+               'view_mode': 'form',
+               'res_model': 'product.attribute',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
+               'res_id': self.id,
+               'context': {'no_breadcrumbs': True},
+               'target': 'current',
+          }
+
+     # attribute master edit button
+     def attribute_edit_open_form_view(self):
+          self.ensure_one()
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Edit Attribute',
+               'res_model': 'product.attribute',
+               'view_mode': 'form',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
+               'context': {'no_breadcrumbs': True},
+               'res_id': self.id,
+          }
+
+     # delete button attribute
+     def attribute_master_unlink(self):
+          print('dopeddddddddddd')
+          return {
+               'name': 'Confirm Deletion',
+               'type': 'ir.actions.act_window',
+               'res_model': 'attribute.master.unlink.wizard',
+               'view_mode': 'form',
+               'target': 'new',
+               'context': {'default_attribute_id': self.id},
+          }
+
+     def action_back_to_attribute_menu(self):
+          return {
+               'type': 'ir.actions.client',
+               'tag': 'reload',
+               'params': {
+                    'menu_id': 441,
+               },
+          }
 
 
      def action_publish_attribute(self):
@@ -268,6 +330,26 @@ class AttributeForm(models.Model):
                res = super().write(vals)
                return res
 
+
+class AttributeMasterUnlinkWizard(models.TransientModel):
+    _name = 'attribute.master.unlink.wizard'
+    _description = 'Wizard to Confirm Deletion of Attribute master'
+
+    attribute_id = fields.Many2one('product.attribute', string="Attribute Master")
+
+    def confirm_unlink(self):
+        print('dfjdkfjdfd')
+        if self.attribute_id:
+             print('dfjkdfjgfgbb444444', self.attribute_id)
+             self.attribute_id.unlink()
+        return {
+             'type': 'ir.actions.client',
+             'tag': 'reload',
+             'params': {
+                  'menu_id': 441,
+             },
+        }
+
 class Attributegroup(models.Model):
      _name = 'attribute.group'
      _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -293,16 +375,16 @@ class Attributegroup(models.Model):
           string='Sub-groups'
      )
 
-     @api.depends('attribute_code_rec')
+     @api.depends('name')
      def _compute_label_translation(self):
           translator = Translator()
           for record in self:
-               if record.attribute_code_rec:
+               if record.name:
                     try:
                          user_lang = self.env.user.lang
                          lang_rec = self.env['res.lang'].search([('code', '=', user_lang)], limit=1)
                          src_lang = lang_rec.url_code
-                         translation = translator.translate(record.attribute_code_rec, src=src_lang, dest='en')
+                         translation = translator.translate(record.name, src=src_lang, dest='en')
                          record.attribute_label = translation.text.capitalize()
                     except Exception as e:
                          record.attribute_label = 'Error in translation'

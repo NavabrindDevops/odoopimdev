@@ -253,6 +253,9 @@
             </xpath>
             <xpath expr="//form/sheet/group/group[1]/field[@name='display_type']" position="replace">
                 <field name="display_type" readonly="1" string="Type"/>
+                <field name="code" readonly="1" string="Code"/>
+                <field name="unique_value" readonly="1" string="Unique Value"/>
+                <field name="value_per_channel" readonly="1" string="Value per channel"/>
             </xpath>
             <xpath expr="//form/sheet/group/group[@name='ecommerce_main_fields']/field[@name='visibility']" position="after">
 <!--                <field name="attribute_types"/>-->
@@ -261,6 +264,9 @@
                 <field name="is_required_in_clone" widget="boolean_toggle"/>
                 <field name="is_cloning" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
+                <field name="value_per_locale" readonly="1" string="Value per locale"/>
+                <field name="usable_in_grid" readonly="1" string="Usable in grid"/>
+                <field name="locale_specific" readonly="1" string="Locale specific"/>
 
 
 <!--                <field name="completed_in_percent" widget="progressbar"/>-->
@@ -295,26 +301,26 @@
                 </div>
             </xpath>
 
-            <xpath expr="//form/sheet/notebook/page[@name='attribute_values']" position="after">
-                <page string="General Parameters" name="genral_params">
-                    <form>
-                        <sheet>
-                            <group>
-                                <group>
-                                    <field name="code" readonly="1" string="Code"/>
-                                    <field name="unique_value" readonly="1" string="Unique Value"/>
-                                    <field name="value_per_channel" readonly="1" string="Value per channel"/>
-                                </group>
-                                <group>
-                                    <field name="value_per_locale" readonly="1" string="Value per locale"/>
-                                    <field name="usable_in_grid" readonly="1" string="Usable in grid"/>
-                                    <field name="locale_specific" readonly="1" string="Locale specific"/>
-                                </group>
-                            </group>
-                        </sheet>
-                    </form>
-                </page>
-            </xpath>
+<!--            <xpath expr="//form/sheet/notebook/page[@name='attribute_values']" position="after">-->
+<!--                <page string="General Parameters" name="genral_params">-->
+<!--                    <form>-->
+<!--                        <sheet>-->
+<!--                            <group>-->
+<!--                                <group>-->
+<!--                                    <field name="code" readonly="1" string="Code"/>-->
+<!--                                    <field name="unique_value" readonly="1" string="Unique Value"/>-->
+<!--                                    <field name="value_per_channel" readonly="1" string="Value per channel"/>-->
+<!--                                </group>-->
+<!--                                <group>-->
+<!--                                    <field name="value_per_locale" readonly="1" string="Value per locale"/>-->
+<!--                                    <field name="usable_in_grid" readonly="1" string="Usable in grid"/>-->
+<!--                                    <field name="locale_specific" readonly="1" string="Locale specific"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </sheet>-->
+<!--                    </form>-->
+<!--                </page>-->
+<!--            </xpath>-->
         </field>
     </record>
 
@@ -392,9 +398,31 @@
                 <field name="is_cloning" widget="boolean_toggle"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
                 <field name="state" widget="badge" decoration-success="state == 'publish'" decoration-danger="state == 'unpublish'"/>
+                <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
+                <button name="attribute_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
 <!--                <field name="completed_in_percent" widget="progressbar"/>-->
 
             </xpath>
+        </field>
+    </record>
+
+    <record id="view_attribute_master_unlink_wizard_form" model="ir.ui.view">
+        <field name="name">attribute.master.unlink.wizard.form</field>
+        <field name="model">attribute.master.unlink.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Deletion">
+                <group>
+                    <div style="justify-content: center; align-items: center; white-space: nowrap; margin: 10px 0;">
+                        <p style="margin: 0; font-size: 14px;">
+                            Are you sure you want to delete this attribute?
+                        </p>
+                    </div>
+                </group>
+                <footer>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    <button string="Delete" class="btn-primary" type="object" name="confirm_unlink"/>
+                </footer>
+            </form>
         </field>
     </record>
 

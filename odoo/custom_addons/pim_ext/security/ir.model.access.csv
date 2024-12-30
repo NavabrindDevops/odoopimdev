@@ -35,6 +35,8 @@ access_delete_family_wizard,delete.family.wizard,model_delete_family_wizard,,1,1
 
 access_attribute_group_unlink_wizard,access_attribute_group_unlink_wizard,model_attribute_group_unlink_wizard,,1,1,1,1
 
+access_attribute_master_unlink_wizard,access_attribute_master_unlink_wizard_wizard,model_attribute_master_unlink_wizard,,1,1,1,1
+
 
 
 

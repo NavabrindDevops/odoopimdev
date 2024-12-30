@@ -100,7 +100,7 @@ class PIMAttributeType(models.Model):
                'res_model': 'product.attribute',
                'view_mode':'tree,form',
                'target': 'current',
-               'context': {'no_breadcrumbs': False},
+               'context': {'no_breadcrumbs': True},
           }
 
 

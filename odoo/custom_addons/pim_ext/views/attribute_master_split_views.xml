@@ -1,0 +1,70 @@
+<odoo>
+    <data>
+        <!-- Define the custom layout view -->
+        <record id="view_product_attribute_master_custom" model="ir.ui.view">
+            <field name="name">product.attribute.master.custom.layout</field>
+            <field name="model">product.attribute</field>
+            <field name="arch" type="xml">
+                <form string="Attribute Master" create="false" edit="true" delete="false" class="page_form">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
+                            <field name="master_attribute_ids">
+                                <tree editable="bottom" create="false" edit="false" delete="false">
+                                    <field name="name"/>
+<!--                                    <field name="active" widget="boolean_toggle"/>-->
+                                    <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
+                                    <button name="attribute_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div class="right-column">
+                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_attribute_menu"/>
+                                </header>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Edit Attribute</span></h2>
+                                </div>
+                            </form>
+                            <form>
+                                <div class="o_col_6 attr_form">
+                                   <div class="attr_properties">
+                                       <sheet class="attr_sheet">
+                                           <div class="oe_title">
+                                               <h1 class="name"><field name="name" readonly="1" class="oe_inline"/></h1>
+                                           </div>
+                                           <notebook>
+                                               <page string="Attribute Values" name="attribute_values">
+                                                    <field name="value_ids" widget="one2many" nolabel="1">
+                                                        <tree string="Values" editable="bottom">
+                                                            <field name="sequence" widget="handle"/>
+                                                            <field name="name"/>
+                                                        </tree>
+                                                    </field>
+                                                    <div class="attr_creation" style="margin-top: 16px;">
+                                                        <button type="object" string="Save"
+                                                               name="save_attributes" class="oe_highlight"/>
+                                                    </div>
+                                                </page>
+                                           </notebook>
+                                       </sheet>
+                                   </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to open the custom view -->
+        <record id="action_products_attributes_group_custom" model="ir.actions.act_window">
+            <field name="name">Edit Attribute Group</field>
+            <field name="res_model">attribute.group</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_product_attribute_groups_custom"/>
+            <field name="context">{'default_child_ids': child_ids}</field>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>
