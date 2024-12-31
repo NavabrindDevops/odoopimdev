@@ -20,7 +20,6 @@ _logger = logging.getLogger(__name__)
 
 class AttributeForm(models.Model):
      _inherit = 'product.attribute'
-     _order = 'sequence, id desc'
      _rec_name = 'name'
 
 
