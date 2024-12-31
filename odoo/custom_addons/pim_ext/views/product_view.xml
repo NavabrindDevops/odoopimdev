@@ -390,6 +390,8 @@
         <field name="arch" type="xml">
             <xpath expr="//tree" position="attributes">
                 <attribute name="create">false</attribute>
+<!--                <attribute name="editable">bottom</attribute>-->
+<!--                <attribute name="edit">false</attribute>-->
                 <attribute name="default_order">create_date desc</attribute>
             </xpath>
             <xpath expr="//tree" position="inside">
@@ -423,6 +425,12 @@
             </xpath>
         </field>
     </record>
+
+    <record id="product.attribute_action" model="ir.actions.act_window">
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="inherit_product_attribute_tree_pim"/>
+    </record>
+
 
     <record id="view_attribute_master_unlink_wizard_form" model="ir.ui.view">
         <field name="name">attribute.master.unlink.wizard.form</field>
