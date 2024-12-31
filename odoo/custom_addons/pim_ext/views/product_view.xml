@@ -300,6 +300,23 @@
                     </h1>
                 </div>
             </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='attribute_values']" position="after">
+                <page name="label_translation" string="Label translations">
+                    <div id="o_type_properties">
+                        <div id="o_type_properties_main" class="flex-grow-1">
+                            <group string="English (United States)">
+<!--                                <label for="label_transaltion"/>-->
+                            </group>
+                        </div>
+                    </div>
+                    <div>
+                        <field name="label_transaltion" class="attribute_type_class"/>
+                    </div><br/>
+                </page>
+                <page name="history" string="History">
+
+                </page>
+            </xpath>
 
 <!--            <xpath expr="//form/sheet/notebook/page[@name='attribute_values']" position="after">-->
 <!--                <page string="General Parameters" name="genral_params">-->

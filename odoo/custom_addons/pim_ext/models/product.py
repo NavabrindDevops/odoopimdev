@@ -106,6 +106,24 @@ class AttributeForm(models.Model):
           ondelete='cascade',
      )
 
+     label_transaltion = fields.Char(string='English', compute="_compute_label_attribute_translation")
+
+     @api.depends('name')
+     def _compute_label_attribute_translation(self):
+          translator = Translator()
+          for record in self:
+               if record.name:
+                    try:
+                         user_lang = self.env.user.lang
+                         lang_rec = self.env['res.lang'].search([('code', '=', user_lang)], limit=1)
+                         src_lang = lang_rec.url_code
+                         translation = translator.translate(record.name, src=src_lang, dest='en')
+                         record.label_transaltion = translation.text.capitalize()
+                    except Exception as e:
+                         record.label_transaltion = 'Error in translation'
+               else:
+                    record.label_transaltion = ''
+
      # this is for loading tree view in while click edit button
      def _compute_master_attribute_ids(self):
           for record in self:
