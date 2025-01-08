@@ -1,0 +1,110 @@
+<odoo>
+    <data>
+        <!-- Define the custom layout view -->
+        <record id="view_split_family_view_custom" model="ir.ui.view">
+            <field name="name">family.split.view.custom.layout</field>
+            <field name="model">family.attribute</field>
+            <field name="arch" type="xml">
+                <form string="Family" create="false" edit="true" delete="false" class="page_form">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
+                            <field name="family_ids">
+                                <list editable="bottom" create="false" edit="false" delete="false" default_order="create_date desc">
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="description"/>
+                                    <button name="attribute_family_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
+                                    <button name="attribute_family_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+                                </list>
+                            </field>
+                        </div>
+                        <div class="right-column">
+                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_menu"/>
+                                </header>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Edit Family</span></h2>
+                                </div>
+                            </form>
+                            <form>
+                                <div class="o_col_6 col-12 attr_form">
+                                   <div class="attr_properties">
+                                       <sheet class="attr_sheet">
+                                           <div class="oe_title">
+                                               <h1 class="name"><field name="name" readonly="1" class="oe_inline"/></h1>
+                                           </div>
+                                           <notebook>
+                                               <page name="Properties">
+                                                   <group>
+                                                       <group string="General Properties">
+                                                           <field name="name"/>
+                                                           <field name="code"/>
+                                                       </group>
+                                                   </group>
+                                                   <group>
+                                                       <group string="Label Translation">
+                                                           <field name="attribute_label"/>
+                                                       </group>
+                                                   </group>
+                                               </page>
+                                               <page name="attibute_list" string="Attributes">
+                                                   <br/>
+                                                   <div style="display:flex; gap:10px; width:max-content;">
+                                                       <button name="action_open_attribute_group_wizard" type="object" string="Add By Groups" class="oe_button btn-primary"/>
+                                                       <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>
+                                                   </div>
+                                                   <br/>
+                                                   <field name="product_families_ids">
+                                                       <list edit="false" create="false" default_order="create_date desc">
+                    <!--                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>-->
+                                                           <field name="product_id"/>
+                                                           <field name="product_id_stored"/>
+                                                           <field name="attribute_id"/>
+                                                           <field name="completeness_percent" widget="progressbar_extended" optional="hide"/>
+                                                       </list>
+                                                   </field>
+                                               </page>
+                                               <page name="variant_rec" string="Variants">
+                                                   <br/>
+                                                   <div style="display:flex; gap:10px; width:max-content;">
+                                                       <button name="action__add_variant_wizard" type="object" string="Add Variant" class="oe_button btn-primary"/>
+                                                   </div>
+                                                   <br/>
+                                                   <field name="variant_line_ids">
+                                                       <list create="false" edit="false" default_order="create_date desc">
+                    <!--                                    <field name="variant_id" string="Variant" invisible="1"/>-->
+                                                           <field name="name"/>
+                                                           <field name="variant_ids" string="Variants" widget="many2many_tags"/>
+                                                       </list>
+                                                   </field>
+                                               </page>
+                                               <page name="History">
+                                                   <field name="history_log"/>
+                                               </page>
+                                           </notebook>
+                                       </sheet>
+                                   </div>
+                                </div>
+                            </form>
+                            <div class="attr_creation" style="margin-top: 16px;">
+                                <button type="object" string="Save"
+                                       name="save_family" class="oe_highlight"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to open the custom view -->
+        <record id="action_products_attributes_group_custom" model="ir.actions.act_window">
+            <field name="name">Edit Attribute Group</field>
+            <field name="res_model">attribute.group</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_product_attribute_groups_custom"/>
+            <field name="context">{'default_child_ids': child_ids}</field>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>

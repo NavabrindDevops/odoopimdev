@@ -1,0 +1,340 @@
+<odoo>
+    <data>
+        <!-- Define the custom layout view -->
+        <record id="view_product_attribute_custom" model="ir.ui.view">
+            <field name="name">product.attribute.custom.layout</field>
+            <field name="model">pim.attribute.type</field>
+            <field name="arch" type="xml">
+                <form string="Attribute" create="false" edit="false" class="page_form">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
+                            <field name="attribute_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
+                                <list create="false" edit="false" default_order="create_date desc">
+                                    <field name="name"/>
+                                    <field name="display_type"/>
+                                    <field name="attribute_group"/>
+                                    <field name="attribute_types"/>
+                                    <field name="is_required_in_clone" widget="boolean_toggle"/>
+                                    <field name="is_cloning" widget="boolean_toggle" invisible="1"/>
+                                    <field name="is_completeness" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </div>
+                        <div class="right-column">
+                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_menu_attribute"/>
+                                </header>
+                                <field name="is_invisible" invisible="1"/>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Create Attribute</span></h2>
+                                </div>
+                                <div class="pim_oe_title" invisible="is_invisible">
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;">Choose the attribute type</h2>
+                                </div>
+                                    <!-- Use a flex layout with columns -->
+
+                                <div class="d-flex justify-content-center" invisible="is_invisible">
+                                    <div class="o_grid attr_types">
+            <!--                            row 1-->
+                                        <div class="d-grid grid_column">
+                                            <!-- Button for Date -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_date" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-calendar fa-2x"></i>
+                                                    <span>Date</span>
+                                                </button>
+                                            </div>
+                                            <!-- Button for Multi-select -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_multiselect" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-plus-square fa-2x"></i>
+                                                    <span>Multi select</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_simple" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-mouse-pointer fa-2x"></i>
+                                                    <span>Simple select</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-dollar fa-2x"></i>
+                                                    <span>Price</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row2-->
+                                        <div class="d-grid grid_column">
+                                            <!-- Button for File -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_file" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-file fa-2x"></i>
+                                                    <span>File</span>
+                                                </button>
+                                            </div>
+                                            <!-- Button for Number -->
+                                            <div class="attribute-button">
+                                                <button name="action_select_number" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-sort-numeric-asc fa-2x"></i>
+                                                    <span>Integer</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_text" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-font fa-2x"></i>
+                                                    <span>Text</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_identifier" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-id-badge fa-2x"></i>
+                                                    <span>Identifier</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row3-->
+                                        <div class="d-grid grid_column">
+                                            <div class="attribute-button">
+                                                <button name="action_select_text_area" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-text-height fa-2x"></i>
+                                                    <span>Text Area</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_image" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-image fa-2x"></i>
+                                                    <span>Image</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="attribute-button">
+                                                <button name="action_select_ref_data_multi" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-plus-square fa-2x"></i>
+                                                    <span>Reference data multi select</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-check fa-2x"></i>
+                                                    <span>Checkbox</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row4-->
+                                        <div class="d-grid grid_column">
+                                            <div class="attribute-button">
+                                                <button name="action_select_radio" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-check-circle fa-2x"></i>
+                                                    <span>Radio</span>
+                                                </button>
+                                            </div>
+<!--                                                comment based on arpita request dec-19-2024-->
+<!--                                            <div class="attribute-button">-->
+<!--                                                <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">-->
+<!--                                                    <i class="fa fa-ruler fa-2x"></i>-->
+<!--                                                    <span>Measurement</span>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
+                                            <div class="attribute-button">
+                                                <button name="action_select_link" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-link fa-2x"></i>
+                                                    <span>Link</span>
+                                                </button>
+                                            </div>
+
+<!--                                            <div class="attribute-button">-->
+<!--                                                <button name="action_select_ref_data_simple" type="object" class="btn btn-light attribute-icon-button">-->
+<!--                                                    <i class="fa fa-mouse-pointer fa-2x"></i>-->
+<!--                                                    <span>Reference data simple select</span>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
+                                            <div class="attribute-button">
+                                                <button name="action_select_multi_color" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-paint-brush fa-2x"></i>
+                                                    <span>Color</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="attribute-button">
+                                                <button name="action_select_multi_checkbox" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-check-circle-o fa-2x"></i>
+                                                    <span>Multi Checkbox</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row5-->
+                                    </div>
+                                </div>
+                            </form>
+                            <form>
+                                <div class="o_col_6 col-12 attr_form" invisible="not is_invisible">
+                                   <div class="attr_properties">
+                                       <sheet class="attr_sheet">
+                                           <div class="oe_title">
+                                               <h1 class="type_name"><field name="type_name" readonly="1" class="oe_inline choose_pim_attribute_type"/></h1>
+                                           </div>
+                                           <notebook class="type_properties">
+                                               <page name="type_properties" string="Properties">
+                                                   <div id="o_type_properties" class="d-lg-flex top_property">
+                                                       <div id="o_type_properties_main" class="flex-grow-1">
+                                                           <group string="General Parameters" class="general_param">
+                                                               <label for="name" string="Attribute Name" style="font-weight:bold;"/>
+                                                           </group>
+                                                       </div>
+                                                   </div>
+                                                   <div class="attr_form_values">
+                                                       <div>
+                                                           <field name="name"  required="True" nolabel="1" placeholder="Enter attribute name" class="attribute_type_class"/>
+                                                       </div>
+                                                       <div>
+                                                           <div>
+                                                               <group>
+                                                                   <label for="display_type" string="Type" style="font-weight:bold;" required="True"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="display_type" nolabel="1" readonly="1" class="attribute_type_class attr_display_type"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="code" string="Code"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="code" nolabel="1"
+                                                                  options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="attribute_group" string="Attribute group"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="attribute_group" nolabel="1"
+                                                                  options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="unique_value" string="Unique value"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="unique_value" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
+                                                       </div><br/>
+
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="value_per_channel" string="Value per channel"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="value_per_channel" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
+                                                       </div><br/>
+
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="value_per_locale" string="Value per locale"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="value_per_locale" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
+                                                       </div><br/>
+
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="usable_in_grid" string="Usable in grid"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="usable_in_grid" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
+                                                       </div><br/>
+
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="locale_specific" string="Locale specific"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="locale_specific" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
+                                                       </div>
+                                                   </div>
+                                               </page>
+                                               <page name="type_label_translation" string="Label Translations" invisible="1">
+                                               </page>
+                                               <page name="type_general_info" string="General">
+                                                   <div id="o_type_properties" class="d-lg-flex top_property">
+                                                       <div id="o_type_properties_main" class="flex-grow-1">
+                                                           <group string="Information" class="general_param"/>
+                                                       </div>
+                                                   </div>
+                                                   <div class="attr_form_values">
+                                                       <div>
+                                                           <div>
+                                                               <label for="is_mandatory" string="Mandatory" style="font-weight:bold;"/>
+                                                               <field name="is_mandatory" style="padding-left: 9%;"/>
+                                                           </div>
+                                                           <div style="margin-top: 15px;">
+                                                               <label for="is_required_in_clone" string="Required For Clone" style="font-weight:bold;"/>
+                                                               <field name="is_required_in_clone" style="padding-left: 2%;"/>
+                                                           </div>
+<!--                                                           <div style="margin-top: 15px;">-->
+<!--                                                               <label for="is_cloning" string="Cloning" style="font-weight:bold;"/>-->
+<!--                                                               <field name="is_cloning" style="padding-left: 2%;"/>-->
+<!--                                                           </div>-->
+                                                           <div style="margin-top: 15px;">
+                                                               <label for="is_completeness" string="Completeness" style="font-weight:bold;"/>
+                                                               <field name="is_completeness" style="padding-left: 6.5%;"/>
+                                                           </div>
+                                                       </div>
+                                                       <div class="attr_creation" style="margin-top: 16px;">
+                                                           <button type="object" string="Save"
+                                                                   name="create_attributes" class="oe_highlight"/>
+<!--                                                           <button type="object" string="Cancal"-->
+<!--                                                                   name="cancel_attributes" class="oe_highlight"/>-->
+
+                                                       </div>
+                                                   </div>
+                                               </page>
+                                               <page name="type_label_translation" string="Label Translations" invisible="1">
+                                               </page>
+                                           </notebook>
+                                       </sheet>
+                                   </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to open the custom view -->
+        <record id="action_products_attributes_custom" model="ir.actions.act_window">
+            <field name="name">Create Attribute</field>
+            <field name="res_model">pim.attribute.type</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_product_attribute_custom"/>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>
