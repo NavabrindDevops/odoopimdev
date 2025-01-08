@@ -9,26 +9,26 @@
         <field name="arch" type="xml">
           <xpath expr="//notebook" position="before">
                 <group> 
-                    <group string="Attribute 1"> 
-                        <field name="attribute1_id"/>
-                        <field name="attribute1_val"/>
+                    <group string="Family">
+                        <field name="family_id"/>
+<!--                        <field name="attribute1_val"/>-->
                     </group>
-                    <group string="Attribute 2">
-                        <field name="attribute2_id"/>
-                        <field name="attribute2_val"/>
-                    </group>
-                    <group string="Attribute 3">
-                        <field name="attribute3_id"/>
-                        <field name="attribute3_val"/>
-                    </group>
-                    <group string="Attribute 4">
-                        <field name="attribute4_id"/>
-                        <field name="attribute4_val"/>
-                    </group>
+<!--                    <group string="Attribute 2">-->
+<!--                        <field name="attribute2_id"/>-->
+<!--                        <field name="attribute2_val"/>-->
+<!--                    </group>-->
+<!--                    <group string="Attribute 3">-->
+<!--                        <field name="attribute3_id"/>-->
+<!--                        <field name="attribute3_val"/>-->
+<!--                    </group>-->
+<!--                    <group string="Attribute 4">-->
+<!--                        <field name="attribute4_id"/>-->
+<!--                        <field name="attribute4_val"/>-->
+<!--                    </group>-->
                 </group>
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
-                <field name="family_id"/>
+                <field name="family_id" />
                 <field name="mpn_number"/>
                 <field name="status"/>
                 <field name="origin"/>

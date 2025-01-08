@@ -2,46 +2,97 @@
 <odoo>
     <data>
         <record id="view_tree_pim_categories" model="ir.ui.view">
-            <field name="name">pim.categories.tree.view</field>
+    <field name="name">pim.categories.tree.view</field>
+    <field name="model">pim.category</field>
+    <field name="arch" type="xml">
+        <list create="false" default_order="create_date desc">
+            <header>
+                <button name="create_pim_category" type="object" class="btn-primary"
+                    string="Create Category" display="always"
+                    invisible="context.get('active_model', 'pim.category') != 'pim.category'"/>
+            </header>
+            <field name="code"/>
+            <field name="name"/>
+            <field name="parent_id"/>
+            <field name="complete_name"/>
+            <field name="active" widget="boolean_toggle"/>
+        </list>
+    </field>
+</record>
+
+<record id="view_form_pim_categories" model="ir.ui.view">
+    <field name="name">pim.categories.form.view</field>
+    <field name="model">pim.category</field>
+    <field name="arch" type="xml">
+        <form create="false">
+            <sheet>
+            <style>
+                .o_group .o_wrap_label .o_form_label{font-weight:250; font-size:12px;}
+                .o_tag{font-size:var(--Tag-font-size, -2.1875rem);}
+            </style>
+            <div class="oe_title">
+                <h1><field name="name" class="oe_inline" readonly="1"/></h1>
+            </div>
+                <group>
+                    <group>
+                         <field name="code" readonly="1"/>
+                        <field name="name"/>
+                        <field name="parent_id"
+                               options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                        <field name="complete_name" string="Category Path" readonly="1"/>
+
+
+                    </group>
+                    <group>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </group>
+            </sheet>
+            <chatter/>
+<!--            <div class="oe_chatter">-->
+<!--                <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>-->
+<!--                <field name="activity_ids"/>-->
+<!--                <field name="message_ids"/>-->
+<!--            </div>-->
+        </form>
+    </field>
+</record>
+        <record id="view_pim_category_filter" model="ir.ui.view">
+            <field name="name">Category</field>
             <field name="model">pim.category</field>
+            <field name="priority" eval="15"/>
             <field name="arch" type="xml">
-                <tree>
+                <search string="Family Category">
+                    <field name="code"/>
                     <field name="name"/>
-                </tree>
+                    <field name="parent_id"/>
+                    <field name="complete_name"/>
+                    <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Code" name="category_code" domain="[]"
+                                context="{'group_by': 'code'}"/>
+                        <filter string="Name" name="category_name" domain="[]"
+                                context="{'group_by': 'name'}"/>
+                        <filter string="Parent Category" name="parent_group" domain="[]"
+                                context="{'group_by': 'parent_id'}"/>
+                        <filter string="Complete Name" name="parent_complete_name" domain="[]"
+                                context="{'group_by': 'complete_name'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
-        <record id="view_form_pim_categories" model="ir.ui.view">
-            <field name="name">pim.categories.form.view</field>
-            <field name="model">pim.category</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="name"/>
-                            </group>
-                        </group>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
-                </form>
-            </field>
-        </record>
-
-        <record id="actions_pim_categories" model="ir.actions.act_window">
-            <field name="name">Categories</field>
+        <record id="action_pim_categories" model="ir.actions.act_window">
+            <field name="name">Category</field>
             <field name="res_model">pim.category</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <menuitem id="menu_pim_categories"
-                  name="Categories"
-                  action="actions_pim_categories"
-                  parent="pim_ext.pim_configuraion"
-                  sequence="40"/>
+          name="Manage Categories"
+          action="action_pim_categories"
+          parent="pim_ext.menu_root_product_management"
+          sequence="40"/>
     </data>
 </odoo>

@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
                     <div class="pim_oe_title">
-                        <h3 class="pim_create_attribute" style="text-align:center;">CREATE ATTRIBUTE</h3>
+                        <h3 class="pim_create_attribute" style="text-align:center;">Create Attribute</h3>
                         <h2 class="choose_pim_attribute_type" style="text-align:center;">Choose the attribute type</h2>
                     </div>
                         <!-- Use a flex layout with columns -->
@@ -50,7 +50,7 @@
                                     <div class="attribute-button">
                                         <button name="action_select_number" type="object" class="btn btn-light attribute-icon-button">
                                             <i class="fa fa-1 fa-2x"></i>
-                                            <span>Number</span>
+                                            <span>Integer</span>
                                         </button>
                                     </div>
                                     <div class="attribute-button">
@@ -102,23 +102,49 @@
                                     <div class="attribute-button">
                                         <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
                                             <i class="fa fa-check fa-2x"></i>
-                                            <span>Yes/No</span>
+                                            <span>Checkbox</span>
                                         </button>
                                     </div>
                                 </div>
     <!--                            row5-->
                                 <div style="display: flex; flex-direction: column; gap: 20px;">
                                     <div class="attribute-button">
-                                        <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">
-                                            <i class="fa fa-ruler fa-2x"></i>
-                                            <span>Measurement</span>
+                                        <button name="action_select_radio" type="object" class="btn btn-light attribute-icon-button">
+                                            <i class="fa fa-check-circle fa-2x"></i>
+                                            <span>Radio</span>
+                                        </button>
+                                    </div>
+<!--                                    comment based on arpita request dec-19-2024-->
+<!--                                    <div class="attribute-button">-->
+<!--                                        <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">-->
+<!--                                            <i class="fa fa-ruler fa-2x"></i>-->
+<!--                                            <span>Measurement</span>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+                                    <div class="attribute-button">
+                                        <button name="action_select_link" type="object" class="btn btn-light attribute-icon-button">
+                                            <i class="fa fa-link fa-2x"></i>
+                                            <span>Link</span>
+                                        </button>
+                                    </div>
+
+<!--                                    <div class="attribute-button">-->
+<!--                                        <button name="action_select_ref_data_simple" type="object" class="btn btn-light attribute-icon-button">-->
+<!--                                            <i class="fa fa-mouse-pointer fa-2x"></i>-->
+<!--                                            <span>Reference data simple select</span>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+                                    <div class="attribute-button">
+                                        <button name="action_select_multi_color" type="object" class="btn btn-light attribute-icon-button">
+                                            <i class="fa fa-paint-brush fa-2x"></i>
+                                            <span>Color</span>
                                         </button>
                                     </div>
 
                                     <div class="attribute-button">
-                                        <button name="action_select_ref_data_simple" type="object" class="btn btn-light attribute-icon-button">
-                                            <i class="fa fa-mouse-pointer fa-2x"></i>
-                                            <span>Reference data simple select</span>
+                                        <button name="action_select_multi_checkbox" type="object" class="btn btn-light attribute-icon-button">
+                                            <i class="fa fa-check-circle-o fa-2x"></i>
+                                            <span>Multi Checkbox</span>
                                         </button>
                                     </div>
                                 </div>
