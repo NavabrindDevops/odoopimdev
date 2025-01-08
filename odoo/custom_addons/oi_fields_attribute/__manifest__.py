@@ -18,28 +18,28 @@
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
     # for the full list
     'category': 'Extra Tools',
-    'version': '17.0.1.1.14',
+    'version': '18.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'web', 'mail'],
+    # 'depends': ['base', 'web', 'mail'],
 
-    # always loaded
-    'data': [
-        'security/ir.model.access.csv',
-        'view/ir_model_fields_attribute.xml',
-        'view/ir_model_fields.xml',
-        'view/action.xml',
-        'view/menu.xml',
-    ],
-    'assets': {
-        'web.assets_backend': [
-            'oi_fields_attribute/static/src/field_attributes/field_attributes.js',
-            'oi_fields_attribute/static/src/field_attributes/field_attributes.xml'
-        ],
-    },      
-    'external_dependencies' : {
+    # # always loaded
+    # 'data': [
+    #     'security/ir.model.access.csv',
+    #     'view/ir_model_fields_attribute.xml',
+    #     'view/ir_model_fields.xml',
+    #     'view/action.xml',
+    #     'view/menu.xml',
+    # ],
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'oi_fields_attribute/static/src/field_attributes/field_attributes.js',
+    #         'oi_fields_attribute/static/src/field_attributes/field_attributes.xml'
+    #     ],
+    # },      
+    # 'external_dependencies' : {
         
-    },
+    # },
     'odoo-apps' : True,
     'auto_install': True,
     'images':[
