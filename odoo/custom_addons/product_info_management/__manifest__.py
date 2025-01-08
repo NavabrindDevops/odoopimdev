@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Product information Management',
-    'version': '17.0',
+    'version': '18.0',
     "author": "Navabrind IT Solutions",
     'summary': 'Product information Management',
     'description': """

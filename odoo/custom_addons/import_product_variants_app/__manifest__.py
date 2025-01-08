@@ -3,7 +3,7 @@
 {
     'name': 'Import Products and Product Variant From Excel/CSV file',
     "author": "Edge Technologies",
-    'version': '17.0.1.0',
+    'version': '18.0',
     'live_test_url': "https://youtu.be/uug0yNRQ99Q",
     "images":['static/description/main_screenshot.png'],
     'summary':'Import product variant from excel import product from excel product import from csv import product images import product data import product attributes import variants with attributes import product template import products from csv odoo import product',
