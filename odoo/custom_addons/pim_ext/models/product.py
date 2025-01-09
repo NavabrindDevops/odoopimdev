@@ -6,6 +6,7 @@ from datetime import datetime,timedelta,timezone,date
 from email.policy import default
 from markupsafe import Markup
 
+from lxml import etree
 from odoo import models, api, fields,_
 # from odoo.addons.test_impex.models import field
 from odoo.exceptions import UserError, ValidationError
@@ -1042,6 +1043,8 @@ class ProductTemplate(models.Model):
      active_label = fields.Char(string="Status", compute="_compute_active_label")
 
      readable_variant_names = fields.Char(string="Variants", compute="_compute_readable_variant_names")
+     family_id = fields.Many2one('family.attribute', string='Family')
+     sku = fields.Char(string='SKU')
 
      @api.depends('product_variant_ids')
      def _compute_readable_variant_names(self):
@@ -1065,5 +1068,104 @@ class ProductTemplate(models.Model):
                'context': {'no_breadcrumbs': True},
                'target': 'current',
           }
+
+     # this is for dynamic product creation
+     @api.model
+     def get_views(self, views, options=None):
+          print('dksdjkdjskdjs', self.env.context.get('family_id'),self.id)
+          # Get the view's XML and the type of the view (form, tree, etc.)
+          res = super(ProductTemplate, self).get_views(views, options)
+          family_id = self.env.context.get('default_family_id') or self.family_id.id
+          print("Context in get_views:", self.env.context)
+          print("Family ID retrieved:", family_id)
+          print('ssssssssssssssssssssss', self.env.context)
+          form_views = [view for view in views if view[1] == 'form']
+
+          # Check if we're dealing with a form view and if the family is selected
+          print('dofdpofdpofdp', form_views)
+          for view_id, view_type in form_views:
+               print('dpeopepe', view_id)
+               print('333322222222', view_type, self.family_id)
+               print('dkdksjfdkfjd', self.env.context.get('default_family_id'))
+               if view_type == 'form' and self.family_id:
+                    print('do9303333')
+                    doc = etree.XML(res['arch'])  # Parse the XML of the form view
+                    print('doccccccccccccc', doc)
+
+                    # Look for the dynamic fields container (group where we will add dynamic fields)
+                    dynamic_fields_container = doc.xpath("//group[@name='dynamic_attributes']")
+                    print('dkskkkwwwwww', dynamic_fields_container)
+                    if dynamic_fields_container:
+                         print('do0333333333333')
+                         container = dynamic_fields_container[0]
+                         print('djd2222222222', container)
+
+                         # Get the attributes related to the selected family
+                         attributes = self.family_id.mapped('attributes_group_ids.attributes_ids')
+                         print('atrrrrrrrrrrrrrriiiiii', attributes)
+
+                         # Loop through each attribute and add it as a field in the form
+                         for attribute in attributes:
+                              print('dop333333333', attribute)
+                              field_name = f"x_attr_{attribute.id}"
+                              print('dksdjkjkjf', field_name)
+
+                              # Add the field dynamically to the form view
+                              field_element = etree.Element('field', {'name': field_name})
+                              print('sdkfdkfl3333333333', field_element)
+                              container.append(field_element)
+                              print('dopcvvvvvvvvvvvvvvvv', container)
+
+                              # Dynamically create the field on the model
+                              self._add_dynamic_field(attribute, field_name)
+
+                    # Save the updated XML to be returned
+                    res['arch'] = etree.tostring(doc, pretty_print=True)
+
+          return res
+
+     def _add_dynamic_field(self, attribute, field_name):
+          print('2222222222222222222')
+          """Dynamically adds a field to the model for each attribute"""
+          field_type_mapping = {
+               'char': fields.Char,
+               'text': fields.Text,
+               'integer': fields.Integer,
+               'boolean': fields.Boolean,
+               'selection': fields.Selection,
+          }
+          print('sopwwwwwwww', field_type_mapping)
+
+          field_type = field_type_mapping.get(attribute.field_type, fields.Char)
+          print('dskfdddddddddddd', field_type)
+          field_params = {}
+
+          if attribute.field_type == 'selection' and attribute.selection_options:
+               print('9303333333333')
+               field_params['selection'] = [(opt.strip(), opt.strip()) for opt in
+                                            attribute.selection_options.split(',')]
+               print('fipf55555555555', field_params)
+
+          # Add the field to the model dynamically
+          self._add_field_to_model(field_name, field_type, field_params)
+
+     def _add_field_to_model(self, field_name, field_type, field_params):
+          print('d9333333333333')
+          """Dynamically adds a field to the product template model"""
+          if field_name not in self._fields:
+               print('dopweeeeeeeeeeeee')
+               self._add_to_class(field_name, field_type, field_params)
+
+     def _add_to_class(self, name, field_type, field_params):
+          print('ds349333333333333')
+          """Dynamically add the field to the model class"""
+          field = field_type(string=name, **field_params)
+          print('skdskfjdkfdk', field)
+          self._add_to_fields(name, field)
+
+     def _add_to_fields(self, name, field):
+          print('dksjdskjdskdjskd')
+          """Helper method to add the field"""
+          self._fields[name] = field
 
 

@@ -41,6 +41,8 @@ access_attribute_family_unlink_wizard,access_attributes_family_unlink_wizard,mod
 
 access_product_create_rec,access_attributes_product_create,model_product_create,,1,1,1,1
 
+access_product_create_master,access_product_create_master_rec,model_product_create_master,,1,1,1,1
+
 
 
 

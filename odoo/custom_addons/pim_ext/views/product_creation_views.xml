@@ -28,11 +28,56 @@
             </field>
         </record>
 
+        <record id="product_creation_view_master" model="ir.ui.view">
+            <field name="name">Products</field>
+            <field name="model">product.create.master</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false" class="page_form" string="Product">
+                    <div class="center-page-container" style="max-width: 600px; margin: auto;">
+                        <!-- Title -->
+                        <h2 style="font-size: 24px; color: #6B3FA0; text-align: left; font-weight: bold;">
+                            PRODUCTS
+                        </h2>
+                        <h3 style="font-size: 32px; text-align: left; margin-top: 0;">Create</h3>
+
+                        <!-- Banner Information -->
+<!--                        <div style="background-color: #F0F8FF; border: 1px solid #d5e6f7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">-->
+<!--                            <i class="fa fa-info-circle" style="color: #6B3FA0; margin-right: 5px;"></i>-->
+<!--                            <span style="font-size: 14px; color: #5B5B5B;">-->
+<!--                                The identifier is now an optional field. <a href="#" style="color: #6B3FA0; text-decoration: underline;">Read more</a> about this change and the possible impacts for your products.-->
+<!--                            </span>-->
+<!--                        </div>-->
+
+                        <div>
+                            <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
+                                <label for="family_id" style="display: block; font-weight: bold; margin: 0; padding: 0; text-align: left;">
+                                    Family
+                                </label>
+                                <field name="family_id" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                            </div>
+
+                            <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
+                                <label for="sku" style="display: block; font-weight: bold;">SKU</label>
+                                <field name="sku" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                            </div>
+
+                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                <button name="product_cancel" string="Cancel" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
+                                <button name="product_save" string="Save" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;" class="btn btn-success"/>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
         <record id="view_product_management_tree" model="ir.ui.view">
             <field name="name">product.management.tree</field>
             <field name="model">product.template</field>
             <field name="arch" type="xml">
-                <list create="false" edit="false" delete="false" default_order="create_date desc">
+                <list create="false" edit="false" default_order="create_date desc">
                     <header>
                         <button name="create_pim_products" type="object" class="btn-primary"
                                 string="Create" display="always"
@@ -49,6 +94,24 @@
             </field>
         </record>
 
+        <record id="view_product_template_form" model="ir.ui.view">
+            <field name="name">product.template.form</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <form string="Product">
+                    <sheet>
+                        <group>
+                            <field name="family_id" />
+                            <field name="sku" />
+                        </group>
+                        <group name="dynamic_fields">
+                            <!-- Dynamic fields will be injected here -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record id="action_product_creation" model="ir.actions.act_window">
             <field name="name">Create Product</field>
             <field name="res_model">product.create</field>
@@ -59,7 +122,10 @@
             <field name="name">Products</field>
             <field name="res_model">product.template</field>
             <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_product_management_tree"/>
+<!--            <field name="view_id" ref="view_product_management_tree"/>-->
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_product_management_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_template_form')})]"/>
             <field name="domain">[]</field>
         </record>
 
