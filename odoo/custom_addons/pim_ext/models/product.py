@@ -1039,4 +1039,31 @@ class ProductTemplate(models.Model):
      attribute4_id = fields.Many2one('product.attribute4','Attribute 4')
      attribute4_val = fields.Char('Value 4')
      family_id = fields.Many2one('family.attribute','Product Family')
+     active_label = fields.Char(string="Status", compute="_compute_active_label")
+
+     readable_variant_names = fields.Char(string="Variants", compute="_compute_readable_variant_names")
+
+     @api.depends('product_variant_ids')
+     def _compute_readable_variant_names(self):
+          for template in self:
+               if template.product_variant_ids:
+                    template.readable_variant_names = ', '.join(template.product_variant_ids.mapped('name'))
+               else:
+                    template.readable_variant_names = "N/A"
+
+     def _compute_active_label(self):
+          for record in self:
+               record.active_label = "ENABLED" if record.active else "DISABLED"
+
+     def create_pim_products(self):
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'CREATE PRODUCT',
+               'res_model': 'product.create',
+               'view_mode': 'form',
+               'view_id': self.env.ref('pim_ext.product_creation_view').id,
+               'context': {'no_breadcrumbs': True},
+               'target': 'current',
+          }
+
 
