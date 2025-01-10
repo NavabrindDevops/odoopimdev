@@ -222,7 +222,7 @@
                 <list string="Attribute Group" default_order="create_date desc" create="false">
                     <header>
                     <button name="create_pim_attribute_groups" type="object" class="btn-primary"
-                        string="Create" display="always"
+                        string="Create Attribute groups" display="always"
                         invisible="context.get('active_model', 'attribute.group') != 'attribute.group'"/>
                 </header>
                     <field name="name"/>
