@@ -570,6 +570,18 @@ class Attributegroup(models.Model):
      def create_pim_attribute_groups(self):
           print('grouppppppppppp')
 
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Attribute Groups',
+               'res_model': 'attribute.group',
+               'view_mode': 'form',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_groups_custom').id,
+               'target': 'current',
+               'context': {
+                    'default_child_ids': self.env['attribute.group'].search([]).ids,
+               },
+          }
+
      # @api.model
      # def create(self, vals):
      #      print('fkdjfkdfd', vals)
@@ -955,11 +967,22 @@ class FamilyAttribute(models.Model):
 
      def create_pim_attribute_family(self):
           return {
-               'name':_('Create Family'),
-               'type':'ir.actions.act_window',
-               'view_mode':'form',
-               'res_model':'family.attribute',
+               'type': 'ir.actions.act_window',
+               'name': 'Family',
+               'res_model': 'family.attribute',
+               'view_mode': 'form',
+               'view_id': self.env.ref('pim_ext.view_split_family_view_custom').id,
+               'target': 'current',
+               'context': {
+                    'default_family_ids': self.env['family.attribute'].search([]).ids,
+               },
           }
+          # return {
+          #      'name':_('Create Family'),
+          #      'type':'ir.actions.act_window',
+          #      'view_mode':'form',
+          #      'res_model':'family.attribute',
+          # }
 
      def action_open_attribute_group_wizard(self):
           return {
@@ -1073,12 +1096,17 @@ class ProductTemplate(models.Model):
      @api.model
      def get_views(self, views, options=None):
           print('dksdjkdjskdjs', self.env.context.get('family_id'),self.id)
+          print('2222222222222', self.env.context.get('active_id'))
+          active_id = self.env.context.get('active_id')
+          print('dopeee3222222', active_id)
           # Get the view's XML and the type of the view (form, tree, etc.)
           res = super(ProductTemplate, self).get_views(views, options)
           family_id = self.env.context.get('default_family_id') or self.family_id.id
           print("Context in get_views:", self.env.context)
           print("Family ID retrieved:", family_id)
           print('ssssssssssssssssssssss', self.env.context)
+          active_id = self.env.context.get('active_id')
+          print('344444444444444', active_id)
           form_views = [view for view in views if view[1] == 'form']
 
           # Check if we're dealing with a form view and if the family is selected
@@ -1087,6 +1115,7 @@ class ProductTemplate(models.Model):
                print('dpeopepe', view_id)
                print('333322222222', view_type, self.family_id)
                print('dkdksjfdkfjd', self.env.context.get('default_family_id'))
+
                if view_type == 'form' and self.family_id:
                     print('do9303333')
                     doc = etree.XML(res['arch'])  # Parse the XML of the form view
