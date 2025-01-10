@@ -22,7 +22,13 @@
                                 <header>
                                     <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_menu"/>
                                 </header>
-                                <div class="pim_oe_title">
+<!--                                <div class="pim_oe_title">-->
+<!--                                    <h2 class="pim_create_attribute"><span class="attr_title">Edit Attribute Group</span></h2>-->
+<!--                                </div>-->
+                                <div class="pim_oe_title" invisible="not is_create_mode">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Create Attribute Group</span></h2>
+                                </div>
+                                <div class="pim_oe_title" invisible="is_create_mode">
                                     <h2 class="pim_create_attribute"><span class="attr_title">Edit Attribute Group</span></h2>
                                 </div>
                             </form>

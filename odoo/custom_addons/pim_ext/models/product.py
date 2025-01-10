@@ -429,6 +429,8 @@ class Attributegroup(models.Model):
      old_code = fields.Char(string="Old Code", readonly=True)
      new_code = fields.Char(string="New Code", readonly=True)
 
+     is_create_mode = fields.Boolean(default=False, string='Create Mode')
+
      def write(self, vals):
           print('dojjodjod', vals)
           for rec in self:
@@ -515,7 +517,9 @@ class Attributegroup(models.Model):
                'res_model': 'attribute.group',
                'view_mode': 'form',
                'view_id': self.env.ref('pim_ext.view_product_attribute_groups_custom').id,
-               'context': {'no_breadcrumbs': True},
+               'context': {'no_breadcrumbs': True,
+                           'default_is_create_mode': False,
+                           },
                'res_id': self.id,
           }
 
@@ -572,12 +576,13 @@ class Attributegroup(models.Model):
 
           return {
                'type': 'ir.actions.act_window',
-               'name': 'Attribute Groups',
+               'name': 'Create Attribute group',
                'res_model': 'attribute.group',
                'view_mode': 'form',
                'view_id': self.env.ref('pim_ext.view_product_attribute_groups_custom').id,
                'target': 'current',
                'context': {
+                    'default_is_create_mode': True,
                     'default_child_ids': self.env['attribute.group'].search([]).ids,
                },
           }
@@ -816,6 +821,8 @@ class FamilyAttribute(models.Model):
      old_code = fields.Char(string="Old Code", readonly=True)
      new_code = fields.Char(string="New Code", readonly=True)
 
+     is_create_mode = fields.Boolean(default=False, string='Create Mode')
+
      def write(self, vals):
           print('dojjodjod', vals)
           for rec in self:
@@ -896,7 +903,9 @@ class FamilyAttribute(models.Model):
                'res_model': 'family.attribute',
                'view_mode': 'form',
                'view_id': self.env.ref('pim_ext.view_split_family_view_custom').id,
-               'context': {'no_breadcrumbs': True},
+               'context': {'no_breadcrumbs': True,
+                           'default_is_create_mode': False,
+                           },
                'res_id': self.id,
           }
 
@@ -975,6 +984,7 @@ class FamilyAttribute(models.Model):
                'target': 'current',
                'context': {
                     'default_family_ids': self.env['family.attribute'].search([]).ids,
+                    'default_is_create_mode': True,
                },
           }
           # return {
