@@ -124,8 +124,7 @@ class PIMAttributeType(models.Model):
      #      }
 
      def action_back_to_menu_attribute(self):
-          menu_id = self.env['ir.ui.menu'].search([('name', '=', 'Attributes')])
-          print('dskjskj4444df', menu_id)
+          menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
 
           # return {
           #      'type': 'ir.actions.act_window',

@@ -175,7 +175,7 @@ class AttributeForm(models.Model):
           }
 
      def action_back_to_attribute_menu(self):
-          menu_id = self.env['ir.ui.menu'].search([('name', '=', 'Attributes')])
+          menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
           return {
                'type': 'ir.actions.client',
                'tag': 'reload',
@@ -536,7 +536,7 @@ class Attributegroup(models.Model):
 
 
      def action_back_to_menu(self):
-          menu_id = self.env['ir.ui.menu'].search([('name', '=', 'Attributes Groups')])
+          menu_id = self.env.ref('pim_ext.menu_pim_attribute_action2')
           print('dskjskjdf', menu_id)
 
           # return {
