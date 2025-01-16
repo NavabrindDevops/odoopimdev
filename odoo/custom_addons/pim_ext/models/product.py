@@ -556,6 +556,14 @@ class Attributegroup(models.Model):
           }
 
      def save_attributes(self):
+          for line in self.attribute_group_line_ids:
+               if not line.product_attribute_id:
+                    raise UserError(f"No product attribute linked in line {line.id}.")
+
+               # Update the product.attribute if needed
+               line.product_attribute_id.write({
+                    'attribute_group': self.id,
+               })
           return {
                'type': 'ir.actions.act_window',
                'view_mode': 'form',

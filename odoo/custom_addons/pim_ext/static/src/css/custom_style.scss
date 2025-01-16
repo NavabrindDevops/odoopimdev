@@ -89,6 +89,25 @@
     width: 70%;
     border-radius:5px;
 }
+
+.o_kanban_details {
+    display: flex;
+    flex-direction: column; /* Align fields vertically */
+    gap: 5px; /* Add spacing between fields */
+}
+
+.o_kanban_details > div {
+    display: flex;
+    align-items: center; /* Align text and labels properly */
+    gap: 5px; /* Spacing between label and value */
+}
+
+.badge {
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
 .page_form {
     .o_content {
         overflow-x: hidden;

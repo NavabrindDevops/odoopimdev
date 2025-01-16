@@ -78,7 +78,7 @@ class PIMAttributeType(models.Model):
      def create_attributes(self):
 
           if all([self.name, self.display_type]):
-               res = self.env['product.attribute'].create({
+               attribute_vals = {
                     'name': self.name,
                     'display_type': self.display_type,
                     'attribute_group': self.attribute_group.id,
@@ -95,9 +95,16 @@ class PIMAttributeType(models.Model):
                     'value_ids': [(0, 0, {
                          'name': self.display_type.replace('_', ' '),
                     })]
+               }
+          attribute = self.env['product.attribute'].create(attribute_vals)
+
+          if self.attribute_group:
+               self.env['attribute.group.lines'].create({
+                    'attr_group_id': self.attribute_group.id,
+                    'product_attribute_id': attribute.id,
                })
 
-          menu_id = self.env['ir.ui.menu'].search([('name', '=', 'Attributes')])
+          menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
           return {
                'type': 'ir.actions.client',
                'tag': 'reload',
