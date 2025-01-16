@@ -190,6 +190,9 @@
                     <page name="sales" position="move"/>
                     <page name="inventory" position="move"/>
                 </xpath>
+                <xpath expr="//page[@name='general_information']" position="inside">
+                    <field name="family_id"/>
+                </xpath>
             </field>
         </record>
 

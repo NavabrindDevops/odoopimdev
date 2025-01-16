@@ -9,10 +9,10 @@
         <field name="arch" type="xml">
           <xpath expr="//notebook" position="before">
                 <group> 
-                    <group string="Family">
-                        <field name="family_id"/>
-<!--                        <field name="attribute1_val"/>-->
-                    </group>
+<!--                    <group string="Family">-->
+<!--                        <field name="family_id"/>-->
+<!--&lt;!&ndash;                        <field name="attribute1_val"/>&ndash;&gt;-->
+<!--                    </group>-->
 <!--                    <group string="Attribute 2">-->
 <!--                        <field name="attribute2_id"/>-->
 <!--                        <field name="attribute2_val"/>-->
