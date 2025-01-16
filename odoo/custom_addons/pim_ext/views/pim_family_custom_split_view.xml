@@ -62,8 +62,10 @@
                                                    </div>
                                                    <br/>
                                                    <field name="product_families_ids">
-                                                       <list edit="false" create="false" default_order="create_date desc">
-                                                            <field name="attribute_group_id" widget="many2one" options="{'no_create': True}" group_by="attribute_group_id"/>
+                                                       <list editable="bottom" edit="false" create="false" default_order="create_date desc">
+                                                            <field name="attribute_group_id" widget="many2one"
+                                                                   options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
+                                                                   group_by="attribute_group_id"/>
                     <!--                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>-->
                                                            <field name="product_id"/>
                                                            <field name="product_id_stored"/>
