@@ -1086,6 +1086,7 @@ class ProductTemplate(models.Model):
      readable_variant_names = fields.Char(string="Variants", compute="_compute_readable_variant_names")
      family_id = fields.Many2one('family.attribute', string='Family')
      sku = fields.Char(string='SKU')
+     brand_id = fields.Many2one('product.brand', string='Brand')
 
      @api.depends('product_variant_ids')
      def _compute_readable_variant_names(self):

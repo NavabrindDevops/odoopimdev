@@ -29,6 +29,7 @@
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
                 <field name="family_id" />
+                <field name="brand_id"/>
                 <field name="mpn_number"/>
                 <field name="status"/>
                 <field name="origin"/>

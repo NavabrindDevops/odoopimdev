@@ -76,87 +76,100 @@
             <field name="name">product.management.kanban</field>
             <field name="model">product.template</field>
             <field name="arch" type="xml">
-                <kanban create="false" edit="false" default_order="create_date desc" class="o_kanban_view">
-                    <header>
-                        <button name="create_pim_products" type="object" class="btn-primary"
-                                string="Create" display="always"
-                                invisible="context.get('active_model', 'product.template') != 'product.template'"/>
-                    </header>
-                    <field name="image_1920"/>
-                    <field name="name"/>
-                    <field name="active_label"/>
-                    <field name="create_date"/>
-                    <field name="write_date"/>
+                <kanban class="o_kanban_mobile fam_grid_box" default_order="create_date desc" create="0" limit="80" default_group_by="brand_id">
+                <header>
+                    <button name="create_pim_products" type="object" class="btn-primary"
+                            string="Create" display="always"
+                            invisible="context.get('active_model', 'product.template') != 'product.template'"/>
+                </header>
+                <field name="name" string="Family Name"/>
+<!--                <field name="family_id" string="Family ID"/>-->
+<!--                <field name="brand_id" string="Brand Name"/>-->
+<!--                <field name="buyer_id"/>-->
+<!--                <field name="sku_count"/>-->
+                <templates>
+                    <t t-name="kanban-box">
+                <!--        <t t-set="bg_class" t-value="'green_bg'"/>-->
+<!--                            <t t-if="record.completeness.value &gt;= 70">-->
+<!--                                <t t-set="bg_class" t-value="'green_bg'"/>-->
+<!--                            </t>-->
+<!--                            <t t-elif="record.completeness.value &gt;= 55 and record.completeness.value &lt; 70">-->
+<!--                                <t t-set="bg_class" t-value="'light_green_bg'"/>-->
+<!--                            </t>-->
+<!--                            <t t-elif="record.completeness.value &gt;= 40 and record.completeness.value &lt; 55">-->
+<!--                                <t t-set="bg_class" t-value="'yellow_bg'"/>-->
+<!--                            </t>-->
+<!--                            <t t-elif="record.completeness.value &gt;= 25 and record.completeness.value &lt; 40">-->
+<!--                                <t t-set="bg_class" t-value="'orange_bg'"/>-->
+<!--                            </t>-->
+<!--                            <t t-elif="record.completeness.value &gt;= 0 and record.completeness.value &lt; 25">-->
+<!--                                <t t-set="bg_class" t-value="'red_bg'"/>-->
+<!--                            </t>-->
 
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="o_kanban_card shadow-sm p-3 mb-3">
-                                <!-- Product Image -->
-                                <div class="o_kanban_image mr-3">
-                                    <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
-                                </div>
+                        <div class="oe_kanban_global_area" t-att-class="'fam_grid ' + bg_class">
+                            <div class="o_kanban_image fam_grid_image">
+                                <img alt="Avatar" t-att-src="kanban_image('product.template', 'image_1920', record.id.raw_value)"/>
+                            </div>
 
-                                <!-- Right Side Fields -->
-                                <div class="o_kanban_details">
-                                    <!-- Product Name -->
-                                    <div class="o_kanban_name">
-                                        <strong>
-                                            <t t-esc="record.name.value or 'No Name'"/>
-                                        </strong>
+                            <div class="oe_kanban_details fam_grid_content">
+<!--                                <div class="o_kanban_record_title">-->
+<!--                                    <i class="fa fa-lg fa-square-o jstr-pull-right jstr-hide-mobile jstr-hide-tablet"></i>-->
+<!--                                    <i class="fa fa-lg fa-check-square-o jstr-pull-right jstr-hide-mobile jstr-hide-tablet"></i>-->
+<!--                &lt;!&ndash;                    <i class="fa fa-trash jstr-pull-right jstr-hide-mobile jstr-hide-tablet"></i>&ndash;&gt;-->
+<!--                                    <span class="jstr-overalyed">-->
+<!--                                        <field name="name"/>-->
+<!--                                    </span>-->
+<!--                                </div>-->
+                                <div t-attf-class="oe_kanban_global_click family_record_grid">
+                                    <ul class="fam_list">
+                                        <li class="mb4 fam_list_title">
+                                            <field name="name"/>
+                                        </li>
+                                        <div class="d-flex fam_list_value">
+                                            <div>
+                                                <li><span class="value_weight">Family: </span><field name="family_id"/></li>
+                                                <li><span class="value_weight">Brand: </span><field name="brand_id"/></li>
+                                            </div>
+<!--                                            <div>-->
+<!--                                                <li><span class="value_weight">Buyer: </span><field name="buyer_id"/></li>-->
+<!--                                                <li><span class="value_weight">SKU(s): </span><field name="sku_count"/></li>-->
+<!--                                            </div>-->
+                                        </div>
+                                    </ul>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="fam_grid_sts d-flex flex-column justify-content-between">
+                                            <div>
+                                                <span>Status:</span>
+                                                <field name="active_label"/>
+                                            </div>
+                                            <div class="fam_grid_c_date">
+                                                <p class="mb-1 value_title">Created at</p>
+                                                <field name="create_date"/>
+                                            </div>
+                                        </div>
+                                        <div class="fam_ce_date d-flex flex-column justify-content-between">
+                                            <div>
+                                            </div>
+                                            <div class="fam_grid_c_date">
+                                                <p class="mb-1 value_title">Updated at</p>
+                                                <field name="write_date"/>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <!-- Status -->
-                                    <div>
-                                        <i class="fa fa-info-circle text-success" style="margin-right: 5px;"></i>
-                                        <span>Status:</span>
-                                        <t t-if="record.active_label and record.active_label.value">
-                                            <span class="badge badge-success">Enabled</span>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="badge badge-danger">Disabled</span>
-                                        </t>
-                                    </div>
-<!--                                    <div>-->
-<!--                                        <span>Status:</span>-->
-<!--                                        <t t-if="record.active_label and record.active_label.value">-->
-<!--                                            <span class="badge badge-success">Enabled</span>-->
-<!--                                        </t>-->
-<!--                                        <t t-else="">-->
-<!--                                            <span class="badge badge-danger">Disabled</span>-->
-<!--                                        </t>-->
-<!--                                    </div>-->
-
-                                    <!-- Completeness -->
-                                    <div>
-                                        <span>Completeness:</span>
-<!--                                        <t t-if="record.completeness_label and record.completeness_label.value">-->
-<!--                                            <span>-->
-<!--                                                <t t-esc="record.completeness_label.value"/>%-->
-<!--                                            </span>-->
-<!--                                        </t>-->
-<!--                                        <t t-else="">-->
-                                            <span>Unknown</span>
-<!--                                        </t>-->
-                                    </div>
-
-                                    <!-- Created and Updated -->
-                                    <div class="text-muted">
-                                        <small>
-                                            Created: <t t-esc="record.create_date.value or 'Unknown'"/>
-                                        </small>
-                                        <br/>
-                                        <small>
-                                            Updated: <t t-esc="record.write_date.value or 'Unknown'"/>
-                                        </small>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="fam_grid_sts d-flex flex-column justify-content-between">
+                                            <div class="fam_grid_c_date">
+                                                <p class="mb-1 value_title">Completeness</p>
+<!--                                                <field name="completeness" widget="progressbar_extended"/>-->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </t>
-                    </templates>
-
-
-
-                </kanban>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
             </field>
         </record>
 
@@ -174,6 +187,7 @@
                     <field name="id"/>
                     <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
                     <field name="name"/>
+                    <field name="brand_id"/>
                     <field name="active_label"/>
                     <field name="create_date" string="Created"/>
                     <field name="write_date" string="Updated"/>
@@ -200,9 +214,12 @@
                     <page name="sales" position="move"/>
                     <page name="inventory" position="move"/>
                 </xpath>
-                <xpath expr="//page[@name='general_information']" position="inside">
-                    <field name="family_id"/>
-                </xpath>
+<!--                <xpath expr="//page[@name='general_information']" position="inside">-->
+<!--                    <field name="family_id"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//page[@name='general_information']/field[@name='family_id']" position="after">-->
+<!--                    <field name="brand_id"/>-->
+<!--                </xpath>-->
             </field>
         </record>
 

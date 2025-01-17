@@ -90,6 +90,48 @@
     border-radius:5px;
 }
 
+.value_title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.fam_grid_c_date {
+    gap: 6px;
+    span {
+        font-size: 12px;
+        font-weight: 400;
+    }
+}
+
+.o_kanban_image {
+    &.fam_grid_image {
+        width: 100px;
+        height: 100%;
+        img {
+            width: -webkit-fill-available;
+            height: 100%;
+            object-fit: contain;
+        }
+        +div {
+            padding-left: 106px;
+        }
+    }
+}
+
+.fam_grid_image {
+    width: 100px;
+    height: 100%;
+    img {
+        width: -webkit-fill-available;
+        height: 100%;
+        object-fit: contain;
+    }
+    +div {
+        padding-left: 106px;
+    }
+}
+
 .o_kanban_details {
     display: flex;
     flex-direction: column; /* Align fields vertically */
@@ -111,6 +153,51 @@
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+.o_kanban_mobile .o_kanban_renderer .o_kanban_record {
+    div.label {
+        @include o-text-overflow;
+    }
+}
+
+.fam_grid_box {
+    .o_kanban_renderer {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        .o_kanban_record {
+            width: 100%;
+            margin: 0;
+        }
+    }
+}
+
+.fam_list_title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.oe_kanban_details {
+    padding-top:10px;
+        width: 100%;
+        align-self: left;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        // Useful for the class 'o_text_overflow'
+        min-width: 0;
+
+        ul {
+            margin-bottom: calc(var(--KanbanRecord-gap-v) * 0.5);
+            padding-left: 0;
+            list-style: none;
+            font-size: $font-size-sm;
+
+            li {
+                margin-bottom: 2px;
+            }
+        }
+    }
 
 
 .badge {
@@ -292,6 +379,14 @@
             text-align: center;
             margin-right: 10px;
             height: 130px;
+        }
+    }
+}
+
+@media screen and (max-width: 1536px) {
+    .fam_grid_box {
+        .o_kanban_renderer {
+            grid-template-columns: repeat(3, 1fr);
         }
     }
 }
