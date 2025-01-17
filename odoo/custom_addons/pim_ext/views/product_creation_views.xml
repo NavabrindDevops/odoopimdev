@@ -90,9 +90,9 @@
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="o_kanban_record_row">
+                            <div class="o_kanban_card shadow-sm p-3 mb-3">
                                 <!-- Product Image -->
-                                <div class="o_kanban_image">
+                                <div class="o_kanban_image mr-3">
                                     <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
                                 </div>
 
@@ -107,6 +107,7 @@
 
                                     <!-- Status -->
                                     <div>
+                                        <i class="fa fa-info-circle text-success" style="margin-right: 5px;"></i>
                                         <span>Status:</span>
                                         <t t-if="record.active_label and record.active_label.value">
                                             <span class="badge badge-success">Enabled</span>
@@ -115,6 +116,15 @@
                                             <span class="badge badge-danger">Disabled</span>
                                         </t>
                                     </div>
+<!--                                    <div>-->
+<!--                                        <span>Status:</span>-->
+<!--                                        <t t-if="record.active_label and record.active_label.value">-->
+<!--                                            <span class="badge badge-success">Enabled</span>-->
+<!--                                        </t>-->
+<!--                                        <t t-else="">-->
+<!--                                            <span class="badge badge-danger">Disabled</span>-->
+<!--                                        </t>-->
+<!--                                    </div>-->
 
                                     <!-- Completeness -->
                                     <div>

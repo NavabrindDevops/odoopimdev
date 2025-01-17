@@ -99,8 +99,19 @@
 .o_kanban_details > div {
     display: flex;
     align-items: center; /* Align text and labels properly */
-    gap: 5px; /* Spacing between label and value */
+    gap: 0px; /* Spacing between label and value */
 }
+
+.o_kanban_card {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: transform 0.2s;
+}
+.o_kanban_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 
 .badge {
     padding: 2px 6px;
