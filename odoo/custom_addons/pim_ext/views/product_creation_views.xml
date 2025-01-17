@@ -106,7 +106,7 @@
 <!--                                <t t-set="bg_class" t-value="'red_bg'"/>-->
 <!--                            </t>-->
 
-                        <div class="oe_kanban_global_area" t-att-class="'fam_grid ' + bg_class">
+                        <div class="o_kanban_card" t-att-class="'fam_grid ' + bg_class">
                             <div class="o_kanban_image fam_grid_image">
                                 <img alt="Avatar" t-att-src="kanban_image('product.template', 'image_1920', record.id.raw_value)"/>
                             </div>
