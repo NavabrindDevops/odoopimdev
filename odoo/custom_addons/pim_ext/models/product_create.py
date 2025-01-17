@@ -31,7 +31,7 @@ class ProductCreateMaster(models.Model):
     _rec_name = 'sku'
 
     family_id = fields.Many2one('family.attribute', string='Family')
-    sku = fields.Char(string='SKU')
+    sku = fields.Char(string='SKU', required=True)
 
     def product_save(self):
         print('Saving product and creating dynamic fields...')
