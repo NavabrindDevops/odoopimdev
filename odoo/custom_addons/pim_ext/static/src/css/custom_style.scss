@@ -129,17 +129,19 @@
 .status-box {
       display: inline-block;
       border-radius: 5px;
-      color: white;
+      border:1px solid;
+      color: green;
       text-align: center;
       width: fit-content;
   }
 
 .status-enabled {
-  background-color: green;
+  background-color: white;
+
 }
 
 .status-disabled {
-  background-color: red;
+  background-color: white;
 }
 
 .o_kanban_renderer .o_kanban_record {
