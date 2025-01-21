@@ -126,6 +126,22 @@
     }
 }
 
+.status-box {
+      display: inline-block;
+      border-radius: 5px;
+      color: white;
+      text-align: center;
+      width: fit-content;
+  }
+
+.status-enabled {
+  background-color: green;
+}
+
+.status-disabled {
+  background-color: red;
+}
+
 .o_kanban_renderer .o_kanban_record {
     .orange_bg {
         background-color: #FFF7E9 !important;

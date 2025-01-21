@@ -139,8 +139,13 @@
                                     <div class="d-flex justify-content-between">
                                         <div class="fam_grid_sts d-flex flex-column justify-content-between">
                                             <div>
-                                                <span>Status:</span>
-                                                <field name="active_label"/>
+                                                <p class="mb-1 value_title">Status</p>
+                                                <div t-if="record.active_label.raw_value == 'ENABLED'" class="status-box status-enabled">
+                                                    <field name="active_label"/>
+                                                </div>
+                                                <div t-if="record.active_label.raw_value == 'DISABLED'" class="status-box status-disabled">
+                                                    <field name="active_label"/>
+                                                </div>
                                             </div>
                                             <div class="fam_grid_c_date">
                                                 <p class="mb-1 value_title">Created at</p>
@@ -149,18 +154,12 @@
                                         </div>
                                         <div class="fam_ce_date d-flex flex-column justify-content-between">
                                             <div>
+                                                <p class="mb-1 value_title">Complete</p>
+<!--                                                <field name="completeness" widget="progressbar_extended"/>-->
                                             </div>
                                             <div class="fam_grid_c_date">
                                                 <p class="mb-1 value_title">Updated at</p>
                                                 <field name="write_date"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="fam_grid_sts d-flex flex-column justify-content-between">
-                                            <div class="fam_grid_c_date">
-                                                <p class="mb-1 value_title">Completeness</p>
-<!--                                                <field name="completeness" widget="progressbar_extended"/>-->
                                             </div>
                                         </div>
                                     </div>
