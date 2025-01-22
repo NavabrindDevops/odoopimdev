@@ -36,10 +36,14 @@ class ProductCreateMaster(models.Model):
     def product_save(self):
         print('Saving product and creating dynamic fields...')
         view_id = self.env.ref('pim_ext.view_product_template_form_inherit')
+        print('viewelkflfkdf', view_id)
         view_arch = view_id.arch_base
+        print('dioviewarchhhhhhhh', view_arch)
         doc = xee.fromstring(view_arch)
+        print('docccccc---------->>>>>..', doc)
 
         attributes = self.family_id.mapped('product_families_ids').mapped('attribute_id')
+        print('atributessssss-------->>>>', attributes)
         if not attributes:
             print("No attributes found for the family.")
             return
@@ -50,15 +54,22 @@ class ProductCreateMaster(models.Model):
             print('dksjdhshds', attribute)
             print('ffffffffffff', attribute.attribute_group)
             group = attribute.attribute_group.name if attribute.attribute_group else "Ungrouped"
+            print('groupdddddddddddddd', group)
 
             grouped_attributes.setdefault(group, []).append(attribute)
+            print('apeendddddddddddd', grouped_attributes)
 
         # Locate the dynamic attributes container
         dynamic_fields_group = doc.xpath("//group[@name='dynamic_attributes']")
+        print('dgyeeeeeeeeeeee', dynamic_fields_group)
         if dynamic_fields_group:
+            print('fhrrrrrrrrrr')
             container = dynamic_fields_group[0]
+            print('conttttttttttttaaaaaaaaa', container)
 
             for group_name, group_attributes in grouped_attributes.items():
+                print('dkjkdjfd333333333', group_name)
+                print('fjeeeeeeeeeeeeeeeeee', group_attributes)
                 # Create a collapsible group for each attribute group
                 collapsible_group = xee.SubElement(
                     container,
@@ -66,20 +77,29 @@ class ProductCreateMaster(models.Model):
                     {'string': group_name, 'name': f"{group_name.replace(' ', '_').lower()}_group",
                      'collapsable': 'true'}
                 )
+                print('dkecolaaaaaaaaapseeeeeee', collapsible_group)
 
                 for attribute in group_attributes:
+                    print('dopatrrrrrrrrro94444444', attribute)
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
+                    print('dkf4fieldsnameeeeeee', field_name)
                     existing_field = collapsible_group.xpath(f"./field[@name='{field_name}']")
+                    print('existinffffffffff', existing_field)
+                    display_type = attribute.display_type
+                    print('dsdjsdhsjdhs',display_type)
                     if not existing_field:
                         field_element = xee.Element('field', {'name': field_name})
+                        print('gkhhhhhhhhhhh', field_element)
                         collapsible_group.append(field_element)
+                        print('or90rrrrrrrrrrrrrrrrrrrr', collapsible_group)
 
                     # Ensure dynamic fields are created in the model
-                    self._create_dynamic_field(field_name)
+                    self._create_dynamic_field(field_name, display_type)
 
             # Update the form view with the modified XML
             view_id.write({'arch': xee.tostring(doc, pretty_print=True, encoding='unicode')})
-            print('Updated Form View XML Saved.')
+            print('Updated Form View XML Saved2222222.', view_id)
+            print('archaaaaadksdsdsssssssss.', view_id.arch)
 
         # Create the product template
         new_product = self.env['product.template'].create({
@@ -98,7 +118,8 @@ class ProductCreateMaster(models.Model):
             'target': 'current',
         }
 
-    def _create_dynamic_field(self, field_name):
+    def _create_dynamic_field(self, field_name, display_type):
+        print('dk333333333333333333', display_type)
         """ Creates a dynamic field in product.template if it doesn't already exist """
         # Check if the field exists in product.template
         existing_field = self.env['ir.model.fields'].search([
@@ -106,6 +127,24 @@ class ProductCreateMaster(models.Model):
             ('model', '=', 'product.template')
         ])
         print('djkdjfdkjfd', existing_field)
+        if display_type == 'number':
+            print('numberrrrrrrr')
+            display_type = 'float'
+        if display_type == 'radio':
+            print('radiooooooo')
+            display_type = 'boolean'
+        if display_type == 'file':
+            print('fileeeeeee')
+            display_type = 'binary'
+        if display_type == 'image':
+            print('imageeeeeeeeeeee')
+            display_type = 'binary'
+        if display_type == 'textarea':
+            print('textareasssssss')
+            display_type = 'text'
+        if display_type == 'link':
+            print('linkssssss')
+            display_type = 'char'
 
         if not existing_field:
             print('fkjfdkjfdkfjd', field_name)
@@ -115,7 +154,7 @@ class ProductCreateMaster(models.Model):
                 'name': field_name,
                 'model_id': self.env['ir.model']._get('product.template').id,
                 'field_description': field_name.replace('x_', ''),
-                'ttype': 'char',
+                'ttype': display_type,
                 'store': True,
             })
             print('ddddddddddddddd')
