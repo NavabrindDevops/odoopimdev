@@ -1,5 +1,4 @@
 from odoo import api, fields, models, _
-from odoo.addons.test_convert.tests.test_env import field
 
 
 class PimSelect(models.TransientModel):
