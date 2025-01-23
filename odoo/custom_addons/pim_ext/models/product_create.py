@@ -85,14 +85,6 @@ class ProductCreate(models.Model):
             'view_id': self.env.ref('pim_ext.view_product_template_create_master_custom_form').id,
         }
 
-    # def _compute_master_products_ids(self):
-    #     print('dkfkfjd')
-    #     for record in self:
-    #         print('dskjskjds', record)
-    #         record.master_products_ids = self.env['product.template'].search([])
-
-
-
     def create_product_rec_model(self):
         pass
 
@@ -199,6 +191,7 @@ class ProductCreateMaster(models.Model):
             'name': self.sku if self.sku else 'Test',
             'default_code': self.sku if self.sku else 'Test',
             'categ_id': 1,
+            'sku': self.sku,
             'family_id': self.family_id.id,
         })
         print(f"New Product Created: {new_product.name} (ID: {new_product.id})")
