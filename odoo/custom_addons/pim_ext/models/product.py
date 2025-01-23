@@ -164,7 +164,6 @@ class AttributeForm(models.Model):
 
      # delete button attribute
      def attribute_master_unlink(self):
-          print('dopeddddddddddd')
           return {
                'name': 'Confirm Deletion',
                'type': 'ir.actions.act_window',
@@ -324,7 +323,6 @@ class AttributeForm(models.Model):
                     raise ValidationError("Please fill the Attribute values for dropdown")
 
      def write(self, vals):
-          print('dojjodjod', vals)
           for rec in self:
                time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                msg_string = ''
@@ -335,7 +333,6 @@ class AttributeForm(models.Model):
                for key in vals:
                     if key in ['name', 'code', 'display_type', 'required_in_clone', 'mandatory', 'completeness']:
                          attribute = rec._fields[key].string
-                         print('dkjkdjfdkf', attribute)
                          header = "• %s" % attribute
                          if key in ['display_type']:
                               selection_tuple = dict(rec._fields[key].selection)
@@ -349,28 +346,20 @@ class AttributeForm(models.Model):
                                                  "Old value: %s               New Value: %s\n"
                                             ) % (old_value, new_value)
                               full_message = header + "\n" + msg_string
-                              print('dkjkfjdkfd', full_message)
                               if rec.history_log:
-                                   print('ifffffffffffff')
                                    rec.history_log = full_message + "\n" + rec.history_log
                               else:
-                                   print('dssssssssssssss')
                                    rec.history_log = full_message
                          if key in ['code']:
                               code = rec._fields[key].string
-                              print('dopeeeeeeeee', code)
                               header2 = "• %s" % code
-                              print('dkjwwwwwwwww', header2)
                               msg_string2 += (
                                                  "Old value: %s               New Value: %s\n"
                                             ) % (old_code, new_code)
                               full_message2 = header2 + "\n" + msg_string2
-                              print('dkjkfjdkfd', full_message)
                               if rec.history_log:
-                                   print('ifffffffffffff')
                                    rec.history_log = full_message2 + "\n" + rec.history_log
                               else:
-                                   print('dssssssssssssss')
                                    rec.history_log = full_message2
           res = super(AttributeForm, self).write(vals)
           return res
@@ -383,10 +372,8 @@ class AttributeMasterUnlinkWizard(models.TransientModel):
     attribute_id = fields.Many2one('product.attribute', string="Attribute Master")
 
     def confirm_unlink(self):
-        print('dfjdkfjdfd')
         menu_id = self.env['ir.ui.menu'].search([('name', '=', 'Attributes')])
         if self.attribute_id:
-             print('dfjkdfjgfgbb444444', self.attribute_id)
              self.attribute_id.unlink()
         return {
              'type': 'ir.actions.client',
@@ -432,7 +419,6 @@ class Attributegroup(models.Model):
      is_create_mode = fields.Boolean(default=False, string='Create Mode')
 
      def write(self, vals):
-          print('dojjodjod', vals)
           for rec in self:
                time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                msg_string = ''
@@ -443,7 +429,6 @@ class Attributegroup(models.Model):
                for key in vals:
                     if key in ['name', 'attribute_code_rec', 'display_type', 'required_in_clone', 'mandatory', 'completeness']:
                          attribute = rec._fields[key].string
-                         print('dkjkdjfdkf', attribute)
                          header = "• %s" % attribute
                          if key in ['display_type']:
                               selection_tuple = dict(rec._fields[key].selection)
@@ -457,28 +442,20 @@ class Attributegroup(models.Model):
                                                  "Old value: %s               New Value: %s\n"
                                             ) % (old_value, new_value)
                               full_message = header + "\n" + msg_string
-                              print('dkjkfjdkfd', full_message)
                               if rec.history_log:
-                                   print('ifffffffffffff')
                                    rec.history_log = full_message + "\n" + rec.history_log
                               else:
-                                   print('dssssssssssssss')
                                    rec.history_log = full_message
                          if key in ['attribute_code_rec']:
                               code = rec._fields[key].string
-                              print('dopeeeeeeeee', code)
                               header2 = "• %s" % code
-                              print('dkjwwwwwwwww', header2)
                               msg_string2 += (
                                                  "Old value: %s              New Value: %s\n"
                                             ) % (old_code, new_code)
                               full_message2 = header2 + "\n" + msg_string2
-                              print('dkjkfjdkfd', full_message)
                               if rec.history_log:
-                                   print('ifffffffffffff')
                                    rec.history_log = full_message2 + "\n" + rec.history_log
                               else:
-                                   print('dssssssssssssss')
                                    rec.history_log = full_message2
           res = super(Attributegroup, self).write(vals)
           return res
@@ -537,7 +514,6 @@ class Attributegroup(models.Model):
 
      def action_back_to_menu(self):
           menu_id = self.env.ref('pim_ext.menu_pim_attribute_action2')
-          print('dskjskjdf', menu_id)
 
           # return {
           #      'type': 'ir.actions.act_window',
@@ -580,7 +556,6 @@ class Attributegroup(models.Model):
      #      return {'type': 'ir.actions.client', 'tag': 'reload'}
 
      def create_pim_attribute_groups(self):
-          print('grouppppppppppp')
 
           return {
                'type': 'ir.actions.act_window',
@@ -832,7 +807,6 @@ class FamilyAttribute(models.Model):
      is_create_mode = fields.Boolean(default=False, string='Create Mode')
 
      def write(self, vals):
-          print('dojjodjod', vals)
           for rec in self:
                time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                msg_string = ''
@@ -843,7 +817,6 @@ class FamilyAttribute(models.Model):
                for key in vals:
                     if key in ['name', 'code', 'display_type', 'required_in_clone', 'mandatory', 'completeness']:
                          attribute = rec._fields[key].string
-                         print('dkjkdjfdkf', attribute)
                          header = "• %s" % attribute
                          if key in ['display_type']:
                               selection_tuple = dict(rec._fields[key].selection)
@@ -857,28 +830,20 @@ class FamilyAttribute(models.Model):
                                                  "Old value: %s               New Value: %s\n"
                                             ) % (old_value, new_value)
                               full_message = header + "\n" + msg_string
-                              print('dkjkfjdkfd', full_message)
                               if rec.history_log:
-                                   print('ifffffffffffff')
                                    rec.history_log = full_message + "\n" + rec.history_log
                               else:
-                                   print('dssssssssssssss')
                                    rec.history_log = full_message
                          if key in ['code']:
                               code = rec._fields[key].string
-                              print('dopeeeeeeeee', code)
                               header2 = "• %s" % code
-                              print('dkjwwwwwwwww', header2)
                               msg_string2 += (
                                                  "Old value: %s               New Value: %s\n"
                                             ) % (old_code, new_code)
                               full_message2 = header2 + "\n" + msg_string2
-                              print('dkjkfjdkfd', full_message)
                               if rec.history_log:
-                                   print('ifffffffffffff')
                                    rec.history_log = full_message2 + "\n" + rec.history_log
                               else:
-                                   print('dssssssssssssss')
                                    rec.history_log = full_message2
           res = super(FamilyAttribute, self).write(vals)
           return res
@@ -941,7 +906,6 @@ class FamilyAttribute(models.Model):
 
      def action_back_to_menu(self):
           menu_id = self.env['ir.ui.menu'].search([('name', '=', 'Families')])
-          print('4444444444', menu_id)
           return {
                'type': 'ir.actions.client',
                'tag': 'reload',
@@ -1114,31 +1078,17 @@ class ProductTemplate(models.Model):
      # this is for dynamic product creation
      @api.model
      def get_views(self, views, options=None):
-          print('dksdjkdjskdjs', self.env.context.get('family_id'),self.id)
-          print('2222222222222', self.env.context.get('active_id'))
           active_id = self.env.context.get('active_id')
-          print('dopeee3222222', active_id)
           # Get the view's XML and the type of the view (form, tree, etc.)
           res = super(ProductTemplate, self).get_views(views, options)
           family_id = self.env.context.get('default_family_id') or self.family_id.id
-          print("Context in get_views:", self.env.context)
-          print("Family ID retrieved:", family_id)
-          print('ssssssssssssssssssssss', self.env.context)
           active_id = self.env.context.get('active_id')
-          print('344444444444444', active_id)
           form_views = [view for view in views if view[1] == 'form']
 
           # Check if we're dealing with a form view and if the family is selected
-          print('dofdpofdpofdp', form_views)
           for view_id, view_type in form_views:
-               print('dpeopepe', view_id)
-               print('333322222222', view_type, self.family_id)
-               print('dkdksjfdkfjd', self.env.context.get('default_family_id'))
-
                if view_type == 'form' and self.family_id:
-                    print('do9303333')
                     doc = etree.XML(res['arch'])  # Parse the XML of the form view
-                    print('doccccccccccccc', doc)
 
                     # Look for the dynamic fields container (group where we will add dynamic fields)
                     dynamic_fields_container = doc.xpath("//group[@name='dynamic_attributes']")
