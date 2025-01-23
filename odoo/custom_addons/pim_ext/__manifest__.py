@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Product Information Management',
-    'version': '17.0',
+    'version': '18.0',
     "author": "Abhinav By Navabrind",
     'summary': 'Dealing with product information management',
     'description': """
