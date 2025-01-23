@@ -97,7 +97,7 @@
                                 </list>
                             </field>
                         </div>
-                        <div class="right-column">
+                        <div class="right-column"  invisible="is_invisible">
                             <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
                                 <header>
                                     <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
@@ -106,7 +106,12 @@
                                     <h2 class="pim_create_attribute"><span class="attr_title">Products</span></h2>
                                 </div>
                                 <div class="pim_oe_title">
-                                    <h2 class="choose_pim_attribute_type" style="text-align:left;">Create Product</h2>
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;"
+                                        invisible="is_product_bundle or is_product_grouped or is_invisible">Create Product</h2>
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;"
+                                        invisible="is_product_model_invisible or is_invisible or is_product_grouped">Create a Bundle Product</h2>
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;"
+                                        invisible="is_product_model_invisible or is_product_bundle or is_invisible">Create a Grouped Product</h2>
                                 </div><br/>
 
                                 <div class="d-flex justify-content-center">
@@ -114,14 +119,59 @@
                                         <div>
                                             <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
                                                 <label for="sku" style="display: block; font-weight: bold;">SKU</label>
-                                                <field name="sku" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                                <field name="sku" placeholder="Enter SKU" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
                                             </div>
 
                                             <div style="margin-bottom: 15px; text-align: justify;">
                                                 <label for="family_id" style="display: block; font-weight: bold; margin: 0; padding: 0; text-align: left;">
                                                     Family
                                                 </label>
-                                                <field name="family_id" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                                <field name="family_id" placeholder="Choose Family" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                            </div>
+
+                                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                                <button name="product_cancel" string="Cancel" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
+                                                <button name="product_save" string="Save" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;" class="btn btn-success"/>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="right-column" invisible="is_product_model_invisible or is_product_bundle or is_product_grouped">
+                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
+                                </header>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Products</span></h2>
+                                </div>
+                                <div class="pim_oe_title">
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;">Create a Product model</h2>
+                                </div><br/>
+
+                                <div class="d-flex justify-content-center">
+                                    <div class="o_grid attr_types">
+                                        <div>
+                                            <div style="margin-bottom: 15px; text-align: justify;">
+                                                <label for="sku" string="Code" style="display: block; font-weight: bold;"></label>
+                                                <field name="sku" placeholder="Enter SKU" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                            </div>
+
+                                            <div style="margin-bottom: 15px; text-align: justify;">
+                                                <label for="family_id" string="Family" style="display: block; font-weight: bold; margin: 0; padding: 0; text-align: left;">
+                                                    Family
+                                                </label>
+                                                <field name="family_id" placeholder="Choose Family" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                            </div>
+
+                                            <div style="margin-bottom: 15px; text-align: justify;">
+                                                <label for="family_id" string="Variant" style="display: block; font-weight: bold; margin: 0; padding: 0; text-align: left;">
+                                                    Variant
+                                                </label>
+                                                <field name="family_id" placeholder="Choose Family Variant" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
                                             </div>
 
                                             <div style="margin-top: 20px; display: flex; gap: 10px;">

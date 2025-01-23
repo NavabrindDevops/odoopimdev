@@ -29,21 +29,6 @@ class ProductCreate(models.Model):
             },
         }
 
-    def create_product_model(self):
-        pass
-
-    def create_bundle_product(self):
-        pass
-
-    def create_grouped_product(self):
-        pass
-
-    # def _compute_master_products_ids(self):
-    #     print('dkfkfjd')
-    #     for record in self:
-    #         print('dskjskjds', record)
-    #         record.master_products_ids = self.env['product.template'].search([])
-
     def create_product_rec(self):
         all_product_ids = self.env['product.template'].search([]).ids
         return {
@@ -53,9 +38,60 @@ class ProductCreate(models.Model):
             'view_mode': 'form',
             'context': {'no_breadcrumbs': True,
                         'default_master_products_ids': all_product_ids,
+                        'default_is_product_model_invisible': True,
                         },
             'view_id': self.env.ref('pim_ext.view_product_template_create_master_custom_form').id,
         }
+
+    def create_product_model(self):
+        all_product_ids = self.env['product.template'].search([]).ids
+        return {
+            'name': 'Create a Product model',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product.create.master',
+            'view_mode': 'form',
+            'context': {'no_breadcrumbs': True,
+                        'default_master_products_ids': all_product_ids,
+                        'default_is_invisible': True,
+                        },
+            'view_id': self.env.ref('pim_ext.view_product_template_create_master_custom_form').id,
+        }
+
+    def create_bundle_product(self):
+        all_product_ids = self.env['product.template'].search([]).ids
+        return {
+            'name': 'Create a Bundle product',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product.create.master',
+            'view_mode': 'form',
+            'context': {'no_breadcrumbs': True,
+                        'default_master_products_ids': all_product_ids,
+                        'default_is_product_bundle': True,
+                        },
+            'view_id': self.env.ref('pim_ext.view_product_template_create_master_custom_form').id,
+        }
+
+    def create_grouped_product(self):
+        all_product_ids = self.env['product.template'].search([]).ids
+        return {
+            'name': 'Create a Grouped product',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product.create.master',
+            'view_mode': 'form',
+            'context': {'no_breadcrumbs': True,
+                        'default_master_products_ids': all_product_ids,
+                        'default_is_product_grouped': True,
+                        },
+            'view_id': self.env.ref('pim_ext.view_product_template_create_master_custom_form').id,
+        }
+
+    # def _compute_master_products_ids(self):
+    #     print('dkfkfjd')
+    #     for record in self:
+    #         print('dskjskjds', record)
+    #         record.master_products_ids = self.env['product.template'].search([])
+
+
 
     def create_product_rec_model(self):
         pass
@@ -74,6 +110,11 @@ class ProductCreateMaster(models.Model):
         'product_master_id',
         string='Products'
     )
+
+    is_invisible = fields.Boolean(default=False, string='Invisible Types')
+    is_product_model_invisible = fields.Boolean(default=False, string='Invisible Types')
+    is_product_grouped = fields.Boolean(default=False, string='Is Bundle')
+    is_product_bundle = fields.Boolean(default=False, string='Is Grouped')
 
     def action_back_to_product_menu(self):
         menu_id = self.env.ref('pim_ext.product_creation_menu')
