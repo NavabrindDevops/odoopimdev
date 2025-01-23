@@ -11,14 +11,50 @@ class ProductCreate(models.Model):
 
     name = fields.Char(string='Name')
 
+    master_products_ids = fields.One2many(
+        'product.template',
+        'parent_id',
+        string='Products'
+    )
+
+    is_invisible = fields.Boolean(default=False, string='Invisible Types')
+
+    def action_back_to_product_menu(self):
+        menu_id = self.env.ref('pim_ext.product_creation_menu')
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+            'params': {
+                'menu_id': menu_id.id,
+            },
+        }
+
+    def create_product_model(self):
+        pass
+
+    def create_bundle_product(self):
+        pass
+
+    def create_grouped_product(self):
+        pass
+
+    # def _compute_master_products_ids(self):
+    #     print('dkfkfjd')
+    #     for record in self:
+    #         print('dskjskjds', record)
+    #         record.master_products_ids = self.env['product.template'].search([])
+
     def create_product_rec(self):
+        all_product_ids = self.env['product.template'].search([]).ids
         return {
             'name': 'Product create',
             'type': 'ir.actions.act_window',
             'res_model': 'product.create.master',
             'view_mode': 'form',
-            'context': {'no_breadcrumbs': True},
-            'view_id': self.env.ref('pim_ext.product_creation_view_master').id,
+            'context': {'no_breadcrumbs': True,
+                        'default_master_products_ids': all_product_ids,
+                        },
+            'view_id': self.env.ref('pim_ext.view_product_template_create_master_custom_form').id,
         }
 
     def create_product_rec_model(self):
@@ -32,6 +68,22 @@ class ProductCreateMaster(models.Model):
 
     family_id = fields.Many2one('family.attribute', string='Family')
     sku = fields.Char(string='SKU', required=True)
+
+    master_products_ids = fields.One2many(
+        'product.template',
+        'product_master_id',
+        string='Products'
+    )
+
+    def action_back_to_product_menu(self):
+        menu_id = self.env.ref('pim_ext.product_creation_menu')
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+            'params': {
+                'menu_id': menu_id.id,
+            },
+        }
 
     def product_save(self):
         print('Saving product and creating dynamic fields...')

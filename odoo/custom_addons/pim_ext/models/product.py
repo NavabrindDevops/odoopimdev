@@ -1052,6 +1052,18 @@ class ProductTemplate(models.Model):
      sku = fields.Char(string='SKU')
      brand_id = fields.Many2one('product.brand', string='Brand')
 
+     parent_id = fields.Many2one(
+          'product.create',
+          string='Parent Group',
+          ondelete='cascade',
+     )
+
+     product_master_id = fields.Many2one(
+          'product.create.master',
+          string='Parent Group',
+          ondelete='cascade',
+     )
+
      @api.depends('product_variant_ids')
      def _compute_readable_variant_names(self):
           for template in self:
@@ -1065,13 +1077,16 @@ class ProductTemplate(models.Model):
                record.active_label = "ENABLED" if record.active else "DISABLED"
 
      def create_pim_products(self):
+          all_product_ids = self.env['product.template'].search([]).ids
           return {
                'type': 'ir.actions.act_window',
                'name': 'CREATE PRODUCT',
                'res_model': 'product.create',
                'view_mode': 'form',
-               'view_id': self.env.ref('pim_ext.product_creation_view').id,
-               'context': {'no_breadcrumbs': True},
+               'view_id': self.env.ref('pim_ext.view_product_template_custom_form').id,
+               'context': {'no_breadcrumbs': True,
+                           'default_master_products_ids': all_product_ids,
+                           },
                'target': 'current',
           }
 

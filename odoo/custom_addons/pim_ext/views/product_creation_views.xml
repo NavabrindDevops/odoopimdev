@@ -1,71 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="product_creation_view" model="ir.ui.view">
-            <field name="name">Product Create</field>
+        <record id="view_product_template_custom_form" model="ir.ui.view">
+            <field name="name">product.product.template.custom</field>
             <field name="model">product.create</field>
             <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false" class="page_form" string="Product">
-                    <div class="center-page-container">
-                        <h1>CREATE PRODUCT</h1>
-                        <h3>Select your action</h3>
-                        <div class="button-container">
-                            <div class="attribute-button">
-                                <button name="create_product_rec" type="object" class="btn btn-light attribute-icon-button">
-                                    <i class="fa fa-calendar fa-2x"></i>
-                                    <span>Product</span>
-                                </button>
-                            </div>
-                            <div class="attribute-button">
-                                <button name="create_product_rec_model" type="object" class="btn btn-light attribute-icon-button">
-                                    <i class="fa fa-file fa-2x"></i>
-                                    <span>Product model</span>
-                                </button>
-                            </div>
+                <form string="Create Product" create="false" edit="false" delete="false" class="page_form">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
+                            <field name="master_products_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
+                                <list create="false" edit="false" delete="false" default_order="create_date desc">
+                                    <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
+                                    <field name="sku"/>
+                                    <field name="brand_id"/>
+                                    <field name="name"/>
+                                    <field name="family_id"/>
+                                    <field name="active_label" string="Status"/>
+                                    <field name="create_date" string="Created"/>
+                                    <field name="write_date" string="Updated"/>
+                                </list>
+                            </field>
+                        </div>
+                        <div class="right-column">
+                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
+                                </header>
+                                <field name="is_invisible" invisible="1"/>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Create Product</span></h2>
+                                </div>
+                                <div class="pim_oe_title" invisible="is_invisible">
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;">Select your action</h2>
+                                </div>
+
+                                <div class="d-flex justify-content-center" invisible="is_invisible">
+                                    <div class="o_grid attr_types">
+                                        <div class="d-grid grid_column">
+                                            <div class="attribute-button">
+                                                <button name="create_product_rec" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-calendar fa-2x"></i>
+                                                    <span>Product</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid grid_column">
+                                            <div class="attribute-button">
+                                                <button name="create_product_model" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-file fa-2x"></i>
+                                                    <span>Product Model</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid grid_column">
+                                            <div class="attribute-button">
+                                                <button name="create_bundle_product" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-text-height fa-2x"></i>
+                                                    <span>Bundle Product</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid grid_column">
+                                            <div class="attribute-button">
+                                                <button name="create_grouped_product" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-check-circle fa-2x"></i>
+                                                    <span>Grouped Product</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </form>
             </field>
         </record>
 
-        <record id="product_creation_view_master" model="ir.ui.view">
-            <field name="name">Products</field>
+        <record id="view_product_template_create_master_custom_form" model="ir.ui.view">
+            <field name="name">product.product.template.master.custom</field>
             <field name="model">product.create.master</field>
             <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false" class="page_form" string="Product">
-                    <div class="center-page-container" style="max-width: 600px; margin: auto;">
-                        <!-- Title -->
-                        <h2 style="font-size: 24px; color: #6B3FA0; text-align: left; font-weight: bold;">
-                            PRODUCTS
-                        </h2>
-                        <h3 style="font-size: 32px; text-align: left; margin-top: 0;">Create</h3>
+                <form string="Create Product" create="false" edit="false" class="page_form">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
+                            <field name="master_products_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
+                                <list create="false" edit="false" delete="false" default_order="create_date desc">
+                                    <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
+                                    <field name="sku"/>
+                                    <field name="brand_id"/>
+                                    <field name="name"/>
+                                    <field name="family_id"/>
+                                    <field name="active_label" string="Status"/>
+                                    <field name="create_date" string="Created"/>
+                                    <field name="write_date" string="Updated"/>
+                                </list>
+                            </field>
+                        </div>
+                        <div class="right-column">
+                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
+                                </header>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Products</span></h2>
+                                </div>
+                                <div class="pim_oe_title">
+                                    <h2 class="choose_pim_attribute_type" style="text-align:left;">Create Product</h2>
+                                </div><br/>
 
-                        <!-- Banner Information -->
-<!--                        <div style="background-color: #F0F8FF; border: 1px solid #d5e6f7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">-->
-<!--                            <i class="fa fa-info-circle" style="color: #6B3FA0; margin-right: 5px;"></i>-->
-<!--                            <span style="font-size: 14px; color: #5B5B5B;">-->
-<!--                                The identifier is now an optional field. <a href="#" style="color: #6B3FA0; text-decoration: underline;">Read more</a> about this change and the possible impacts for your products.-->
-<!--                            </span>-->
-<!--                        </div>-->
+                                <div class="d-flex justify-content-center">
+                                    <div class="o_grid attr_types">
+                                        <div>
+                                            <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
+                                                <label for="sku" style="display: block; font-weight: bold;">SKU</label>
+                                                <field name="sku" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                            </div>
 
-                        <div>
-                            <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
-                                <label for="family_id" style="display: block; font-weight: bold; margin: 0; padding: 0; text-align: left;">
-                                    Family
-                                </label>
-                                <field name="family_id" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
-                            </div>
+                                            <div style="margin-bottom: 15px; text-align: justify;">
+                                                <label for="family_id" style="display: block; font-weight: bold; margin: 0; padding: 0; text-align: left;">
+                                                    Family
+                                                </label>
+                                                <field name="family_id" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                            </div>
 
-                            <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
-                                <label for="sku" style="display: block; font-weight: bold;">SKU</label>
-                                <field name="sku" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
-                            </div>
+                                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                                <button name="product_cancel" string="Cancel" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
+                                                <button name="product_save" string="Save" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;" class="btn btn-success"/>
+                                            </div>
 
-                            <div style="margin-top: 20px; display: flex; gap: 10px;">
-                                <button name="product_cancel" string="Cancel" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
-                                <button name="product_save" string="Save" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;" class="btn btn-success"/>
-                            </div>
-
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </form>
@@ -79,7 +146,7 @@
                 <kanban class="o_kanban_mobile fam_grid_box" default_order="create_date desc" create="0" limit="80" default_group_by="brand_id">
                 <header>
                     <button name="create_pim_products" type="object" class="btn-primary"
-                            string="Create" display="always"
+                            string="Create Product" display="always"
                             invisible="context.get('active_model', 'product.template') != 'product.template'"/>
                 </header>
                 <field name="name" string="Family Name"/>
@@ -180,7 +247,7 @@
                 <list create="false" edit="false" default_order="create_date desc">
                     <header>
                         <button name="create_pim_products" type="object" class="btn-primary"
-                                string="Create" display="always"
+                                string="Create Product" display="always"
                                 invisible="context.get('active_model', 'product.template') != 'product.template'"/>
                     </header>
                     <field name="id"/>
