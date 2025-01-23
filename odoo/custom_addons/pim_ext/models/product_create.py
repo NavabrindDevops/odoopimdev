@@ -163,5 +163,13 @@ class ProductCreateMaster(models.Model):
             print(f"Field '{field_name}' already exists in product.template.")
 
     def product_cancel(self):
-        pass
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Products',
+            'res_model': 'product.template',
+            'view_mode': 'kanban',
+            'view_id': self.env.ref('pim_ext.view_product_management_kanban').id,
+            'context': {'no_breadcrumbs': True},
+
+        }
 
