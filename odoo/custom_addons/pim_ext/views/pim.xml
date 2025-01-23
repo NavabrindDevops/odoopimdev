@@ -94,11 +94,11 @@
             sequence="35"/>
 
 
-        <menuitem id="product_management_main"
-                  name="Product Management"
-                  parent="pim_ext.menu_root_product_managements"
-                  action="product_managemnt_action"
-                  sequence="20"
-                  />
+<!--        <menuitem id="product_management_main"-->
+<!--                  name="Product Management"-->
+<!--                  parent="pim_ext.menu_root_product_managements"-->
+<!--                  action="product_managemnt_action"-->
+<!--                  sequence="20"-->
+<!--                  />-->
     </data>
 </odoo>
