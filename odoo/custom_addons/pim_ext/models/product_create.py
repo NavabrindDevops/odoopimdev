@@ -30,7 +30,7 @@ class ProductCreate(models.Model):
         }
 
     def create_product_rec(self):
-        all_product_ids = self.env['product.template'].search([]).ids
+        all_product_ids = self.env['product.template'].search([], order='create_date desc').ids
         return {
             'name': 'Product create',
             'type': 'ir.actions.act_window',
@@ -44,7 +44,7 @@ class ProductCreate(models.Model):
         }
 
     def create_product_model(self):
-        all_product_ids = self.env['product.template'].search([]).ids
+        all_product_ids = self.env['product.template'].search([], order='create_date desc').ids
         return {
             'name': 'Create a Product model',
             'type': 'ir.actions.act_window',
@@ -58,7 +58,7 @@ class ProductCreate(models.Model):
         }
 
     def create_bundle_product(self):
-        all_product_ids = self.env['product.template'].search([]).ids
+        all_product_ids = self.env['product.template'].search([], order='create_date desc').ids
         return {
             'name': 'Create a Bundle product',
             'type': 'ir.actions.act_window',
@@ -72,7 +72,7 @@ class ProductCreate(models.Model):
         }
 
     def create_grouped_product(self):
-        all_product_ids = self.env['product.template'].search([]).ids
+        all_product_ids = self.env['product.template'].search([], order='create_date desc').ids
         return {
             'name': 'Create a Grouped product',
             'type': 'ir.actions.act_window',
@@ -103,7 +103,7 @@ class ProductCreateMaster(models.Model):
     _rec_name = 'sku'
 
     family_id = fields.Many2one('family.attribute', string='Family')
-    sku = fields.Char(string='SKU', required=True)
+    sku = fields.Char(string='SKU')
 
     master_products_ids = fields.One2many(
         'product.template',
@@ -196,8 +196,8 @@ class ProductCreateMaster(models.Model):
 
         # Create the product template
         new_product = self.env['product.template'].create({
-            'name': self.sku,
-            'default_code': self.sku,
+            'name': self.sku if self.sku else 'Test',
+            'default_code': self.sku if self.sku else 'Test',
             'categ_id': 1,
             'family_id': self.family_id.id,
         })
@@ -208,6 +208,7 @@ class ProductCreateMaster(models.Model):
             'res_model': 'product.template',
             'view_mode': 'form',
             'res_id': new_product.id,
+            'context': {'no_breadcrumbs': True,},
             'target': 'current',
         }
 

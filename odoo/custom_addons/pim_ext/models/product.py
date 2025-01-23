@@ -1077,7 +1077,7 @@ class ProductTemplate(models.Model):
                record.active_label = "ENABLED" if record.active else "DISABLED"
 
      def create_pim_products(self):
-          all_product_ids = self.env['product.template'].search([]).ids
+          all_product_ids = self.env['product.template'].search([], order='create_date desc').ids
           return {
                'type': 'ir.actions.act_window',
                'name': 'CREATE PRODUCT',
