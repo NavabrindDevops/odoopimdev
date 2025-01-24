@@ -55,7 +55,7 @@
                                         <div class="d-grid grid_column">
                                             <div class="attribute-button">
                                                 <button name="create_bundle_product" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-text-height fa-2x"></i>
+                                                    <i class="fa fa-file-text-o fa-2x"></i>
                                                     <span>Bundle Product</span>
                                                 </button>
                                             </div>
@@ -63,7 +63,7 @@
                                         <div class="d-grid grid_column">
                                             <div class="attribute-button">
                                                 <button name="create_grouped_product" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-check-circle fa-2x"></i>
+                                                    <i class="fa fa-file-text-o fa-2x"></i>
                                                     <span>Grouped Product</span>
                                                 </button>
                                             </div>

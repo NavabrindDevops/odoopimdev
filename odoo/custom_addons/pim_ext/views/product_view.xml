@@ -20,14 +20,14 @@
 <!--              groups="product_management.group_product_management_user,base.group_system"-->
 <!--    />-->
         
-    <menuitem id="menu_pim_attribute_action_product"
-    action="product.product_template_action" name="Products"
-    parent="menu_main_product" sequence="3"/>
+<!--    <menuitem id="menu_pim_attribute_action_product"-->
+<!--    action="product.product_template_action" name="Products"-->
+<!--    parent="menu_main_product" sequence="3"/>-->
 
-    <menuitem id="pim_configuraion"
-    name="Settings"
-    parent="menu_main_product"
-    sequence="100"/>
+<!--    <menuitem id="pim_configuraion"-->
+<!--    name="Settings"-->
+<!--    parent="pim_ext.menu_root_product_managements"-->
+<!--    sequence="100"/>-->
 
 
 <!--    Family Attribute-->
