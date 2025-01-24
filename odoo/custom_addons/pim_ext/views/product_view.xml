@@ -616,11 +616,11 @@
 <!--    action="action_product_list_variants" name="List Product"-->
 <!--    parent="menu_main_product" sequence="1"/>-->
 
-    <menuitem id="menu_product_pricelist_main_2"
-        name="Manage Pricelists"
-        action="product.product_pricelist_action2"
-        groups="product.group_product_pricelist"
-        parent="pim_configuraion"
-        sequence="1"/>
+<!--    <menuitem id="menu_product_pricelist_main_2"-->
+<!--        name="Manage Pricelists"-->
+<!--        action="product.product_pricelist_action2"-->
+<!--        groups="product.group_product_pricelist"-->
+<!--        parent="pim_configuraion"-->
+<!--        sequence="1"/>-->
 
 </odoo>

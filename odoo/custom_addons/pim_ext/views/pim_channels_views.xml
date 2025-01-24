@@ -70,9 +70,9 @@
     </record>
 
     <!-- Menu Item -->
-    <menuitem id="menu_pim_channel_root"
-              name="Channels"
-              parent="pim_ext.pim_configuraion"
-              sequence="50"
-              action="action_pim_channel"/>
+<!--    <menuitem id="menu_pim_channel_root"-->
+<!--              name="Channels"-->
+<!--              parent="pim_ext.pim_configuraion"-->
+<!--              sequence="50"-->
+<!--              action="action_pim_channel"/>-->
 </odoo>
