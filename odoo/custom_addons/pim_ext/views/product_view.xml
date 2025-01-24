@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <menuitem
-        id="menu_main_product"
-        name="PIM Odoo"
-        sequence='30'
-        web_icon="pim_ext,static/description/icon.png"/>
+<!--    <menuitem-->
+<!--        id="menu_main_product"-->
+<!--        name="PIM Odoo"-->
+<!--        sequence='30'-->
+<!--        web_icon="pim_ext,static/description/icon.png"/>-->
 
 <!--    <menuitem id="menu_productvariants"-->
 <!--    action="product.product_normal_action_sell" name="Product List"-->
