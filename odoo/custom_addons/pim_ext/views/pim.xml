@@ -91,6 +91,7 @@
         <menuitem
             id="menu_root_product_managements"
             name="Product Managements"
+            web_icon="pim_ext,static/src/img/icon.png"
             sequence="35"/>
 
 
