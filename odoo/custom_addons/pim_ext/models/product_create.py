@@ -163,7 +163,7 @@ class ProductCreateMaster(models.Model):
                      'collapsable': 'true'}
                 )
                 print('dkecolaaaaaaaaapseeeeeee', collapsible_group)
-
+                group_invisible_condition = []
                 for attribute in group_attributes:
                     print('dopatrrrrrrrrro94444444', attribute)
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
@@ -172,14 +172,25 @@ class ProductCreateMaster(models.Model):
                     print('existinffffffffff', existing_field)
                     display_type = attribute.display_type
                     print('dsdjsdhsjdhs',display_type)
+                    associated_family_id = self.family_id.id
+                    print('dijdkjfd', associated_family_id)
+                    if associated_family_id not in group_invisible_condition:
+                        group_invisible_condition.append(associated_family_id)
                     if not existing_field:
-                        field_element = xee.Element('field', {'name': field_name})
+                        field_element = xee.Element('field', {'name': field_name,
+                                                              'invisible': f"1 if family_id != {associated_family_id} else 0"
+                                                              })
                         print('gkhhhhhhhhhhh', field_element)
                         collapsible_group.append(field_element)
                         print('or90rrrrrrrrrrrrrrrrrrrr', collapsible_group)
 
                     # Ensure dynamic fields are created in the model
                     self._create_dynamic_field(field_name, display_type)
+            if group_invisible_condition:
+                group_invisible_expr = " and ".join(
+                    [f"family_id != {family_id}" for family_id in group_invisible_condition])
+                collapsible_group.attrib['invisible'] = f"1 if {group_invisible_expr} else 0"
+                print('Group Invisible Condition:', collapsible_group.attrib['invisible'])
 
             # Update the form view with the modified XML
             view_id.write({'arch': xee.tostring(doc, pretty_print=True, encoding='unicode')})
@@ -201,7 +212,9 @@ class ProductCreateMaster(models.Model):
             'res_model': 'product.template',
             'view_mode': 'form',
             'res_id': new_product.id,
-            'context': {'no_breadcrumbs': True,},
+            'context': {'no_breadcrumbs': True,
+                        'default_family_id': self.family_id.id,
+                        },
             'target': 'current',
         }
 
