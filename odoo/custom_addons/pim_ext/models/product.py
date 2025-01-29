@@ -620,20 +620,20 @@ class AttributeGroupLine(models.Model):
                ('image', 'Image'),
                ('measurement', 'Measurement'),
                ('multi_select', 'Multi Select'),
-               ('number', 'Number'),
+               ('link', 'Link'),
+               ('number', 'Integer'),
                ('price', 'Price'),
                ('ref_data_multi', 'Reference Data Multi Select'),
                ('ref_data_simple_select', 'Reference Data Simple Select'),
                ('simple_select', 'Simple Select'),
                ('text', 'Text'),
                ('textarea', 'Text Area'),
-               ('yes_no', 'Yes/No'),
+               ('yes_no', 'Checkbox'),
                ('pills', 'Pills'),
                ('select', 'Select'),
                ('color', 'Color'),
                ('multi', 'Multi-checkbox (option)'),
           ],
-
           help="The display type used in the Product Configurator.")
 
      related_display_type = fields.Selection(
