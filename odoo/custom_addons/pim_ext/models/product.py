@@ -636,6 +636,12 @@ class AttributeGroupLine(models.Model):
 
           help="The display type used in the Product Configurator.")
 
+     related_display_type = fields.Selection(
+          related='product_attribute_id.display_type',
+          store=True,
+          readonly=True
+     )
+
      enable = fields.Boolean(string="Enable", default=True)
      value_per_channel = fields.Boolean(string="Value per channel", default=False)
      value_per_locale = fields.Boolean(string="Value per locale", default=False)

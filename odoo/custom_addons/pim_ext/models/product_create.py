@@ -119,104 +119,100 @@ class ProductCreateMaster(models.Model):
         }
 
     def product_save(self):
-        print('Saving product and creating dynamic fields...')
-        view_id = self.env.ref('pim_ext.view_product_template_form_inherit')
-        print('viewelkflfkdf', view_id)
-        view_arch = view_id.arch_base
-        print('dioviewarchhhhhhhh', view_arch)
-        doc = xee.fromstring(view_arch)
-        print('docccccc---------->>>>>..', doc)
+        for rec in self:
+            # Get the selected family
+            family_name = rec.family_id.name
+            attributes_list = []
+            new_field_xml = ''
 
-        attributes = self.family_id.mapped('product_families_ids').mapped('attribute_id')
-        print('atributessssss-------->>>>', attributes)
-        if not attributes:
-            print("No attributes found for the family.")
-            return
+            # Get the attributes related to the current product's family (family_id)
+            attributes = rec.family_id.mapped('product_families_ids').mapped('attribute_id')
 
-        # Group attributes by attribute group
-        grouped_attributes = {}
-        for attribute in attributes:
-            print('dksjdhshds', attribute)
-            print('ffffffffffff', attribute.attribute_group)
-            group = attribute.attribute_group.name if attribute.attribute_group else "Ungrouped"
-            print('groupdddddddddddddd', group)
+            # Group attributes by their attribute_group (optional but can be helpful for UI)
+            attribute_groups = {}  # This will store attributes grouped by their attribute_group.
+            for attribute in attributes:
+                attribute_group = attribute.attribute_group.name if attribute.attribute_group else 'Uncategorized'
+                if attribute_group not in attribute_groups:
+                    attribute_groups[attribute_group] = []
+                attribute_groups[attribute_group].append(attribute)
+                associated_family_id = rec.family_id.id  # Use the current product's family_id
 
-            grouped_attributes.setdefault(group, []).append(attribute)
-            print('apeendddddddddddd', grouped_attributes)
+            # Generate XML for each attribute group
+            for group_name, group_attributes in attribute_groups.items():
+                # Check if group should be invisible for the current family
+                group_visible_condition = f'invisible="1 if family_id != {rec.family_id.id} else 0"'
 
-        # Locate the dynamic attributes container
-        dynamic_fields_group = doc.xpath("//group[@name='dynamic_attributes']")
-        print('dgyeeeeeeeeeeee', dynamic_fields_group)
-        if dynamic_fields_group:
-            print('fhrrrrrrrrrr')
-            container = dynamic_fields_group[0]
-            print('conttttttttttttaaaaaaaaa', container)
+                new_field_xml += f'<group name="{group_name}" string="{group_name}" collapsible="1" expanded="1" >'
 
-            for group_name, group_attributes in grouped_attributes.items():
-                print('dkjkdjfd333333333', group_name)
-                print('fjeeeeeeeeeeeeeeeeee', group_attributes)
-                # Create a collapsible group for each attribute group
-                collapsible_group = xee.SubElement(
-                    container,
-                    'group',
-                    {'string': group_name, 'name': f"{group_name.replace(' ', '_').lower()}_group",
-                     'collapsable': 'true'}
-                )
-                print('dkecolaaaaaaaaapseeeeeee', collapsible_group)
-                group_invisible_condition = []
                 for attribute in group_attributes:
-                    print('dopatrrrrrrrrro94444444', attribute)
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
-                    print('dkf4fieldsnameeeeeee', field_name)
-                    existing_field = collapsible_group.xpath(f"./field[@name='{field_name}']")
-                    print('existinffffffffff', existing_field)
                     display_type = attribute.display_type
-                    print('dsdjsdhsjdhs',display_type)
-                    associated_family_id = self.family_id.id
-                    print('dijdkjfd', associated_family_id)
-                    if associated_family_id not in group_invisible_condition:
-                        group_invisible_condition.append(associated_family_id)
-                    if not existing_field:
-                        field_element = xee.Element('field', {'name': field_name,
-                                                              'invisible': f"1 if family_id != {associated_family_id} else 0"
-                                                              })
-                        print('gkhhhhhhhhhhh', field_element)
-                        collapsible_group.append(field_element)
-                        print('or90rrrrrrrrrrrrrrrrrrrr', collapsible_group)
 
-                    # Ensure dynamic fields are created in the model
                     self._create_dynamic_field(field_name, display_type)
-            if group_invisible_condition:
-                group_invisible_expr = " and ".join(
-                    [f"family_id != {family_id}" for family_id in group_invisible_condition])
-                collapsible_group.attrib['invisible'] = f"1 if {group_invisible_expr} else 0"
-                print('Group Invisible Condition:', collapsible_group.attrib['invisible'])
 
-            # Update the form view with the modified XML
-            view_id.write({'arch': xee.tostring(doc, pretty_print=True, encoding='unicode')})
-            print('Updated Form View XML Saved2222222.', view_id)
-            print('archaaaaadksdsdsssssssss.', view_id.arch)
+                    # Add field to product template dynamically
+                    attributes_list.append(field_name)
 
-        # Create the product template
-        new_product = self.env['product.template'].create({
-            'name': self.sku if self.sku else 'Test',
-            'default_code': self.sku if self.sku else 'Test',
-            'categ_id': 1,
-            'sku': self.sku,
-            'family_id': self.family_id.id,
-        })
-        print(f"New Product Created: {new_product.name} (ID: {new_product.id})")
+                    # Generate field XML for inclusion in the view
+                    print('dskdjsdkjdsk', rec.family_id.id)
+                    field_name_xml = f'<field name="{field_name}"/>'
+                    new_field_xml += field_name_xml
 
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'product.template',
-            'view_mode': 'form',
-            'res_id': new_product.id,
-            'context': {'no_breadcrumbs': True,
-                        'default_family_id': self.family_id.id,
-                        },
-            'target': 'current',
-        }
+                new_field_xml += '</group>'
+
+            # Generate the final XML for the view
+            view_id = self.env.ref('product.product_template_only_form_view').id
+            view = self.env['ir.ui.view'].browse(view_id)
+            print('dskjskdjskd', new_field_xml)
+            arch_value = f"""
+                <xpath expr="//notebook" position="inside">
+                    <page string="Attributes" name="attributes_page" {group_visible_condition}>
+                        {new_field_xml}
+                    </page>
+                </xpath>
+            """
+
+            # Check if the view already exists, update it; otherwise, create a new one
+            view_name = 'sku_field_add_attribute_' + family_name.lower().replace(' ', '_')
+            print('dskjdkjdkjksjds', view_name)
+            model_id = self.env['ir.model'].search([('model', '=', 'product.template')])
+
+            # Check if the view exists
+            view_exist = self.env['ir.ui.view'].search([
+                ('name', '=ilike', view_name),
+                ('model_id', '=', model_id.id),
+                ('active', 'in', [True, False])
+            ])
+            print('dkdkjfdkjfd', view_exist)
+            if view_exist:
+                view_exist.arch = arch_value
+            else:
+                custom_view = self.env['ir.ui.view'].sudo().create({
+                    'name': view_name,
+                    'type': 'form',
+                    'model': view.model,
+                    'inherit_id': view.id,
+                    'active': True,
+                    'arch': arch_value
+                })
+
+            # Create the product record
+            new_product = self.env['product.template'].create({
+                'name': self.sku if self.sku else 'Test',
+                'default_code': self.sku if self.sku else 'Test',
+                'categ_id': 1,
+                'sku': self.sku,
+                'family_id': rec.family_id.id,  # Ensure the product's family_id is set correctly
+            })
+
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'product.template',
+                'view_mode': 'form',
+                'res_id': new_product.id,
+                'context': {'no_breadcrumbs': True, 'default_family_id': rec.family_id.id},
+                'target': 'current',
+            }
 
     def _create_dynamic_field(self, field_name, display_type):
         print('dk333333333333333333', display_type)

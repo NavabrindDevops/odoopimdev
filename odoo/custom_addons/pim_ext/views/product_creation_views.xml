@@ -312,32 +312,32 @@
             </field>
         </record>
 
-        <record id="view_product_template_form_inherit" model="ir.ui.view">
-            <field name="name">product.template.form.inh</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_only_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//notebook" position="inside">
-                    <page string="Attributes" name="attributes_page">
-                        <group name="dynamic_attributes" string="Dynamic Attributes">
-                        </group>
-                    </page>
-                </xpath>
+<!--        <record id="view_product_template_form_inherit" model="ir.ui.view">-->
+<!--            <field name="name">product.template.form.inh</field>-->
+<!--            <field name="model">product.template</field>-->
+<!--            <field name="inherit_id" ref="product.product_template_only_form_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//notebook" position="inside">-->
+<!--                    <page string="Attributes" name="attributes_page">-->
+<!--                        <group name="dynamic_attributes" string="Dynamic Attributes">-->
+<!--                        </group>-->
+<!--                    </page>-->
+<!--                </xpath>-->
 <!--                move the pages after attribute-->
-                <xpath expr="//page[@name='attributes_page']" position="after">
-                    <page name="general_information" position="move"/>
-                    <page name="variants" position="move"/>
-                    <page name="sales" position="move"/>
-                    <page name="inventory" position="move"/>
-                </xpath>
+<!--                <xpath expr="//page[@name='attributes_page']" position="after">-->
+<!--                    <page name="general_information" position="move"/>-->
+<!--                    <page name="variants" position="move"/>-->
+<!--                    <page name="sales" position="move"/>-->
+<!--                    <page name="inventory" position="move"/>-->
+<!--                </xpath>-->
 <!--                <xpath expr="//page[@name='general_information']" position="inside">-->
 <!--                    <field name="family_id"/>-->
 <!--                </xpath>-->
 <!--                <xpath expr="//page[@name='general_information']/field[@name='family_id']" position="after">-->
 <!--                    <field name="brand_id"/>-->
 <!--                </xpath>-->
-            </field>
-        </record>
+<!--            </field>-->
+<!--        </record>-->
 
         <record id="action_product_creation" model="ir.actions.act_window">
             <field name="name">Create Product</field>
