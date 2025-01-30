@@ -117,7 +117,7 @@
                                 <div class="d-flex justify-content-center">
                                     <div class="o_grid attr_types">
                                         <div>
-                                            <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
+                                            <div style="margin-bottom: 15px; text-align: justify;">
                                                 <label for="name" style="display: block; font-weight: bold;">Name</label>
                                                 <field name="name" placeholder="Enter Name" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
                                             </div>
