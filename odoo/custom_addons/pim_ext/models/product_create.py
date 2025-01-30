@@ -166,7 +166,7 @@ class ProductCreateMaster(models.Model):
             view = self.env['ir.ui.view'].browse(view_id)
             print('dskjskdjskd', new_field_xml)
             arch_value = f"""
-                <xpath expr="//notebook" position="inside">
+                <xpath expr="//notebook/page[@name='general_information']" position="before">
                     <page string="Attributes" name="attributes_page" {group_visible_condition}>
                         {new_field_xml}
                     </page>
