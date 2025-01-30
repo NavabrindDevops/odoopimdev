@@ -1070,6 +1070,8 @@ class ProductTemplate(models.Model):
           ondelete='cascade',
      )
 
+     is_update_from_attribute = fields.Boolean(string='Created from attribute')
+
      @api.depends('product_variant_ids')
      def _compute_readable_variant_names(self):
           for template in self:

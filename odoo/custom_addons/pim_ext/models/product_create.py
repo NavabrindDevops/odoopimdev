@@ -203,6 +203,7 @@ class ProductCreateMaster(models.Model):
                 'default_code': self.sku if self.sku else 'SKU',
                 'categ_id': 1,
                 'sku': self.sku,
+                'is_update_from_attribute': True,
                 'family_id': rec.family_id.id,  # Ensure the product's family_id is set correctly
             })
 
