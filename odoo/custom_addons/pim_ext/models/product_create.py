@@ -147,10 +147,12 @@ class ProductCreateMaster(models.Model):
                 new_field_xml += f'<group name="{group_name}" string="{group_name}" collapsible="1" expanded="1" >'
 
                 for attribute in group_attributes:
+                    field_mandatory = attribute.is_mandatory
+                    print('dskjdskjdskj', field_mandatory)
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
                     display_type = attribute.display_type
 
-                    self._create_dynamic_field(field_name, display_type)
+                    self._create_dynamic_field(field_name, field_mandatory, display_type)
 
                     # Add field to product template dynamically
                     attributes_list.append(field_name)
@@ -218,7 +220,8 @@ class ProductCreateMaster(models.Model):
                 'target': 'current',
             }
 
-    def _create_dynamic_field(self, field_name, display_type):
+    def _create_dynamic_field(self, field_name, field_mandatory, display_type):
+        print('dskskdjskd', field_name)
         print('dk333333333333333333', display_type)
         """ Creates a dynamic field in product.template if it doesn't already exist """
         # Check if the field exists in product.template
@@ -296,6 +299,7 @@ class ProductCreateMaster(models.Model):
                 'field_description': field_name.replace('x_', ''),
                 'ttype': display_type,
                 'store': True,
+                'required': True if field_mandatory == True else False,
             })
             print('ddddddddddddddd')
             print(f"Field '{field_name}' created dynamically in product.template.")
