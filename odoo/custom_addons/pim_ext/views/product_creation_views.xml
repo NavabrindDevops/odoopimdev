@@ -118,6 +118,10 @@
                                     <div class="o_grid attr_types">
                                         <div>
                                             <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
+                                                <label for="name" style="display: block; font-weight: bold;">Name</label>
+                                                <field name="name" placeholder="Enter Name" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
+                                            </div>
+                                            <div style="margin-bottom: 15px; text-align: justify; text-transform: uppercase;">
                                                 <label for="sku" style="display: block; font-weight: bold;">SKU</label>
                                                 <field name="sku" placeholder="Enter SKU" style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
                                             </div>
