@@ -28,7 +28,7 @@
                 </group>
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
-                <field name="family_id" />
+                <field name="family_id" options="{'no_open': True}"/>
                 <field name="brand_id"/>
                 <field name="mpn_number"/>
                 <field name="status"/>

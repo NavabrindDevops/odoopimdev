@@ -133,6 +133,14 @@
                                                 <field name="family_id" placeholder="Choose Family" options="{'no_create_edit': True, 'no_quick_create': True, 'no_open': True}"  style="width: 100%; border: 1px solid #ccc; padding: 0px; border-radius: 8px;"/>
                                             </div>
 
+                                            <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;"
+                                                 invisible="is_product_bundle or is_product_grouped">
+                                                <label for="image" style="font-weight: bold; text-align: center;">Product Image</label>
+                                                <field name="image" widget="image"
+                                                       style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                            </div>
+
+
                                             <div style="margin-top: 20px; display: flex; gap: 10px;">
                                                 <button name="product_cancel" string="Cancel" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
                                                 <button name="product_save" string="Save" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;" class="btn btn-success"/>

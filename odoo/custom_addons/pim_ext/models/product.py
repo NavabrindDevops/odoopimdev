@@ -15,6 +15,9 @@ import traceback,pdb,inspect
 from odoo.tools import drop_view_if_exists
 import logging
 from googletrans import Translator
+
+from odoopimdev.odoo.api import readonly
+
 _logger = logging.getLogger(__name__)
 
 
@@ -1054,7 +1057,7 @@ class ProductTemplate(models.Model):
      active_label = fields.Char(string="Status", compute="_compute_active_label")
 
      readable_variant_names = fields.Char(string="Variants", compute="_compute_readable_variant_names")
-     family_id = fields.Many2one('family.attribute', string='Family')
+     family_id = fields.Many2one('family.attribute', string='Family', readonly=True)
      sku = fields.Char(string='SKU')
      brand_id = fields.Many2one('product.brand', string='Brand')
 

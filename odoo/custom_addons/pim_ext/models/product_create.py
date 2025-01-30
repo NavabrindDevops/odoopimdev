@@ -97,6 +97,7 @@ class ProductCreateMaster(models.Model):
     family_id = fields.Many2one('family.attribute', string='Family')
     sku = fields.Char(string='SKU')
     name = fields.Char(string='Name')
+    image = fields.Binary("Product Image", attachment=True)
 
     master_products_ids = fields.One2many(
         'product.template',
@@ -204,6 +205,7 @@ class ProductCreateMaster(models.Model):
                 'categ_id': 1,
                 'sku': self.sku,
                 'is_update_from_attribute': True,
+                'image_1920': self.image,
                 'family_id': rec.family_id.id,  # Ensure the product's family_id is set correctly
             })
 
