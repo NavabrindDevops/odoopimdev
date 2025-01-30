@@ -96,7 +96,7 @@ class ProductCreateMaster(models.Model):
 
     family_id = fields.Many2one('family.attribute', string='Family')
     sku = fields.Char(string='SKU')
-    name = fields.Char(string='Name', required=True)
+    name = fields.Char(string='Name')
 
     master_products_ids = fields.One2many(
         'product.template',
@@ -199,8 +199,8 @@ class ProductCreateMaster(models.Model):
 
             # Create the product record
             new_product = self.env['product.template'].create({
-                'name': self.name,
-                'default_code': self.sku if self.sku else 'Test',
+                'name': self.name if self.name else 'Product',
+                'default_code': self.sku if self.sku else 'SKU',
                 'categ_id': 1,
                 'sku': self.sku,
                 'family_id': rec.family_id.id,  # Ensure the product's family_id is set correctly
