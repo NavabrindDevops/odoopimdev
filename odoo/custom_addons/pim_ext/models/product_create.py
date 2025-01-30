@@ -226,7 +226,7 @@ class ProductCreateMaster(models.Model):
         print('djkdjfdkjfd', existing_field)
         if display_type == 'number':
             print('numberrrrrrrr')
-            display_type = 'float'
+            display_type = 'integer'
         if display_type == 'radio':
             print('radiooooooo')
             display_type = 'boolean'
@@ -236,12 +236,52 @@ class ProductCreateMaster(models.Model):
         if display_type == 'image':
             print('imageeeeeeeeeeee')
             display_type = 'binary'
-        if display_type == 'textarea':
-            print('textareasssssss')
-            display_type = 'text'
+
         if display_type == 'link':
             print('linkssssss')
             display_type = 'char'
+        if display_type == 'identifier':
+            print('identifierrrrrrr')
+            display_type = 'integer'
+        if display_type == 'measurement':
+            print('measureeeeeeeeee')
+            display_type = 'float'
+        if display_type == 'multi_select':
+            print('multi_selectccccccccc')
+            display_type = 'many2many'
+        if display_type == 'price':
+            print('priceeeeeeee')
+            display_type = 'float'
+        if display_type == 'ref_data_multi':
+            print('ref_data_multiref_data_multi')
+            display_type = 'many2many'
+        if display_type == 'ref_data_simple_select':
+            print('ref_data_simple_selectref_data_simple_select')
+            display_type = 'many2many'
+        if display_type == 'simple_select':
+            print('simple_selectsimple_select')
+            display_type = 'many2one'
+        if display_type == 'text':
+            print('testttttttttttttt')
+            display_type = 'char'
+        if display_type == 'textarea':
+            print('textareasssssss')
+            display_type = 'text'
+        if display_type == 'yes_no':
+            print('yes_noyes_no')
+            display_type = 'boolean'
+        if display_type == 'pills':
+            print('pillspills')
+            display_type = 'many2many'
+        if display_type == 'select':
+            print('selectselect')
+            display_type = 'selection'
+        if display_type == 'color':
+            print('colorcolor')
+            display_type = 'char'
+        if display_type == 'multi':
+            print('multimulti')
+            display_type = 'many2many'
 
         if not existing_field:
             print('fkjfdkjfdkfjd', field_name)
