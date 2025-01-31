@@ -145,6 +145,42 @@
   background-color: white;
 }
 
+.no_color{
+      background-color: white;
+}
+.green_bar{
+      background-color: #06A921;
+     }
+.light_green_bar{
+  background-color: #84D612;
+ }
+.yellow_bar{
+  background-color: #FBC928;
+ }
+.orange_bar{
+  background-color: #F99A00;
+ }
+.red_bar{
+  background-color: #E73819;
+ }
+.o_progressbar {
+.o_progress {
+    width: 50px;
+    height: 15px;
+    border: 1px solid $o-gray-300;
+    background-color: white;
+    border-radius: 30px;
+}
+.o_progressbar_value {
+    width: 44px;
+}
+.o_progressbar_value input {
+    // Prevent the input to grow and deteriorate the visibility
+    width: 45px;
+    min-width: 45px;
+    transition: width .2s;
+}
+}
 .o_kanban_renderer .o_kanban_record {
     .orange_bg {
         background-color: #FFF7E9 !important;
