@@ -29,6 +29,7 @@
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
                 <field name="family_id" options="{'no_open': True}"/>
+                <field name="percentage_complete" widget="float" options="{'digits': (16, 0)}" />
                 <field name="brand_id"/>
                 <field name="mpn_number"/>
                 <field name="status"/>

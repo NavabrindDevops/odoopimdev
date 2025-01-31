@@ -299,7 +299,7 @@ class ProductCreateMaster(models.Model):
                 'field_description': field_name.replace('x_', ''),
                 'ttype': display_type,
                 'store': True,
-                'required': True if field_mandatory == True else False,
+                'required': True if field_mandatory else False,
             })
             print('ddddddddddddddd')
             print(f"Field '{field_name}' created dynamically in product.template.")

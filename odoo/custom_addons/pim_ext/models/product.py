@@ -16,7 +16,6 @@ from odoo.tools import drop_view_if_exists
 import logging
 from googletrans import Translator
 
-from odoopimdev.odoo.api import readonly
 
 _logger = logging.getLogger(__name__)
 
@@ -1074,6 +1073,22 @@ class ProductTemplate(models.Model):
      )
 
      is_update_from_attribute = fields.Boolean(string='Created from attribute')
+     percentage_complete = fields.Float(string="Complete",
+                                        compute='_compute_percentage_complete',
+                                        help="Percentage of completion (0-100)")
+
+     def _compute_percentage_complete(self):
+          for product in self:
+               if product.family_id:
+                    attributes = product.family_id.mapped('product_families_ids').mapped('attribute_id')
+                    non_empty_attributes = sum(1 for attribute in attributes)
+                    if attributes:
+                         product.percentage_complete = (non_empty_attributes / len(attributes)) * 100
+                         print('dskjdksjds', product.percentage_complete)
+                    else:
+                         product.percentage_complete = 0  # No attributes, so 0%
+               else:
+                    product.percentage_complete = 0
 
      @api.depends('product_variant_ids')
      def _compute_readable_variant_names(self):

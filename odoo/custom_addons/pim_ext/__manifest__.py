@@ -54,7 +54,9 @@
                     # 'pim_ext/static/src/js/dis_button.js',
                     # 'pim_ext/static/src/xml/view_button.xml',
 
-                    # 'pim_ext/static/src/js/split_attribute_view.js',
+
+                    'pim_ext/static/src/js/progressbar_field.js',
+                    'pim_ext/static/src/xml/progressbar_widget_extended.xml',
                 ],
         },
     'installable': True,

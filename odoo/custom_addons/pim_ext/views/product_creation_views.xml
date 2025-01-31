@@ -218,23 +218,21 @@
 <!--                <field name="sku_count"/>-->
                 <templates>
                     <t t-name="kanban-box">
-                <!--        <t t-set="bg_class" t-value="'green_bg'"/>-->
-<!--                            <t t-if="record.completeness.value &gt;= 70">-->
-<!--                                <t t-set="bg_class" t-value="'green_bg'"/>-->
-<!--                            </t>-->
-<!--                            <t t-elif="record.completeness.value &gt;= 55 and record.completeness.value &lt; 70">-->
-<!--                                <t t-set="bg_class" t-value="'light_green_bg'"/>-->
-<!--                            </t>-->
-<!--                            <t t-elif="record.completeness.value &gt;= 40 and record.completeness.value &lt; 55">-->
-<!--                                <t t-set="bg_class" t-value="'yellow_bg'"/>-->
-<!--                            </t>-->
-<!--                            <t t-elif="record.completeness.value &gt;= 25 and record.completeness.value &lt; 40">-->
-<!--                                <t t-set="bg_class" t-value="'orange_bg'"/>-->
-<!--                            </t>-->
-<!--                            <t t-elif="record.completeness.value &gt;= 0 and record.completeness.value &lt; 25">-->
-<!--                                <t t-set="bg_class" t-value="'red_bg'"/>-->
-<!--                            </t>-->
-
+                            <t t-if="record.percentage_complete.value &gt;= 70">
+                                <t t-set="bg_class" t-value="'green_bg'"/>
+                            </t>
+                            <t t-elif="record.percentage_complete.value &gt;= 55 and record.percentage_complete.value &lt; 70">
+                                <t t-set="bg_class" t-value="'light_green_bg'"/>
+                            </t>
+                            <t t-elif="record.percentage_complete.value &gt;= 40 and record.percentage_complete.value &lt; 55">
+                                <t t-set="bg_class" t-value="'yellow_bg'"/>
+                            </t>
+                            <t t-elif="record.percentage_complete.value &gt;= 25 and record.percentage_complete.value &lt; 40">
+                                <t t-set="bg_class" t-value="'orange_bg'"/>
+                            </t>
+                            <t t-elif="record.percentage_complete.value &gt;= 0 and record.percentage_complete.value &lt; 25">
+                                <t t-set="bg_class" t-value="'red_bg'"/>
+                            </t>
                         <div class="o_kanban_card" t-att-class="'fam_grid ' + bg_class">
                             <div class="o_kanban_image fam_grid_image">
                                 <img alt="Avatar" t-att-src="kanban_image('product.template', 'image_1920', record.id.raw_value)"/>
@@ -284,7 +282,7 @@
                                         <div class="fam_ce_date d-flex flex-column justify-content-between">
                                             <div>
                                                 <p class="mb-1 value_title">Complete</p>
-<!--                                                <field name="completeness" widget="progressbar_extended"/>-->
+                                                <field name="percentage_complete" widget="progressbar_extended"/>
                                             </div>
                                             <div class="fam_grid_c_date">
                                                 <p class="mb-1 value_title">Updated at</p>
