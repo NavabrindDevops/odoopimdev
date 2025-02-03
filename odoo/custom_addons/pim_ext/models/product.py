@@ -1079,14 +1079,27 @@ class ProductTemplate(models.Model):
 
      def _compute_percentage_complete(self):
           for product in self:
+               filled_count = 0
+               total_count = 0
                if product.family_id:
                     attributes = product.family_id.mapped('product_families_ids').mapped('attribute_id')
-                    non_empty_attributes = sum(1 for attribute in attributes)
-                    if attributes:
-                         product.percentage_complete = (non_empty_attributes / len(attributes)) * 100
-                         print('dskjdksjds', product.percentage_complete)
-                    else:
-                         product.percentage_complete = 0  # No attributes, so 0%
+                    for attr_rec in attributes:
+                         if attr_rec.is_completeness:
+                              total_count += 1
+                              field_name = f"x_{attr_rec.name.lower()}"
+                              if field_name in product._fields:
+                                   attribute_value = getattr(product, field_name, None)
+                                   print(f"Checking field {field_name}: Value = {attribute_value}")
+                                   if isinstance(product._fields[field_name], fields.Boolean):
+                                        print('dsskdjskdjs')
+                                        if attribute_value:
+                                             filled_count += 1
+                                   else:
+                                        if attribute_value not in [False, None, ""]:
+                                             filled_count += 1
+                              else:
+                                   print(f"Field {field_name} does not exist in product.template")
+                    product.percentage_complete = (filled_count / total_count * 100) if total_count > 0 else 0
                else:
                     product.percentage_complete = 0
 

@@ -250,13 +250,16 @@
                                 <div t-attf-class="oe_kanban_global_click family_record_grid">
                                     <ul class="fam_list">
                                         <li class="mb4 fam_list_title">
+                                            <field name="sku"/>
+                                        </li>
+                                        <li class="mb4 fam_list_title">
                                             <field name="name"/>
                                         </li>
                                         <div class="d-flex fam_list_value">
-                                            <div>
-                                                <li><span class="value_weight">Family: </span><field name="family_id"/></li>
-                                                <li><span class="value_weight">Brand: </span><field name="brand_id"/></li>
-                                            </div>
+<!--                                            <div>-->
+<!--                                                <li><span class="value_weight">Family: </span><field name="family_id"/></li>-->
+<!--                                                <li><span class="value_weight">Brand: </span><field name="brand_id"/></li>-->
+<!--                                            </div>-->
 <!--                                            <div>-->
 <!--                                                <li><span class="value_weight">Buyer: </span><field name="buyer_id"/></li>-->
 <!--                                                <li><span class="value_weight">SKU(s): </span><field name="sku_count"/></li>-->
