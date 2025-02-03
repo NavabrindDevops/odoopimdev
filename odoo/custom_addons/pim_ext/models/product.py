@@ -1077,6 +1077,12 @@ class ProductTemplate(models.Model):
                                         compute='_compute_percentage_complete',
                                         help="Percentage of completion (0-100)")
 
+     progress_state = fields.Selection([
+          ('partially_completed', 'Partially Completed'),
+          ('fully_completed', 'Fully Completed'),
+          ('incomplete', 'Incomplete')
+     ], string="Progress State", compute='_compute_progress_state', store=True)
+
      def _compute_percentage_complete(self):
           for product in self:
                filled_count = 0
@@ -1102,6 +1108,17 @@ class ProductTemplate(models.Model):
                     product.percentage_complete = (filled_count / total_count * 100) if total_count > 0 else 0
                else:
                     product.percentage_complete = 0
+
+     # @api.depends('percentage_complete')
+     def _compute_progress_state(self):
+          print('dskjskjdsk')
+          for product in self:
+               if product.percentage_complete == 100:
+                    product.progress_state = 'fully_completed'
+               elif product.percentage_complete >= 50:
+                    product.progress_state = 'partially_completed'
+               else:
+                    product.progress_state = 'incomplete'
 
      @api.depends('product_variant_ids')
      def _compute_readable_variant_names(self):
