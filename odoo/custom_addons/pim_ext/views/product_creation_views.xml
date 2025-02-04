@@ -206,7 +206,11 @@
             <field name="model">product.template</field>
             <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile fam_grid_box" default_order="create_date desc" create="0" limit="80" default_group_by="brand_id">
-                    <progressbar field="progress_state" colors='{"fully_completed": "success",  "partially_completed": "warning", "incomplete": "danger"}'/>
+                    <progressbar field="progress_state" colors='{"fully_completed": "info",
+                      "almost_completed": "light_green",
+                       "partially_completed": "yellow_color",
+                       "not_completed": "orange_color",
+                       "incomplete": "danger"}'/>
                 <header>
                     <button name="create_pim_products" type="object" class="btn-primary"
                             string="Create Product" display="always"

@@ -1079,7 +1079,9 @@ class ProductTemplate(models.Model):
 
      progress_state = fields.Selection([
           ('partially_completed', 'Partially Completed'),
+          ('almost_completed', 'Almost Completed'),
           ('fully_completed', 'Fully Completed'),
+          ('not_completed', 'Not Completed'),
           ('incomplete', 'Incomplete')
      ], string="Progress State")
 
@@ -1113,10 +1115,14 @@ class ProductTemplate(models.Model):
      def _compute_progress_state(self, percentage_complete):
           print('dskjskjdsk', percentage_complete)
           for product in self:
-               if percentage_complete == 100:
+               if percentage_complete >= 70:
                     product.progress_state = 'fully_completed'
-               elif percentage_complete >= 50:
+               elif percentage_complete >= 55 and percentage_complete < 70:
+                    product.progress_state = 'almost_completed'
+               elif percentage_complete >= 40 and percentage_complete < 55:
                     product.progress_state = 'partially_completed'
+               elif percentage_complete >= 25 and percentage_complete < 40:
+                    product.progress_state = 'not_completed'
                else:
                     product.progress_state = 'incomplete'
 

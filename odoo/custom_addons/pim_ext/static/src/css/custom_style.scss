@@ -219,6 +219,20 @@
     }
 }
 
+.progress-bar.bg-info {
+    background-color: #06A921 !important;
+}
+.progress-bar.bg-light_green {
+    background-color: #84D612 !important;
+}
+.progress-bar.bg-yellow_color {
+    background-color: #FBC928 !important;
+}
+.progress-bar.bg-orange_color {
+    background-color: #F99A00 !important;
+}
+
+
 .product_version_tile {
     .o_kanban_renderer {
         &.o_kanban_ungrouped {
