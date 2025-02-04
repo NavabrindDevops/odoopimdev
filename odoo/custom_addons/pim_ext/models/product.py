@@ -1081,7 +1081,7 @@ class ProductTemplate(models.Model):
           ('partially_completed', 'Partially Completed'),
           ('fully_completed', 'Fully Completed'),
           ('incomplete', 'Incomplete')
-     ], string="Progress State", compute='_compute_progress_state', store=True)
+     ], string="Progress State")
 
      def _compute_percentage_complete(self):
           for product in self:
@@ -1106,16 +1106,16 @@ class ProductTemplate(models.Model):
                               else:
                                    print(f"Field {field_name} does not exist in product.template")
                     product.percentage_complete = (filled_count / total_count * 100) if total_count > 0 else 0
+                    product._compute_progress_state(product.percentage_complete)
                else:
                     product.percentage_complete = 0
 
-     # @api.depends('percentage_complete')
-     def _compute_progress_state(self):
-          print('dskjskjdsk')
+     def _compute_progress_state(self, percentage_complete):
+          print('dskjskjdsk', percentage_complete)
           for product in self:
-               if product.percentage_complete == 100:
+               if percentage_complete == 100:
                     product.progress_state = 'fully_completed'
-               elif product.percentage_complete >= 50:
+               elif percentage_complete >= 50:
                     product.progress_state = 'partially_completed'
                else:
                     product.progress_state = 'incomplete'
