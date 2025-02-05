@@ -57,7 +57,7 @@
 
 
                     'pim_ext/static/src/js/progressbar_field.js',
-                    'pim_ext/static/src/js/animated_number_custom.js',
+                    # 'pim_ext/static/src/js/animated_number_custom.js',
                     'pim_ext/static/src/xml/progressbar_widget_extended.xml',
                 ],
         },
