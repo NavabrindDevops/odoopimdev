@@ -231,6 +231,22 @@
 .progress-bar.bg-orange_color {
     background-color: #F99A00 !important;
 }
+.w-75 {
+    width: 100% !important;
+}
+.progress-container {
+    width: 100%;
+    padding: 5px 0;
+}
+
+.progress-container .o_progressbar {
+    width: 100% !important;
+    height: 8px !important;
+}
+
+.progress-container .o_progressbar .progress {
+    width: 100% !important;
+}
 
 
 .product_version_tile {

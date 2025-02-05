@@ -16,6 +16,7 @@ from odoo.tools import drop_view_if_exists
 import logging
 from googletrans import Translator
 
+from odoopimdev.odoo.api import readonly
 
 _logger = logging.getLogger(__name__)
 
@@ -1072,6 +1073,18 @@ class ProductTemplate(models.Model):
           ondelete='cascade',
      )
 
+     product_parent_id = fields.Many2one(
+          'product.template',
+          string='Parent Group',
+          ondelete='cascade',
+     )
+     product_tmplt_ids = fields.One2many(
+          'product.template',
+          'product_parent_id',
+          compute='_compute_products_ids',
+          string='Sub-groups'
+     )
+
      is_update_from_attribute = fields.Boolean(string='Created from attribute')
      percentage_complete = fields.Float(string="Complete",
                                         compute='_compute_percentage_complete',
@@ -1084,6 +1097,25 @@ class ProductTemplate(models.Model):
           ('not_completed', 'Not Completed'),
           ('incomplete', 'Incomplete')
      ], string="Progress State")
+
+     def _compute_products_ids(self):
+          for record in self:
+               record.product_tmplt_ids = self.env['product.template'].search([])
+
+     def action_back_to_product_menu(self):
+          print('fdfidofjdkfjd')
+          return {
+               'name': 'products',
+               'res_model': 'product.template',
+               'type': 'ir.actions.act_window',
+               'view_id': self.env.ref('pim_ext.view_product_management_tree').id,
+               'view_mode': 'list',
+               'target': 'current',
+               'context': {
+                    'no_breadcrumbs': True,
+               }
+          }
+
 
      def _compute_percentage_complete(self):
           for product in self:
@@ -1151,6 +1183,42 @@ class ProductTemplate(models.Model):
                            },
                'target': 'current',
           }
+
+     def save_product_rec(self):
+          return {
+               'type': 'ir.actions.act_window',
+               'view_mode': 'form',
+               'res_model': 'product.template',
+               'view_id': self.env.ref('pim_ext.view_product_creation_split_view_custom').id,
+               'res_id': self.id,
+               'context': {'no_breadcrumbs': True},
+               'target': 'current',
+          }
+
+     def custom_product_open_form_view(self):
+          print('dksdjskdjs')
+
+          return {
+              'type': 'ir.actions.act_window',
+              'name': 'Products',
+              'res_model': 'product.template',
+              'view_mode': 'form',
+              'view_id': self.env.ref('pim_ext.view_product_creation_split_view_custom').id,
+              'context': {'no_breadcrumbs': True,
+                          },
+              'res_id': self.id,
+          }
+
+     def custom_product_unlink(self):
+          return {
+               'name': 'Confirm Deletion',
+               'type': 'ir.actions.act_window',
+               'res_model': 'product.template.unlink.wizard',
+               'view_mode': 'form',
+               'target': 'new',
+               'context': {'default_product_id': self.id},
+          }
+
 
      # this is for dynamic product creation
      @api.model
@@ -1243,4 +1311,21 @@ class ProductTemplate(models.Model):
           """Helper method to add the field"""
           self._fields[name] = field
 
+class ProductMasterUnlinkWizard(models.TransientModel):
+    _name = 'product.template.unlink.wizard'
+    _description = 'Wizard to Confirm Deletion of Product master'
 
+    product_id = fields.Many2one('product.template', string="Product Master", readonly=True)
+
+    def confirm_unlink(self):
+        if self.product_id:
+             self.product_id.unlink()
+        return {
+             'type': 'ir.actions.act_window',
+             'name': 'Products',
+             'res_model': 'product.template',
+             'view_mode': 'list',
+             'view_id': self.env.ref('pim_ext.view_product_management_tree').id,
+             'context': {'no_breadcrumbs': True,
+                         },
+        }

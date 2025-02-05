@@ -206,11 +206,13 @@
             <field name="model">product.template</field>
             <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile fam_grid_box" default_order="create_date desc" create="0" limit="80" default_group_by="brand_id">
-                    <progressbar field="progress_state" colors='{"fully_completed": "info",
-                      "almost_completed": "light_green",
-                       "partially_completed": "yellow_color",
-                       "not_completed": "orange_color",
-                       "incomplete": "danger"}'/>
+                    <div class="progress-container w-100 mt-2">
+                        <progressbar style="width: 100%; height: 8px;" field="progress_state" colors='{"fully_completed": "info",
+                          "almost_completed": "light_green",
+                           "partially_completed": "yellow_color",
+                           "not_completed": "orange_color",
+                           "incomplete": "danger"}'/>
+                    </div>
                 <header>
                     <button name="create_pim_products" type="object" class="btn-primary"
                             string="Create Product" display="always"
@@ -255,10 +257,10 @@
                                 <div t-attf-class="oe_kanban_global_click family_record_grid">
                                     <ul class="fam_list">
                                         <li class="mb4 fam_list_title">
-                                            <field name="sku"/>
+                                            <span>SKU: &#160;<field name="sku"/></span>
                                         </li>
                                         <li class="mb4 fam_list_title">
-                                            <field name="name"/>
+                                            <span>Name: &#160;<field name="name"/></span>
                                         </li>
                                         <div class="d-flex fam_list_value">
 <!--                                            <div>-->
@@ -321,12 +323,15 @@
                     <field name="id"/>
                     <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
                     <field name="sku"/>
+                    <field name="family_id"/>
                     <field name="brand_id"/>
                     <field name="name"/>
                     <field name="active_label"/>
                     <field name="create_date" string="Created"/>
                     <field name="write_date" string="Updated"/>
                     <field name="readable_variant_names" string="Variant products"/>
+                    <button name="custom_product_open_form_view" string = " " icon="fa-edit" type="object" />
+                    <button name="custom_product_unlink" string = " " icon="fa-trash-o" type="object" />
                 </list>
             </field>
         </record>
@@ -381,6 +386,7 @@
 <!--            <field name="view_id" ref="view_product_management_tree"/>-->
             <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_product_management_kanban')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_creation_split_view_custom')}),
                 (0, 0, {'view_mode': 'list', 'view_id': ref('view_product_management_tree')}),
                 ]"/>
             <field name="domain">[]</field>

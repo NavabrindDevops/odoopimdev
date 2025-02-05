@@ -43,6 +43,8 @@ access_product_create_rec,access_attributes_product_create,model_product_create,
 
 access_product_create_master,access_product_create_master_rec,model_product_create_master,,1,1,1,1
 
+access_product_master_unlink,access_product_master_unlink_rec,model_product_template_unlink_wizard,,1,1,1,1
+
 
 
 

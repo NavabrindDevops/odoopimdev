@@ -165,40 +165,58 @@ class ProductCreateMaster(models.Model):
                 new_field_xml += '</group>'
 
             # Generate the final XML for the view
-            view_id = self.env.ref('product.product_template_only_form_view').id
-            view = self.env['ir.ui.view'].browse(view_id)
-            print('dskjskdjskd', new_field_xml)
-            arch_value = f"""
-                <xpath expr="//notebook/page[@name='general_information']" position="before">
-                    <page string="Attributes" name="attributes_page" {group_visible_condition}>
-                        {new_field_xml}
-                    </page>
-                </xpath>
-            """
+            # view_id = self.env.ref('product.product_template_only_form_view').id
+            # view = self.env['ir.ui.view'].browse(view_id)
+            # print('dskjskdjskd', new_field_xml)
+            # arch_value = f"""
+            #     <xpath expr="//notebook/page[@name='general_information']" position="before">
+            #         <page string="Attributes" name="attributes_page" {group_visible_condition}>
+            #             {new_field_xml}
+            #         </page>
+            #     </xpath>
+            # """
 
             # Check if the view already exists, update it; otherwise, create a new one
-            view_name = 'sku_field_add_attribute_' + family_name.lower().replace(' ', '_')
-            print('dskjdkjdkjksjds', view_name)
-            model_id = self.env['ir.model'].search([('model', '=', 'product.template')])
+            # view_name = 'sku_field_add_attribute_' + family_name.lower().replace(' ', '_')
+            # print('dskjdkjdkjksjds', view_name)
+            # model_id = self.env['ir.model'].search([('model', '=', 'product.template')])
+            #
+            # # Check if the view exists
+            # view_exist = self.env['ir.ui.view'].search([
+            #     ('name', '=ilike', view_name),
+            #     ('model_id', '=', model_id.id),
+            #     ('active', 'in', [True, False])
+            # ])
+            # print('dkdkjfdkjfd', view_exist)
+            # if view_exist:
+            #     view_exist.arch = arch_value
+            # else:
+            #     custom_view = self.env['ir.ui.view'].sudo().create({
+            #         'name': view_name,
+            #         'type': 'form',
+            #         'model': view.model,
+            #         'inherit_id': view.id,
+            #         'active': True,
+            #         'arch': arch_value
+            #     })
 
-            # Check if the view exists
-            view_exist = self.env['ir.ui.view'].search([
-                ('name', '=ilike', view_name),
-                ('model_id', '=', model_id.id),
-                ('active', 'in', [True, False])
-            ])
-            print('dkdkjfdkjfd', view_exist)
-            if view_exist:
-                view_exist.arch = arch_value
-            else:
-                custom_view = self.env['ir.ui.view'].sudo().create({
-                    'name': view_name,
-                    'type': 'form',
-                    'model': view.model,
-                    'inherit_id': view.id,
-                    'active': True,
-                    'arch': arch_value
-                })
+            dynamic_notebook_xml = f"""
+                        <xpath expr="//notebook/page[1]" position="before">
+                            <page string="Attributes" name="attributes_page" {group_visible_condition}>
+                                {new_field_xml}
+                            </page>
+                        </xpath>
+                    """
+
+            # Apply to the Default Product View
+            default_view_id = self.env.ref('product.product_template_only_form_view').id
+            self._update_or_create_view('sku_field_add_attribute_' + family_name.lower().replace(' ', '_'),
+                                        'product.template', default_view_id, dynamic_notebook_xml)
+
+            # Apply to the Custom Split View
+            custom_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
+            self._update_or_create_view('sku_field_add_attribute_custom_' + family_name.lower().replace(' ', '_'),
+                                        'product.template', custom_view_id, dynamic_notebook_xml)
 
             # Create the product record
             new_product = self.env['product.template'].create({
@@ -208,14 +226,27 @@ class ProductCreateMaster(models.Model):
                 'sku': self.sku,
                 'is_update_from_attribute': True,
                 'image_1920': self.image,
-                'family_id': rec.family_id.id,  # Ensure the product's family_id is set correctly
+                'family_id': rec.family_id.id,
             })
+
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Products',
+            #     'res_model': 'product.template',
+            #     'view_mode': 'form',
+            #     'view_id': self.env.ref('pim_ext.view_product_creation_split_view_custom').id,
+            #     'context': {'no_breadcrumbs': True,
+            #                 'default_family_id': rec.family_id.id,
+            #                 },
+            #     'res_id': self.id,
+            # }
 
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'product.template',
                 'view_mode': 'form',
                 'res_id': new_product.id,
+                'view_id': self.env.ref('pim_ext.view_product_creation_split_view_custom').id,
                 'context': {'no_breadcrumbs': True, 'default_family_id': rec.family_id.id},
                 'target': 'current',
             }
@@ -293,6 +324,14 @@ class ProductCreateMaster(models.Model):
             print('fkjfdkjfdkfjd', field_name)
             print('djijdsiijds', self.env['ir.model']._get('product.template').id)
             print('44444444444444', field_name.replace('x_', ''), )
+            # field_values = {
+            #     'name': field_name,
+            #     'model_id': self.env['ir.model']._get('product.template').id,
+            #     'field_description': field_name.replace('x_', ''),  # Set field label
+            #     'ttype': display_type,  # Dynamic field type
+            #     'store': True,
+            #     'required': field_mandatory,
+            # }
             self.env['ir.model.fields'].create({
                 'name': field_name,
                 'model_id': self.env['ir.model']._get('product.template').id,
@@ -305,6 +344,27 @@ class ProductCreateMaster(models.Model):
             print(f"Field '{field_name}' created dynamically in product.template.")
         else:
             print(f"Field '{field_name}' already exists in product.template.")
+
+    def _update_or_create_view(self, view_name, model_name, inherit_view_id, arch_value):
+        model_id = self.env['ir.model'].search([('model', '=', model_name)])
+
+        view_exist = self.env['ir.ui.view'].search([
+            ('name', '=ilike', view_name),
+            ('model_id', '=', model_id.id),
+            ('active', 'in', [True, False])
+        ])
+
+        if view_exist:
+            view_exist.arch = arch_value
+        else:
+            self.env['ir.ui.view'].sudo().create({
+                'name': view_name,
+                'type': 'form',
+                'model': model_name,
+                'inherit_id': inherit_view_id,
+                'active': True,
+                'arch': arch_value
+            })
 
     def product_cancel(self):
         return {

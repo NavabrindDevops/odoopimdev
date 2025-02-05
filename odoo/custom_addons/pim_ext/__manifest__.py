@@ -8,7 +8,7 @@
         Project Information Management
     """,
     'category': 'product',
-    'depends': ['base', 'sale', 'product','stock','website_sale'],
+    'depends': ['web', 'base', 'sale', 'product','stock','website_sale'],
     'data': [
         'security/group_security.xml',
         'security/ir.model.access.csv',
@@ -38,6 +38,7 @@
         'views/attribute_master_split_views.xml',
         'views/pim_family_custom_split_view.xml',
         'views/product_creation_views.xml',
+        'views/product_split_view.xml',
 
         # 'views/ir_ui_view.xml',
 
@@ -56,6 +57,7 @@
 
 
                     'pim_ext/static/src/js/progressbar_field.js',
+                    'pim_ext/static/src/js/animated_number_custom.js',
                     'pim_ext/static/src/xml/progressbar_widget_extended.xml',
                 ],
         },
