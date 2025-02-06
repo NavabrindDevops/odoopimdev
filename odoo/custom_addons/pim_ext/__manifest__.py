@@ -37,8 +37,9 @@
         'views/pim_attribute_group_split_views.xml',
         'views/attribute_master_split_views.xml',
         'views/pim_family_custom_split_view.xml',
-        'views/product_creation_views.xml',
         'views/product_split_view.xml',
+        'views/product_creation_views.xml',
+
 
         # 'views/ir_ui_view.xml',
 
