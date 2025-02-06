@@ -16,8 +16,6 @@ from odoo.tools import drop_view_if_exists
 import logging
 from googletrans import Translator
 
-from odoopimdev.odoo.api import readonly
-
 _logger = logging.getLogger(__name__)
 
 
