@@ -18,4 +18,22 @@
             </form>
         </field>
     </record>
+    <record id="wizard_product_variant_values_views" model="ir.ui.view">
+        <field name="name">attribute.variant.values.wizard.form.rec</field>
+        <field name="model">attribute.variant.values.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Variant values">
+                <group>
+                    <field name="variant_value_ids" widget="many2many_tags" options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                    <field name="product_id" readonly="1" options="{'no_open': True}"/>
+                    <field name="attribute_family_id" string="Family" readonly="1" options="{'no_open': True}"/>
+                    <field name="variant_id" string="Varaint" readonly="1" options="{'no_open': True}"/>
+                </group>
+                <footer>
+                    <button name="update_variant_value_rec" string="Update" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 </odoo>

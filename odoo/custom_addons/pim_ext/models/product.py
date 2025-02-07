@@ -1096,6 +1096,10 @@ class ProductTemplate(models.Model):
           ('incomplete', 'Incomplete')
      ], string="Progress State")
 
+     is_variant = fields.Boolean(string='Variant Product')
+     variant_id = fields.Many2one('family.variant.line', string='Family Variant')
+     is_variant_values_updated = fields.Boolean(default=False, string='Is Variant value updated')
+
      def _compute_products_ids(self):
           for record in self:
                record.product_tmplt_ids = self.env['product.template'].search([])
@@ -1155,6 +1159,19 @@ class ProductTemplate(models.Model):
                     product.progress_state = 'not_completed'
                else:
                     product.progress_state = 'incomplete'
+
+     def update_variant_values(self):
+          print('dksjdksjd')
+          return {
+               'type': 'ir.actions.act_window',
+               'res_model': 'attribute.variant.values.wizard',
+               'view_mode': 'form',
+               'target': 'new',
+               'context': {'default_attribute_family_id': self.family_id.id,
+                           'default_product_id': self.id,
+                           'default_variant_id': self.variant_id.id,
+                           },
+          }
 
      @api.depends('product_variant_ids')
      def _compute_readable_variant_names(self):

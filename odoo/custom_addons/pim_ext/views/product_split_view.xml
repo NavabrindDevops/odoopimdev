@@ -15,6 +15,9 @@
                                     <field name="family_id"/>
                                     <field name="brand_id"/>
                                     <field name="name"/>
+                                    <field name="is_variant" optional="hide"/>
+                                    <field name="variant_id" optional="hide"/>
+                                    <field name="is_variant_values_updated" optional="hide"/>
                                     <field name="active_label"/>
                                     <field name="create_date"/>
                                     <field name="write_date"/>
@@ -206,7 +209,7 @@
                             </form>
                             <div class="attr_creation" style="margin-top: 16px;">
                                 <button type="object" string="Save"
-                                       name="save_product_rec" class="oe_highlight"/>
+                                        name="save_product_rec" class="oe_highlight"/>
                             </div>
                         </div>
                     </div>

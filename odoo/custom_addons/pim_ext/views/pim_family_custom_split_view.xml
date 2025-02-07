@@ -85,6 +85,7 @@
                                                        <list create="false" edit="false" default_order="create_date desc">
                     <!--                                    <field name="variant_id" string="Variant" invisible="1"/>-->
                                                            <field name="name"/>
+                                                           <field name="variant_familiy_id" column_invisible="True"/>
                                                            <field name="variant_ids" string="Variants" widget="many2many_tags"/>
                                                        </list>
                                                    </field>

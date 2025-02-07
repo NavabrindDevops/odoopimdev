@@ -109,6 +109,9 @@ class ProductCreateMaster(models.Model):
     is_product_model_invisible = fields.Boolean(default=False, string='Invisible Types')
     is_product_grouped = fields.Boolean(default=False, string='Is Bundle')
     is_product_bundle = fields.Boolean(default=False, string='Is Grouped')
+    variant_id = fields.Many2one('family.variant.line', string='Variants',domain="[('variant_familiy_id', '=', family_id)]")
+
+
 
     def action_back_to_product_menu(self):
         menu_id = self.env.ref('pim_ext.product_creation_menu')
@@ -122,7 +125,6 @@ class ProductCreateMaster(models.Model):
 
     def product_save(self):
         for rec in self:
-            # Get the selected family
             family_name = rec.family_id.name
             attributes_list = []
             new_field_xml = ''
@@ -164,49 +166,54 @@ class ProductCreateMaster(models.Model):
 
                 new_field_xml += '</group>'
 
-            # Generate the final XML for the view
-            # view_id = self.env.ref('product.product_template_only_form_view').id
-            # view = self.env['ir.ui.view'].browse(view_id)
-            # print('dskjskdjskd', new_field_xml)
-            # arch_value = f"""
-            #     <xpath expr="//notebook/page[@name='general_information']" position="before">
-            #         <page string="Attributes" name="attributes_page" {group_visible_condition}>
-            #             {new_field_xml}
-            #         </page>
-            #     </xpath>
-            # """
+            variant_notebook_xml = ''
+            if rec.variant_id:
+                print('dskdjskjdkf')
+                variant_lines = rec.variant_id.filtered(lambda v: v.variant_familiy_id == rec.family_id)
 
-            # Check if the view already exists, update it; otherwise, create a new one
-            # view_name = 'sku_field_add_attribute_' + family_name.lower().replace(' ', '_')
-            # print('dskjdkjdkjksjds', view_name)
-            # model_id = self.env['ir.model'].search([('model', '=', 'product.template')])
-            #
-            # # Check if the view exists
-            # view_exist = self.env['ir.ui.view'].search([
-            #     ('name', '=ilike', view_name),
-            #     ('model_id', '=', model_id.id),
-            #     ('active', 'in', [True, False])
-            # ])
-            # print('dkdkjfdkjfd', view_exist)
-            # if view_exist:
-            #     view_exist.arch = arch_value
-            # else:
-            #     custom_view = self.env['ir.ui.view'].sudo().create({
-            #         'name': view_name,
-            #         'type': 'form',
-            #         'model': view.model,
-            #         'inherit_id': view.id,
-            #         'active': True,
-            #         'arch': arch_value
-            #     })
+                for variant in variant_lines:
+                    for variant_rec in variant.variant_ids:
+                        variant_name = variant_rec.name
+                        field_name = f"x_{variant_name.replace(' ', '_').lower()}"
+                        #
+                        # self._create_dynamic_field(field_name, False, 'many2many')
 
-            dynamic_notebook_xml = f"""
+                        # Create a notebook page for each variant
+                        print('dsjhdsjhds', variant_name)
+                        # variant_visible_condition = f'invisible="1 if is_variant != True else 0"'
+                        variant_visible_condition = f'invisible="1 if is_variant != True or family_id != {rec.family_id.id} else 0"'
+                        # variant_notebook_xml += f"""
+                        #         <page string="{variant_name}" name="{field_name}_page">
+                        #             <field name="attribute_line_ids">
+                        #
+                        #             </field>
+                        #         </page>
+                        # """
+                        print('dkjfjfkdjfd')
+                        variant_notebook_xml += f"""
+                                        <page string="{variant_name}" name="{field_name}_page" {variant_visible_condition}>
+                                            <button name="update_variant_values" string="Add" type="object" class="btn btn-success"/>
+                                        </page>
+                                """
+            if variant_notebook_xml:
+                print('iffffffffff')
+                dynamic_notebook_xml = f"""
                         <xpath expr="//notebook/page[1]" position="before">
                             <page string="Attributes" name="attributes_page" {group_visible_condition}>
                                 {new_field_xml}
                             </page>
+                            {variant_notebook_xml}
                         </xpath>
                     """
+            else:
+                print('delseeeeeee')
+                dynamic_notebook_xml = f"""
+                            <xpath expr="//notebook/page[1]" position="before">
+                                <page string="Attributes" name="attributes_page" {group_visible_condition}>
+                                    {new_field_xml}
+                                </page>
+                            </xpath>
+                        """
 
             # Apply to the Default Product View
             default_view_id = self.env.ref('product.product_template_only_form_view').id
@@ -224,22 +231,16 @@ class ProductCreateMaster(models.Model):
                 'default_code': self.sku if self.sku else 'SKU',
                 'categ_id': 1,
                 'sku': self.sku,
+                'is_variant': True if rec.variant_id else False,
+                'variant_id': rec.variant_id.id,
                 'is_update_from_attribute': True,
                 'image_1920': self.image,
                 'family_id': rec.family_id.id,
+                # 'attribute_line_ids': [(0, 0, {
+                #         'attribute_id':
+                # })]
             })
 
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Products',
-            #     'res_model': 'product.template',
-            #     'view_mode': 'form',
-            #     'view_id': self.env.ref('pim_ext.view_product_creation_split_view_custom').id,
-            #     'context': {'no_breadcrumbs': True,
-            #                 'default_family_id': rec.family_id.id,
-            #                 },
-            #     'res_id': self.id,
-            # }
 
             return {
                 'type': 'ir.actions.act_window',
@@ -355,15 +356,18 @@ class ProductCreateMaster(models.Model):
         ])
 
         if view_exist:
+            print('dkjkfjdkfjdj3333333')
             view_exist.arch = arch_value
         else:
+            print('9033333333333333')
             self.env['ir.ui.view'].sudo().create({
                 'name': view_name,
                 'type': 'form',
                 'model': model_name,
                 'inherit_id': inherit_view_id,
                 'active': True,
-                'arch': arch_value
+                'arch': arch_value,
+                'store': True,
             })
 
     def product_cancel(self):

@@ -10,4 +10,4 @@ class FamilyVariantLine(models.Model):
 
     variant_id = fields.Many2one('product.product', "Product Variant", index=True, ondelete='cascade')
     name = fields.Char(string='Label')
-    variant_ids = fields.Many2many('product.product', string='Variants')
+    variant_ids = fields.Many2many('product.attribute', string='Variants')

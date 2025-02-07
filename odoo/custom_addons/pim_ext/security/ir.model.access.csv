@@ -45,6 +45,8 @@ access_product_create_master,access_product_create_master_rec,model_product_crea
 
 access_product_master_unlink,access_product_master_unlink_rec,model_product_template_unlink_wizard,,1,1,1,1
 
+access_attribute_variant_values_wizard_user,access_attribute_variant_value_wizard,model_attribute_variant_values_wizard,,1,1,1,1
+
 
 
 
