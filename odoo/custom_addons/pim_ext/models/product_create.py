@@ -189,10 +189,25 @@ class ProductCreateMaster(models.Model):
                         #             </field>
                         #         </page>
                         # """
+
                         print('dkjfjfkdjfd')
+                        variant_invisible_rec = f'invisible="1 if is_variant_update != True else 0"'
                         variant_notebook_xml += f"""
                                         <page string="{variant_name}" name="{field_name}_page" {variant_visible_condition}>
-                                            <button name="update_variant_values" string="Add" type="object" class="btn btn-success"/>
+                                            <form>
+                                                <field name="is_variant_update" invisible="1"/>
+                                                <header>
+                                                    <button name = "update_variant_values" string = "Add values" icon="fa-plus " type = "object" class ="btn btn-success"/>
+                                                </header>                                                
+                                                <sheet>
+                                                    <group>
+                                                        <group>
+                                                            <field name="product_attr_values_id" string=""  {variant_invisible_rec} widget="many2many_tags"/>
+                                                        </group>
+                                                    </group>
+                                                </sheet>
+                                            </form>
+                                            
                                         </page>
                                 """
             if variant_notebook_xml:

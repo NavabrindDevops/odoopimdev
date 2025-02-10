@@ -9,7 +9,7 @@
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="product_tmplt_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
-                                <list create="false" edit="false" default_order="create_date desc">
+                                <list create="false" edit="false" default_order="create_date desc" editable="bottom">
                                     <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
                                     <field name="sku"/>
                                     <field name="family_id"/>
@@ -22,6 +22,7 @@
                                     <field name="create_date"/>
                                     <field name="write_date"/>
                                     <button name="custom_product_open_form_view" string = " " icon="fa-edit" type="object" />
+                                    <button name="custom_product_open_default_form_view" string = " " icon="fa-info" type="object" />
                                     <button name="custom_product_unlink" string = " " icon="fa-trash-o" type="object" />
                                 </list>
                             </field>
@@ -118,88 +119,10 @@
                                                                   readonly="1"
                                                                   class="attribute_type_class"/>
                                                        </div><br/>
-
-<!--                                                       <div id="o_type_properties">-->
-<!--                                                           <div id="o_type_properties_main" class="flex-grow-1">-->
-<!--                                                               <group>-->
-<!--                                                                   <label for="value_per_channel" string="Value per channel"/>-->
-<!--                                                               </group>-->
-<!--                                                           </div>-->
-<!--                                                       </div>-->
-<!--                                                       <div class="d-flex">-->
-<!--                                                           <field name="value_per_channel" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>-->
-<!--                                                       </div><br/>-->
-
-<!--                                                       <div id="o_type_properties">-->
-<!--                                                           <div id="o_type_properties_main" class="flex-grow-1">-->
-<!--                                                               <group>-->
-<!--                                                                   <label for="value_per_locale" string="Value per locale"/>-->
-<!--                                                               </group>-->
-<!--                                                           </div>-->
-<!--                                                       </div>-->
-<!--                                                       <div class="d-flex">-->
-<!--                                                           <field name="value_per_locale" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>-->
-<!--                                                       </div><br/>-->
-
-<!--                                                       <div id="o_type_properties">-->
-<!--                                                           <div id="o_type_properties_main" class="flex-grow-1">-->
-<!--                                                               <group>-->
-<!--                                                                   <label for="usable_in_grid" string="Usable in grid"/>-->
-<!--                                                               </group>-->
-<!--                                                           </div>-->
-<!--                                                       </div>-->
-<!--                                                       <div class="d-flex">-->
-<!--                                                           <field name="usable_in_grid" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>-->
-<!--                                                       </div><br/>-->
-
-<!--                                                       <div id="o_type_properties">-->
-<!--                                                           <div id="o_type_properties_main" class="flex-grow-1">-->
-<!--                                                               <group>-->
-<!--                                                                   <label for="locale_specific" string="Locale specific"/>-->
-<!--                                                               </group>-->
-<!--                                                           </div>-->
-<!--                                                       </div>-->
-<!--                                                       <div class="d-flex">-->
-<!--                                                           <field name="locale_specific" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>-->
-<!--                                                       </div>-->
                                                    </div>
                                                </page>
                                                <page name="history_products" string="History">
                                                </page>
-<!--                                               <page name="type_general_info" string="General">-->
-<!--                                                   <div id="o_type_properties" class="d-lg-flex top_property">-->
-<!--                                                       <div id="o_type_properties_main" class="flex-grow-1">-->
-<!--                                                           <group string="Information" class="general_param"/>-->
-<!--                                                       </div>-->
-<!--                                                   </div>-->
-<!--                                                   <div class="attr_form_values">-->
-<!--                                                       <div>-->
-<!--                                                           <div>-->
-<!--                                                               <label for="is_mandatory" string="Mandatory" style="font-weight:bold;"/>-->
-<!--                                                               <field name="is_mandatory" style="padding-left: 9%;"/>-->
-<!--                                                           </div>-->
-<!--                                                           <div style="margin-top: 15px;">-->
-<!--                                                               <label for="is_required_in_clone" string="Required For Clone" style="font-weight:bold;"/>-->
-<!--                                                               <field name="is_required_in_clone" style="padding-left: 2%;"/>-->
-<!--                                                           </div>-->
-<!--&lt;!&ndash;                                                           <div style="margin-top: 15px;">&ndash;&gt;-->
-<!--&lt;!&ndash;                                                               <label for="is_cloning" string="Cloning" style="font-weight:bold;"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                                                               <field name="is_cloning" style="padding-left: 2%;"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                                                           </div>&ndash;&gt;-->
-<!--                                                           <div style="margin-top: 15px;">-->
-<!--                                                               <label for="is_completeness" string="Completeness" style="font-weight:bold;"/>-->
-<!--                                                               <field name="is_completeness" style="padding-left: 6.5%;"/>-->
-<!--                                                           </div>-->
-<!--                                                       </div>-->
-<!--                                                       <div class="attr_creation" style="margin-top: 16px;">-->
-<!--                                                           <button type="object" string="Save"-->
-<!--                                                                   name="create_attributes" class="oe_highlight"/>-->
-<!--&lt;!&ndash;                                                           <button type="object" string="Cancal"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                                   name="cancel_attributes" class="oe_highlight"/>&ndash;&gt;-->
-
-<!--                                                       </div>-->
-<!--                                                   </div>-->
-<!--                                               </page>-->
                                                <page name="type_label_translation" string="Label Translations" invisible="1">
                                                </page>
                                            </notebook>
@@ -207,10 +130,10 @@
                                    </div>
                                 </div>
                             </form>
-                            <div class="attr_creation" style="margin-top: 16px;">
-                                <button type="object" string="Save"
-                                        name="save_product_rec" class="oe_highlight"/>
-                            </div>
+<!--                            <div class="attr_creation" style="margin-top: 16px;">-->
+<!--                                <button type="object" string="Save"-->
+<!--                                        name="save_product_rec" class="oe_highlight"/>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </form>

@@ -118,6 +118,8 @@ class AttributeForm(models.Model):
      old_code = fields.Char(string="Old Code", readonly=True)
      new_code = fields.Char(string="New Code", readonly=True)
 
+     products_id = fields.Many2one('product.template', string='Products')
+
      @api.depends('name')
      def _compute_label_attribute_translation(self):
           translator = Translator()
@@ -1099,6 +1101,9 @@ class ProductTemplate(models.Model):
      is_variant = fields.Boolean(string='Variant Product')
      variant_id = fields.Many2one('family.variant.line', string='Family Variant')
      is_variant_values_updated = fields.Boolean(default=False, string='Is Variant value updated')
+     product_attr_values_id = fields.Many2many('product.attribute.value', 'attr_value_id', 'products_id', string='Attribute Values')
+     product_attr_ids = fields.One2many('product.attribute', 'products_id', string='Attributes')
+     is_variant_update = fields.Boolean(string='Variant updated', default=False)
 
      def _compute_products_ids(self):
           for record in self:
@@ -1161,7 +1166,8 @@ class ProductTemplate(models.Model):
                     product.progress_state = 'incomplete'
 
      def update_variant_values(self):
-          print('dksjdksjd')
+          print('dksjdksjd', self.variant_id.variant_ids, self.variant_id.variant_ids[:1])
+          attribute_value = self.variant_id.variant_ids[:1]
           return {
                'type': 'ir.actions.act_window',
                'res_model': 'attribute.variant.values.wizard',
@@ -1170,6 +1176,7 @@ class ProductTemplate(models.Model):
                'context': {'default_attribute_family_id': self.family_id.id,
                            'default_product_id': self.id,
                            'default_variant_id': self.variant_id.id,
+                           'default_attribute_id': attribute_value.id if attribute_value else False,
                            },
           }
 
@@ -1222,6 +1229,19 @@ class ProductTemplate(models.Model):
               'context': {'no_breadcrumbs': True,
                           },
               'res_id': self.id,
+          }
+
+     def custom_product_open_default_form_view(self):
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Products',
+               'res_model': 'product.template',
+               'view_mode': 'form',
+               'view_id': self.env.ref('product.product_template_only_form_view').id,
+               'context': {'no_breadcrumbs': True,
+                           },
+               'res_id': self.id,
+               'target': 'new',
           }
 
      def custom_product_unlink(self):
@@ -1344,3 +1364,4 @@ class ProductMasterUnlinkWizard(models.TransientModel):
              'context': {'no_breadcrumbs': True,
                          },
         }
+
