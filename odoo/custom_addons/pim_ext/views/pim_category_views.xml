@@ -16,8 +16,9 @@
                     <field name="parent_id"/>
                     <field name="complete_name"/>
                     <field name="active" widget="boolean_toggle"/>
-                    <button name="category_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
-                            <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+                    <button name="category_edit_open_form_view" type="object" icon="fa-pencil-square-o"
+                            class="btn-link"/>
+                    <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
                 </list>
             </field>
         </record>
@@ -37,98 +38,63 @@
                 </hierarchy>
             </field>
         </record>
-
-<!--        <record id="view_form_pim_categories" model="ir.ui.view">-->
-<!--            <field name="name">pim.categories.form.view</field>-->
-<!--            <field name="model">pim.category</field>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <form create="false">-->
-<!--                    <sheet>-->
-<!--                        <style>-->
-<!--                            .o_group .o_wrap_label .o_form_label{font-weight:250; font-size:12px;}-->
-<!--                            .o_tag{font-size:var(&#45;&#45;Tag-font-size, -2.1875rem);}-->
-<!--                        </style>-->
-<!--                        <div class="oe_title">-->
-<!--                            <h1>-->
-<!--                                <field name="name" class="oe_inline" readonly="1"/>-->
-<!--                            </h1>-->
-<!--                        </div>-->
-<!--                        <group>-->
-<!--                            <group>-->
-<!--                                <field name="code" readonly="1"/>-->
-<!--                                <field name="name"/>-->
-<!--                                <field name="parent_id"-->
-<!--                                       options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>-->
-<!--                                <field name="complete_name" string="Category Path" readonly="1"/>-->
-
-
-<!--                            </group>-->
-<!--                            <group>-->
-<!--                                <field name="active" widget="boolean_toggle"/>-->
-<!--                            </group>-->
-<!--                        </group>-->
-<!--                    </sheet>-->
-<!--                    <chatter/>-->
-<!--                    &lt;!&ndash;            <div class="oe_chatter">&ndash;&gt;-->
-<!--                    &lt;!&ndash;                <field name="message_follower_ids" groups="base.group_user" options="{'post_refresh': 'recipients'}"/>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                <field name="activity_ids"/>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                <field name="message_ids"/>&ndash;&gt;-->
-<!--                    &lt;!&ndash;            </div>&ndash;&gt;-->
-<!--                </form>-->
-<!--            </field>-->
-<!--        </record>-->
         <record id="view_form_pim_categories" model="ir.ui.view">
-    <field name="name">pim.categories.form.view</field>
-    <field name="model">pim.category</field>
-    <field name="arch" type="xml">
-        <form string="Category" create="false" edit="true" delete="false" class="page_form">
-            <div class="d-flex align-items-start">
-                <div class="left-column">
-                    <field name="category_ids">
-                        <list editable="bottom" create="false" edit="false" delete="false">
-                            <field name="name"/>
-                            <button name="category_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
-                            <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
-                        </list>
-                    </field>
-                </div>
-                <div class="right-column">
-                    <form create="false" edit="false" delete="false" readonly="1">
-                        <header>
-                            <button string="Back" type="object" name="action_back_to_category_menu" icon="fa-arrow-left"/>
-                        </header>
-                        <div class="pim_oe_title">
-                            <h2 class="pim_create_category"><span class="attr_title">Edit Category</span></h2>
+            <field name="name">pim.categories.form.view</field>
+            <field name="model">pim.category</field>
+            <field name="arch" type="xml">
+                <form string="Category" create="false" edit="true" delete="false" class="page_form">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
+                            <field name="category_ids">
+                                <list editable="bottom" create="false" edit="false" delete="false">
+                                    <field name="name"/>
+                                    <button name="category_edit_open_form_view" type="object" icon="fa-pencil-square-o"
+                                            class="btn-link"/>
+                                    <button name="category_master_unlink" type="object" icon="fa-trash"
+                                            class="btn-link text-danger"/>
+                                </list>
+                            </field>
                         </div>
-                        <sheet>
-                            <notebook>
-                                <page string="General">
-                                    <group>
-                                        <field name="name" required="True"/>
-                                        <field name="code"/>
-                                        <field name="parent_id"
-                                               options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
-                                        <field name="complete_name" readonly="1"/>
-                                        <field name="active" widget="boolean_toggle"/>
-                                    </group>
-                                    <div class="attr_creation" style="margin-top: 16px;">
-                                                            <button type="object" string="Save"
-                                                               name="save_attributes" class="oe_highlight"/>
-                                                        </div>
-                                </page>
-                                <page string="History">
-                                    <group>
-                                        <field name="history_log" nolabel="1" readonly="1"/>
-                                    </group>
-                                </page>
-                            </notebook>
-                        </sheet>
-                    </form>
-                </div>
-            </div>
-        </form>
-    </field>
-</record>
+                        <div class="right-column">
+                            <form create="false" edit="false" delete="false" readonly="1">
+                                <header>
+                                    <button string="Back" type="object" name="action_back_to_category_menu"
+                                            icon="fa-arrow-left"/>
+                                </header>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_category">
+                                        <span class="attr_title">Edit Category</span>
+                                    </h2>
+                                </div>
+                                <sheet>
+                                    <notebook>
+                                        <page string="General">
+                                            <group>
+                                                <field name="name" required="True"/>
+                                                <field name="code"/>
+                                                <field name="parent_id"
+                                                       options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                                                <field name="complete_name" readonly="1"/>
+                                                <field name="active" widget="boolean_toggle"/>
+                                            </group>
+                                            <div class="attr_creation" style="margin-top: 16px;">
+                                                <button type="object" string="Save"
+                                                        name="save_attributes" class="oe_highlight"/>
+                                            </div>
+                                        </page>
+                                        <page string="History">
+                                            <group>
+                                                <field name="history_log" nolabel="1" readonly="1"/>
+                                            </group>
+                                        </page>
+                                    </notebook>
+                                </sheet>
+                            </form>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
         <record id="view_pim_category_filter" model="ir.ui.view">
             <field name="name">Category</field>
             <field name="model">pim.category</field>
@@ -168,23 +134,23 @@
                   sequence="40"/>
 
         <record id="view_category_master_unlink_wizard_form" model="ir.ui.view">
-        <field name="name">category.master.unlink.wizard.form</field>
-        <field name="model">category.master.unlink.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Confirm Deletion">
-                <group>
-                    <div style="justify-content: center; align-items: center; white-space: nowrap; margin: 10px 0;">
-                        <p style="margin: 0; font-size: 14px;">
-                            Are you sure you want to delete this category?
-                        </p>
-                    </div>
-                </group>
-                <footer>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                    <button string="Delete" class="btn-primary" type="object" name="confirm_unlink"/>
-                </footer>
-            </form>
-        </field>
-    </record>
+            <field name="name">category.master.unlink.wizard.form</field>
+            <field name="model">category.master.unlink.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Confirm Deletion">
+                    <group>
+                        <div style="justify-content: center; align-items: center; white-space: nowrap; margin: 10px 0;">
+                            <p style="margin: 0; font-size: 14px;">
+                                Are you sure you want to delete this category?
+                            </p>
+                        </div>
+                    </group>
+                    <footer>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        <button string="Delete" class="btn-primary" type="object" name="confirm_unlink"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
     </data>
 </odoo>
