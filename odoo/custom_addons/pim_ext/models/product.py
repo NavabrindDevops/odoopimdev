@@ -1141,6 +1141,15 @@ class ProductTemplate(models.Model):
      product_attr_values_id = fields.Many2many('product.attribute.value', 'attr_value_id', 'products_id', string='Attribute Values')
      product_attr_ids = fields.One2many('product.attribute', 'products_id', string='Attributes')
      is_variant_update = fields.Boolean(string='Variant updated', default=False)
+     image_1 = fields.Image("Image1", max_width=1920, max_height=1920)
+     image_2 = fields.Image("Image2", max_width=1920, max_height=1920)
+     image_3= fields.Image("Image3", max_width=1920, max_height=1920)
+     image_4 = fields.Image("Image4", max_width=1920, max_height=1920)
+     image_5 = fields.Image("Image5", max_width=1920, max_height=1920)
+     image_6 = fields.Image("Image6", max_width=1920, max_height=1920)
+     image_7 = fields.Image("Image7", max_width=1920, max_height=1920)
+     image_8 = fields.Image("Image8", max_width=1920, max_height=1920)
+
 
      def _compute_products_ids(self):
           for record in self:

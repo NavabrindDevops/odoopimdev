@@ -216,6 +216,55 @@ class ProductCreateMaster(models.Model):
                         <xpath expr="//notebook/page[1]" position="before">
                             <page string="Attributes" name="attributes_page" {group_visible_condition}>
                                 {new_field_xml}
+                                <group name="product_image" string="Product Image" collapsible="1" expanded="1" >
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_1" style="font-weight: bold; text-align: center;">Image 1</label>
+                                        <field name="image_1" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_2" style="font-weight: bold; text-align: center;">Image 2</label>
+                                        <field name="image_2" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_3" style="font-weight: bold; text-align: center;">Image 3</label>
+                                        <field name="image_3" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_4" style="font-weight: bold; text-align: center;">Image 4</label>
+                                        <field name="image_4" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                   
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_5" style="font-weight: bold; text-align: center;">Image 5</label>
+                                        <field name="image_5" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_6" style="font-weight: bold; text-align: center;">Image 6</label>
+                                        <field name="image_6" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_7" style="font-weight: bold; text-align: center;">Image 7</label>
+                                        <field name="image_7" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                
+                                    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px;">
+                                        <label for="image_8" style="font-weight: bold; text-align: center;">Image 8</label>
+                                        <field name="image_8" widget="image"
+                                               style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
+                                    </div>
+                                </group>
                             </page>
                             {variant_notebook_xml}
                         </xpath>
