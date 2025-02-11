@@ -47,6 +47,8 @@ access_product_master_unlink,access_product_master_unlink_rec,model_product_temp
 
 access_attribute_variant_values_wizard_user,access_attribute_variant_value_wizard,model_attribute_variant_values_wizard,,1,1,1,1
 
+access_category_master_unlink_wizard,access_category_master_unlink_wizard_wizard,model_category_master_unlink_wizard,,1,1,1,1
+
 
 
 

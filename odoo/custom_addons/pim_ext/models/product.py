@@ -329,43 +329,41 @@ class AttributeForm(models.Model):
           for rec in self:
                time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                msg_string = ''
-               msg_string2 = ''
                old_code = rec.code or 'N/A'
                new_code = vals.get('code', old_code)
+               old_active = rec.active
+               new_active = vals.get('active', old_active)
+               old_attribute_group = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
+               new_attribute_group = self.env['attribute.group'].browse(vals['attribute_group']).display_name if vals.get(
+                    'attribute_group') else 'N/A'
+               old_write_date = rec.write_date.strftime("%d/%m/%Y %H:%M:%S") if rec.write_date else 'N/A'
+               new_write_date = fields.Datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+               old_write_uid = rec.write_uid.display_name if rec.write_uid else 'N/A'
+               new_write_uid = self.env.user.display_name
 
                for key in vals:
-                    if key in ['name', 'code', 'display_type', 'required_in_clone', 'mandatory', 'completeness']:
+                    if key in ['name', 'code', 'active', 'create_variant','sequence','attribute_group','display_type','attribute_type_id',
+                               'is_mandatory','is_required_in_clone','is_cloning','is_completeness','original_name','attribute_types','attribute_types_id',
+                               'completed_in_percent','state','position_ref_field_id','unique_value','value_per_channel','value_per_locale','usable_in_grid',
+                               'locale_specific','master_attribute_ids','label_transaltion']:
                          attribute = rec._fields[key].string
                          header = "• %s" % attribute
-                         if key in ['display_type']:
-                              selection_tuple = dict(rec._fields[key].selection)
-                              old_value = selection_tuple.get(getattr(rec, key), 'N/A') if getattr(rec, key) else 'N/A'
+
+                         if key == 'attribute_group':
+                              old_value = old_attribute_group
+                              new_value = new_attribute_group
                          else:
                               old_value = getattr(rec, key) or 'N/A'
-                         new_value = vals[key] or 'N/A'
-                         if key in ['name']:
+                              new_value = vals[key] or 'N/A'
 
-                              msg_string += (
-                                                 "Old value: %s               New Value: %s\n"
-                                            ) % (old_value, new_value)
-                              full_message = header + "\n" + msg_string
-                              if rec.history_log:
-                                   rec.history_log = full_message + "\n" + rec.history_log
-                              else:
-                                   rec.history_log = full_message
-                         if key in ['code']:
-                              code = rec._fields[key].string
-                              header2 = "• %s" % code
-                              msg_string2 += (
-                                                 "Old value: %s               New Value: %s\n"
-                                            ) % (old_code, new_code)
-                              full_message2 = header2 + "\n" + msg_string2
-                              if rec.history_log:
-                                   rec.history_log = full_message2 + "\n" + rec.history_log
-                              else:
-                                   rec.history_log = full_message2
-          res = super(AttributeForm, self).write(vals)
-          return res
+                         msg_string += ("Old value: %s | New Value: %s | Updated Date: %s | Updated By: %s\n") % (
+                              old_value, new_value, old_write_date, old_write_uid
+                         )
+                         full_message = header + "\n" + msg_string
+                         rec.history_log = full_message + "\n" + (rec.history_log or '')
+
+               res = super(AttributeForm, self).write(vals)
+               return res
 
 
 class AttributeMasterUnlinkWizard(models.TransientModel):
@@ -425,43 +423,54 @@ class Attributegroup(models.Model):
           for rec in self:
                time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                msg_string = ''
-               msg_string2 = ''
-               old_code = rec.attribute_code_rec or 'N/A'
-               new_code = vals.get('attribute_code_rec', old_code)
+
+               tracked_fields = ['name', 'attribute_code_rec', 'active', 'parent_id', 'description', 'attribute_code']
+               tracked_group_line_fields = ['product_attribute_id', 'display_type', 'enable', 'value_per_channel',
+                                            'value_per_locale']
 
                for key in vals:
-                    if key in ['name', 'attribute_code_rec', 'display_type', 'required_in_clone', 'mandatory', 'completeness']:
+                    if key in tracked_fields:
                          attribute = rec._fields[key].string
-                         header = "• %s" % attribute
-                         if key in ['display_type']:
-                              selection_tuple = dict(rec._fields[key].selection)
-                              old_value = selection_tuple.get(getattr(rec, key), 'N/A') if getattr(rec, key) else 'N/A'
-                         else:
-                              old_value = getattr(rec, key) or 'N/A'
+                         old_value = getattr(rec, key) or 'N/A'
                          new_value = vals[key] or 'N/A'
-                         if key in ['name']:
 
-                              msg_string += (
-                                                 "Old value: %s               New Value: %s\n"
-                                            ) % (old_value, new_value)
-                              full_message = header + "\n" + msg_string
-                              if rec.history_log:
-                                   rec.history_log = full_message + "\n" + rec.history_log
-                              else:
-                                   rec.history_log = full_message
-                         if key in ['attribute_code_rec']:
-                              code = rec._fields[key].string
-                              header2 = "• %s" % code
-                              msg_string2 += (
-                                                 "Old value: %s              New Value: %s\n"
-                                            ) % (old_code, new_code)
-                              full_message2 = header2 + "\n" + msg_string2
-                              if rec.history_log:
-                                   rec.history_log = full_message2 + "\n" + rec.history_log
-                              else:
-                                   rec.history_log = full_message2
-          res = super(Attributegroup, self).write(vals)
-          return res
+                         # Fetch display_name for Many2one fields
+                         if key == 'parent_id':
+                              old_value = rec.parent_id.display_name if rec.parent_id else 'N/A'
+                              new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
+                                   key) else 'N/A'
+
+                         msg_string += (
+                              f"• {attribute}\nOld value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n")
+
+                    if key == 'attribute_group_line_ids':
+                         for command in vals[key]:
+                              if command[0] in [1, 4]:  # Update or Link existing records
+                                   line_id = self.env['attribute.group.lines'].browse(command[1])
+                                   for field in tracked_group_line_fields:
+                                        if field in command[2]:
+                                             old_value = getattr(line_id, field) or 'N/A'
+                                             new_value = command[2][field] or 'N/A'
+
+                                             # Fix: Fetch display_name for product_attribute_id
+                                             if field == 'product_attribute_id':
+                                                  old_value = line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'
+                                                  new_value = self.env['product.attribute'].browse(
+                                                       new_value).display_name if new_value else 'N/A'
+
+                                             msg_string += (
+                                                  f"• {field}\nOld value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n")
+
+                              elif command[0] == 0:  # New record
+                                   msg_string += "• New Attribute Group Line Added\n"
+                              elif command[0] == 2:  # Deletion
+                                   line_id = self.env['attribute.group.lines'].browse(command[1])
+                                   msg_string += f"• Attribute Group Line Removed: {line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'}\n"
+
+               if msg_string:
+                    rec.history_log = msg_string + "\n" + (rec.history_log or '')
+
+          return super(Attributegroup, self).write(vals)
 
      @api.depends('name')
      def _compute_label_translation(self):
@@ -767,8 +776,6 @@ class FamilyAttribute(models.Model):
      description = fields.Text(string="Description")
 
      name = fields.Char('Name', required=True, tracking=True)
-     description = fields.Text(string="Description")
-
      supplier_id = fields.Many2one('res.partner','Supplier')
      brand_id = fields.Many2one('brand.attribute','Brand')
      manufacture_id = fields.Many2one('manufacturer.attribute','Manufacturer')
@@ -819,43 +826,73 @@ class FamilyAttribute(models.Model):
           for rec in self:
                time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                msg_string = ''
-               msg_string2 = ''
-               old_code = rec.code or 'N/A'
-               new_code = vals.get('code', old_code)
 
+               # Fields to track
+               tracked_fields = ['name', 'description', 'supplier_id', 'brand_id', 'manufacture_id', 'availability',
+                                 'swatch', 'gift']
+               tracked_one2many_fields = {
+                    'product_families_ids': ['product_id', 'attribute_id', 'attribute_group_id', 'completeness_percent',
+                                             'product_id_stored'],
+                    'variant_line_ids': ['variant_id', 'name', 'variant_ids'],
+               }
+
+               # Track direct field changes
                for key in vals:
-                    if key in ['name', 'code', 'display_type', 'required_in_clone', 'mandatory', 'completeness']:
-                         attribute = rec._fields[key].string
-                         header = "• %s" % attribute
-                         if key in ['display_type']:
-                              selection_tuple = dict(rec._fields[key].selection)
-                              old_value = selection_tuple.get(getattr(rec, key), 'N/A') if getattr(rec, key) else 'N/A'
-                         else:
-                              old_value = getattr(rec, key) or 'N/A'
+                    if key in tracked_fields:
+                         attribute = rec._fields[key].string  # Get field's display name
+                         old_value = getattr(rec, key) or 'N/A'
                          new_value = vals[key] or 'N/A'
-                         if key in ['name']:
 
-                              msg_string += (
-                                                 "Old value: %s               New Value: %s\n"
-                                            ) % (old_value, new_value)
-                              full_message = header + "\n" + msg_string
-                              if rec.history_log:
-                                   rec.history_log = full_message + "\n" + rec.history_log
-                              else:
-                                   rec.history_log = full_message
-                         if key in ['code']:
-                              code = rec._fields[key].string
-                              header2 = "• %s" % code
-                              msg_string2 += (
-                                                 "Old value: %s               New Value: %s\n"
-                                            ) % (old_code, new_code)
-                              full_message2 = header2 + "\n" + msg_string2
-                              if rec.history_log:
-                                   rec.history_log = full_message2 + "\n" + rec.history_log
-                              else:
-                                   rec.history_log = full_message2
-          res = super(FamilyAttribute, self).write(vals)
-          return res
+                         # Handle Many2one fields to show display_name
+                         if isinstance(rec._fields[key], fields.Many2one):
+                              old_value = old_value.display_name if old_value != 'N/A' else 'N/A'
+                              new_value = self.env[rec._fields[key].comodel_name].browse(
+                                   new_value).display_name if new_value != 'N/A' else 'N/A'
+
+                         msg_string += (
+                              f"• {attribute}\nOld Value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
+                         )
+
+               # Track One2many field changes
+               for field, subfields in tracked_one2many_fields.items():
+                    if field in vals:
+                         field_label = rec._fields[field].string  # Get One2many field's display name
+                         for command in vals[field]:
+                              if command[0] == 1:  # Update existing record
+                                   line_id = rec[field].browse(command[1])  # Corrected browsing method
+                                   for subfield in subfields:
+                                        if subfield in command[2]:
+                                             subfield_label = line_id._fields[
+                                                  subfield].string  # Get field's display name
+                                             old_value = getattr(line_id, subfield) or 'N/A'
+                                             new_value = command[2][subfield] or 'N/A'
+
+                                             msg_string += (
+                                                  f"• {subfield_label} (in {field_label})\nOld Value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
+                                             )
+
+                              elif command[0] == 0:  # New record added
+                                   new_record_data = command[2]  # Data of new record
+                                   msg_string += (
+                                        f"• New record added to {field_label}\n"
+                                        f"  Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
+                                   )
+                              elif command[0] == 2:  # Deletion
+                                   removed_record = rec[field].browse(command[1])  # Browse the One2many record
+                                   removed_name = removed_record.display_name if removed_record else "Unknown"
+                                   removed_write_date = removed_record.write_date.strftime(
+                                        "%d/%m/%Y %H:%M:%S") if removed_record.write_date else "N/A"
+                                   removed_write_uid = removed_record.write_uid.display_name if removed_record.write_uid else "Unknown"
+
+                                   msg_string += (
+                                        f"• Record removed from {field_label}: {removed_name}\n"
+                                        f"  Updated Date: {removed_write_date} | Updated By: {removed_write_uid}\n"
+                                   )
+
+               if msg_string:
+                    rec.history_log = msg_string + "\n" + (rec.history_log or '')
+
+          return super(FamilyAttribute, self).write(vals)
 
      @api.depends('name')
      def _compute_family_label_translation(self):

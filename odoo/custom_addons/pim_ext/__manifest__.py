@@ -8,7 +8,7 @@
         Project Information Management
     """,
     'category': 'product',
-    'depends': ['web', 'base', 'sale', 'product','stock','website_sale'],
+    'depends': ['web', 'base', 'sale', 'product','stock','website_sale','web_hierarchy'],
     'data': [
         'security/group_security.xml',
         'security/ir.model.access.csv',
