@@ -382,7 +382,6 @@ class ProductCreateMaster(models.Model):
                 'inherit_id': inherit_view_id,
                 'active': True,
                 'arch': arch_value,
-                'store': True,
             })
 
     def product_cancel(self):
