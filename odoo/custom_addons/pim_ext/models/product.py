@@ -7,7 +7,7 @@ from email.policy import default
 from markupsafe import Markup
 
 from lxml import etree
-from odoo import models, api, fields,_
+from odoo import models, api, fields,_, tools
 # from odoo.addons.test_impex.models import field
 from odoo.exceptions import UserError, ValidationError
 import traceback,pdb,inspect
@@ -111,12 +111,7 @@ class AttributeForm(models.Model):
 
      user_id = fields.Many2one('res.users', string="User", default=lambda self: self.env.user)
 
-     history_log = fields.Text(string='', help="This field stores the history of changes.")
-
-     old_name = fields.Char(string="Old Name", readonly=True)
-     new_name = fields.Char(string="New Name", readonly=True)
-     old_code = fields.Char(string="Old Code", readonly=True)
-     new_code = fields.Char(string="New Code", readonly=True)
+     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
      products_id = fields.Many2one('product.template', string='Products')
 
@@ -327,43 +322,56 @@ class AttributeForm(models.Model):
 
      def write(self, vals):
           for rec in self:
-               time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-               msg_string = ''
-               old_code = rec.code or 'N/A'
-               new_code = vals.get('code', old_code)
-               old_active = rec.active
-               new_active = vals.get('active', old_active)
-               old_attribute_group = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
-               new_attribute_group = self.env['attribute.group'].browse(vals['attribute_group']).display_name if vals.get(
-                    'attribute_group') else 'N/A'
-               old_write_date = rec.write_date.strftime("%d/%m/%Y %H:%M:%S") if rec.write_date else 'N/A'
                new_write_date = fields.Datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-               old_write_uid = rec.write_uid.display_name if rec.write_uid else 'N/A'
                new_write_uid = self.env.user.display_name
 
+               changes = []  # Store changes in list
+
                for key in vals:
-                    if key in ['name', 'code', 'active', 'create_variant','sequence','attribute_group','display_type','attribute_type_id',
-                               'is_mandatory','is_required_in_clone','is_cloning','is_completeness','original_name','attribute_types','attribute_types_id',
-                               'completed_in_percent','state','position_ref_field_id','unique_value','value_per_channel','value_per_locale','usable_in_grid',
-                               'locale_specific','master_attribute_ids','label_transaltion']:
+                    if key in ['name', 'code', 'active', 'create_variant', 'sequence', 'attribute_group',
+                               'display_type',
+                               'attribute_type_id', 'is_mandatory', 'is_required_in_clone', 'is_cloning',
+                               'is_completeness',
+                               'original_name', 'attribute_types', 'attribute_types_id', 'completed_in_percent',
+                               'state',
+                               'position_ref_field_id', 'unique_value', 'value_per_channel', 'value_per_locale',
+                               'usable_in_grid',
+                               'locale_specific', 'master_attribute_ids', 'label_transaltion']:
+
                          attribute = rec._fields[key].string
-                         header = "• %s" % attribute
 
                          if key == 'attribute_group':
-                              old_value = old_attribute_group
-                              new_value = new_attribute_group
+                              old_value = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
+                              new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
+                                   key) else 'N/A'
                          else:
                               old_value = getattr(rec, key) or 'N/A'
                               new_value = vals[key] or 'N/A'
 
-                         msg_string += ("Old value: %s | New Value: %s | Updated Date: %s | Updated By: %s\n") % (
-                              old_value, new_value, old_write_date, old_write_uid
-                         )
-                         full_message = header + "\n" + msg_string
-                         rec.history_log = full_message + "\n" + (rec.history_log or '')
+                         # Formatting Old & New values on the same line with space
+                         change_entry = f"""
+                         <li>
+                             <strong>{attribute}</strong><br>
+                             <span style='color: red;'>Old value:</span> {old_value}  
+                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             <span style='color: green;'>New value:</span> {new_value}
+                         </li>
+                     """
+                         changes.append(change_entry)
 
-               res = super(AttributeForm, self).write(vals)
-               return res
+               if changes:
+                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+
+                    full_message = f"""
+                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                         {user_info}
+                         <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                     </div>
+                 """
+
+                    rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
+
+          return super(AttributeForm, self).write(vals)
 
 
 class AttributeMasterUnlinkWizard(models.TransientModel):
@@ -384,7 +392,7 @@ class AttributeMasterUnlinkWizard(models.TransientModel):
              },
         }
 
-class Attributegroup(models.Model):
+class AttributeGroup(models.Model):
      _name = 'attribute.group'
      _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -410,19 +418,18 @@ class Attributegroup(models.Model):
      )
      user_id = fields.Many2one('res.users', string="User", default=lambda self: self.env.user)
 
-     history_log = fields.Text(string='', help="This field stores the history of changes.")
-
-     old_name = fields.Char(string="Old Name", readonly=True)
-     new_name = fields.Char(string="New Name", readonly=True)
-     old_code = fields.Char(string="Old Code", readonly=True)
-     new_code = fields.Char(string="New Code", readonly=True)
+     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
      is_create_mode = fields.Boolean(default=False, string='Create Mode')
 
      def write(self, vals):
           for rec in self:
-               time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-               msg_string = ''
+               old_write_date = rec.write_date.strftime("%d %b, %Y %I:%M %p") if rec.write_date else 'N/A'
+               new_write_date = fields.Datetime.now().strftime("%d %b, %Y %I:%M %p")
+               old_write_uid = rec.write_uid.display_name if rec.write_uid else 'System'
+               new_write_uid = self.env.user.display_name
+
+               changes = []  # Store changes in a list
 
                tracked_fields = ['name', 'attribute_code_rec', 'active', 'parent_id', 'description', 'attribute_code']
                tracked_group_line_fields = ['product_attribute_id', 'display_type', 'enable', 'value_per_channel',
@@ -440,8 +447,15 @@ class Attributegroup(models.Model):
                               new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
                                    key) else 'N/A'
 
-                         msg_string += (
-                              f"• {attribute}\nOld value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n")
+                         change_entry = f"""
+                         <li>
+                             <strong>{attribute}</strong><br>
+                             <span style='color: red;'>Old value:</span> {old_value}  
+                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             <span style='color: green;'>New value:</span> {new_value}
+                         </li>
+                     """
+                         changes.append(change_entry)
 
                     if key == 'attribute_group_line_ids':
                          for command in vals[key]:
@@ -452,25 +466,39 @@ class Attributegroup(models.Model):
                                              old_value = getattr(line_id, field) or 'N/A'
                                              new_value = command[2][field] or 'N/A'
 
-                                             # Fix: Fetch display_name for product_attribute_id
                                              if field == 'product_attribute_id':
                                                   old_value = line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'
                                                   new_value = self.env['product.attribute'].browse(
                                                        new_value).display_name if new_value else 'N/A'
 
-                                             msg_string += (
-                                                  f"• {field}\nOld value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n")
-
+                                             change_entry = f"""
+                                         <li>
+                                             <strong>{line_id._fields[field].string}</strong><br>
+                                             <span style='color: red;'>Old value:</span> {old_value}  
+                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                             <span style='color: green;'>New value:</span> {new_value}
+                                         </li>
+                                     """
+                                             changes.append(change_entry)
                               elif command[0] == 0:  # New record
-                                   msg_string += "• New Attribute Group Line Added\n"
+                                   changes.append("<li><strong>New Attribute Group Line Added</strong></li>")
                               elif command[0] == 2:  # Deletion
                                    line_id = self.env['attribute.group.lines'].browse(command[1])
-                                   msg_string += f"• Attribute Group Line Removed: {line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'}\n"
+                                   changes.append(
+                                        f"<li><strong>Attribute Group Line Removed:</strong> {line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'}</li>")
 
-               if msg_string:
-                    rec.history_log = msg_string + "\n" + (rec.history_log or '')
+               if changes:
+                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+                    full_message = f"""
+                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                         {user_info}
+                         <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                     </div>
+                 """
 
-          return super(Attributegroup, self).write(vals)
+                    rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
+
+          return super(AttributeGroup, self).write(vals)
 
      @api.depends('name')
      def _compute_label_translation(self):
@@ -794,7 +822,7 @@ class FamilyAttribute(models.Model):
      attribute3_id = fields.Many2one('product.attribute3','Attribute 3')
      attribute4_id = fields.Many2one('product.attribute4','Attribute 4')
      asn_description = fields.Html('ASN Description')
-     product_families_ids = fields.One2many('family.products.line', 'families_id', 'SKU', readonly=False)
+     product_families_ids = fields.One2many('family.products.line', 'families_id', 'Attributes', readonly=False)
      variant_line_ids = fields.One2many('family.variant.line', 'variant_familiy_id', 'Variants', readonly=False)
 
      attribute_label = fields.Char(string='English', compute="_compute_family_label_translation")
@@ -813,19 +841,18 @@ class FamilyAttribute(models.Model):
 
      user_id = fields.Many2one('res.users', string="User", default=lambda self: self.env.user)
 
-     history_log = fields.Text(string='', help="This field stores the history of changes.")
-
-     old_name = fields.Char(string="Old Name", readonly=True)
-     new_name = fields.Char(string="New Name", readonly=True)
-     old_code = fields.Char(string="Old Code", readonly=True)
-     new_code = fields.Char(string="New Code", readonly=True)
+     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
      is_create_mode = fields.Boolean(default=False, string='Create Mode')
 
      def write(self, vals):
           for rec in self:
-               time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-               msg_string = ''
+               old_write_date = rec.write_date.strftime("%d %b, %Y %I:%M %p") if rec.write_date else 'N/A'
+               new_write_date = fields.Datetime.now().strftime("%d %b, %Y %I:%M %p")
+               old_write_uid = rec.write_uid.display_name if rec.write_uid else 'System'
+               new_write_uid = self.env.user.display_name
+
+               changes = []  # Store changes in a list
 
                # Fields to track
                tracked_fields = ['name', 'description', 'supplier_id', 'brand_id', 'manufacture_id', 'availability',
@@ -849,9 +876,15 @@ class FamilyAttribute(models.Model):
                               new_value = self.env[rec._fields[key].comodel_name].browse(
                                    new_value).display_name if new_value != 'N/A' else 'N/A'
 
-                         msg_string += (
-                              f"• {attribute}\nOld Value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
-                         )
+                         change_entry = f"""
+                     <li>
+                         <strong>{attribute}</strong><br>
+                         <span style='color: red;'>Old value:</span> {old_value}  
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                         <span style='color: green;'>New value:</span> {new_value}
+                     </li>
+                     """
+                         changes.append(change_entry)
 
                # Track One2many field changes
                for field, subfields in tracked_one2many_fields.items():
@@ -859,7 +892,7 @@ class FamilyAttribute(models.Model):
                          field_label = rec._fields[field].string  # Get One2many field's display name
                          for command in vals[field]:
                               if command[0] == 1:  # Update existing record
-                                   line_id = rec[field].browse(command[1])  # Corrected browsing method
+                                   line_id = rec[field].browse(command[1])  # Browse the One2many record
                                    for subfield in subfields:
                                         if subfield in command[2]:
                                              subfield_label = line_id._fields[
@@ -867,30 +900,46 @@ class FamilyAttribute(models.Model):
                                              old_value = getattr(line_id, subfield) or 'N/A'
                                              new_value = command[2][subfield] or 'N/A'
 
-                                             msg_string += (
-                                                  f"• {subfield_label} (in {field_label})\nOld Value: {old_value} | New Value: {new_value} | Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
-                                             )
+                                             change_entry = f"""
+                                     <li>
+                                         <strong>{subfield_label} (in {field_label})</strong><br>
+                                         <span style='color: red;'>Old value:</span> {old_value}  
+                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                         <span style='color: green;'>New value:</span> {new_value}
+                                     </li>
+                                     """
+                                             changes.append(change_entry)
 
                               elif command[0] == 0:  # New record added
-                                   new_record_data = command[2]  # Data of new record
-                                   msg_string += (
-                                        f"• New record added to {field_label}\n"
-                                        f"  Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
-                                   )
+                                   new_name = command[2].get('name', "Unnamed Record")  # Fetch name directly from vals
+                                   change_entry = f"""
+                             <li>
+                                 <strong>New record added to {field_label}</strong><br>
+                             </li>
+                             """
+                                   changes.append(change_entry)
+
                               elif command[0] == 2:  # Deletion
-                                   removed_record = rec[field].browse(command[1])  # Browse the One2many record
-                                   removed_name = removed_record.display_name if removed_record else "Unknown"
-                                   removed_write_date = removed_record.write_date.strftime(
-                                        "%d/%m/%Y %H:%M:%S") if removed_record.write_date else "N/A"
-                                   removed_write_uid = removed_record.write_uid.display_name if removed_record.write_uid else "Unknown"
+                                   removed_record = rec[field].browse(command[1])  # Fetch record before deleting
+                                   removed_name = removed_record.display_name if removed_record.exists() else "Unknown"
+                                   change_entry = f"""
+                             <li>
+                                 <strong>Record removed from {field_label}</strong><br>
+                             </li>
+                             """
+                                   changes.append(change_entry)
 
-                                   msg_string += (
-                                        f"• Record removed from {field_label}: {removed_name}\n"
-                                        f"  Updated Date: {removed_write_date} | Updated By: {removed_write_uid}\n"
-                                   )
+               if changes:
+                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
 
-               if msg_string:
-                    rec.history_log = msg_string + "\n" + (rec.history_log or '')
+                    full_message = f"""
+                 <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                     {user_info}
+                     <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                 </div>
+                 """
+
+                    rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
 
           return super(FamilyAttribute, self).write(vals)
 
@@ -1148,101 +1197,108 @@ class ProductTemplate(models.Model):
      image_6 = fields.Image("Image6", max_width=1920, max_height=1920)
      image_7 = fields.Image("Image7", max_width=1920, max_height=1920)
      image_8 = fields.Image("Image8", max_width=1920, max_height=1920)
-     history_log = fields.Text(string="History Log")
+     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
      def write(self, vals):
           for rec in self:
-               time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-               msg_string = ''
+               time_now = datetime.now().strftime("%d %b, %Y %I:%M %p")
+               user_name = self.env.user.display_name
+               changes = []
 
-               # Fields to track (including One2many and Many2many)
-               tracked_fields = [
-                    'hs_code', 'mpn_number', 'status', 'origin', 'po_min', 'po_max', 'p65',
-                    'attribute1_id', 'attribute1_val', 'attribute2_id', 'attribute2_val',
-                    'attribute3_id', 'attribute3_val', 'attribute4_id', 'attribute4_val',
-                    'family_id', 'sku', 'brand_id', 'parent_id', 'product_master_id', 'product_parent_id',
-                    'is_update_from_attribute', 'percentage_complete', 'progress_state',
-                    'is_variant', 'variant_id', 'is_variant_values_updated', 'is_variant_update'
-               ]
+               # Get all fields in the model (including dynamically added ones)
+               all_fields = rec.fields_get()
 
-               tracked_one2many_fields = {
-                    'product_attr_ids': ['name'],
-               }
+               # Exclude system/automatic fields
+               excluded_fields = {'id', 'write_date', 'write_uid', 'create_date', 'create_uid', 'history_log'}
 
-               tracked_many2many_fields = {
-                    'product_attr_values_id': 'name'
-               }
+               for field_name in vals:
+                    if field_name in excluded_fields:
+                         continue  # Skip system fields
 
-               # Track direct field changes
-               for key in vals:
-                    if key in tracked_fields:
-                         attribute = rec._fields[key].string
-                         old_value = getattr(rec, key) or 'N/A'
-                         new_value = vals[key] or 'N/A'
+                    # Get field metadata (type, string, etc.)
+                    field = rec._fields.get(field_name)
+                    if not field:
+                         continue  # Skip invalid fields
 
-                         # Handle Many2one fields
-                         if isinstance(rec._fields[key], fields.Many2one):
-                              old_value = old_value.display_name if old_value != 'N/A' else 'N/A'
-                              new_value = self.env[rec._fields[key].comodel_name].browse(
-                                   new_value).display_name if new_value != 'N/A' else 'N/A'
+                    field_type = field.type
+                    field_label = field.string
 
-                         msg_string += (
-                              f"• {attribute}\nOld value: {old_value} | New Value: {new_value} | "
-                              f"Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
-                         )
+                    old_value = getattr(rec, field_name, 'N/A')
+                    new_value = vals[field_name]
 
-               # Track One2many field changes
-               for field, subfields in tracked_one2many_fields.items():
-                    if field in vals:
-                         for command in vals[field]:
-                              if command[0] == 1:  # Update existing record
-                                   line_id = rec[field].browse(command[1])
-                                   for subfield in subfields:
-                                        if subfield in command[2]:
-                                             old_value = getattr(line_id, subfield) or 'N/A'
-                                             new_value = command[2][subfield] or 'N/A'
+                    # Handle relational fields
+                    if field_type == 'many2one':
+                         old_value = old_value.display_name if old_value else 'N/A'
+                         new_value = self.env[field.comodel_name].browse(new_value).display_name if new_value else 'N/A'
 
-                                             msg_string += (
-                                                  f"• {subfield} (in {rec._fields[field].string})\n"
-                                                  f"  Old value: {old_value} | New Value: {new_value} | "
-                                                  f"Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
-                                             )
+                    elif field_type == 'one2many':
+                         # Process O2M commands (create/update/delete)
+                         for command in new_value:
+                              if command[0] == 1:  # Update
+                                   sub_rec = rec[field_name].browse(command[1])
+                                   for subfield, subval in command[2].items():
+                                        sub_old = getattr(sub_rec, subfield, 'N/A')
+                                        changes.append(f"""
+                                     <li>
+                                         <strong>{field_label} ({subfield})</strong><br>
+                                         <span style='color: red;'>Old value:</span> {sub_old}
+                                         <span style='color: green;'>New value:</span> {subval}
+                                     </li>
+                                 """)
+                              elif command[0] == 0:  # Create
+                                   changes.append(f"""
+                                 <li><strong>Added to {field_label}:</strong> {command[2].get('name', 'New Record')}</li>
+                             """)
+                              elif command[0] == 2:  # Delete
+                                   deleted_rec = rec[field_name].browse(command[1])
+                                   changes.append(f"""
+                                 <li><strong>Removed from {field_label}:</strong> {deleted_rec.display_name}</li>
+                             """)
+                         continue  # Skip main O2M field tracking
 
-                              elif command[0] == 0:  # New record
-                                   msg_string += f"• New record added to {rec._fields[field].string}\n"
+                    elif field_type == 'many2many':
+                         # Track M2M adds/removes
+                         old_ids = rec[field_name].ids
+                         new_ids = vals[field_name]
+                         added = set(new_ids) - set(old_ids)
+                         removed = set(old_ids) - set(new_ids)
 
-                              elif command[0] == 2:  # Deletion
-                                   removed_record = rec[field].browse(command[1])
-                                   if removed_record.exists():
-                                        removed_name = removed_record.display_name or f"Record ID {command[1]}"
-                                        removed_write_date = removed_record.write_date.strftime(
-                                             "%d/%m/%Y %H:%M:%S") if removed_record.write_date else "N/A"
-                                        removed_write_uid = removed_record.write_uid.display_name if removed_record.write_uid else "Unknown"
+                         if added:
+                              added_names = self.env[field.comodel_name].browse(added).mapped('display_name')
+                              changes.append(f"""
+                             <li><strong>Added to {field_label}:</strong> {', '.join(added_names)}</li>
+                         """)
+                         if removed:
+                              removed_names = self.env[field.comodel_name].browse(removed).mapped('display_name')
+                              changes.append(f"""
+                             <li><strong>Removed from {field_label}:</strong> {', '.join(removed_names)}</li>
+                         """)
+                         continue  # Skip direct M2M value tracking
 
-                                        msg_string += (
-                                             f"• Record removed from {rec._fields[field].string}: {removed_name}\n"
-                                             f"  Last Updated Date: {removed_write_date} | Last Updated By: {removed_write_uid}\n"
-                                        )
-                                   else:
-                                        msg_string += f"• Record removed from {rec._fields[field].string}: Record ID {command[1]} (Already Deleted)\n"
+                    # Handle boolean values
+                    if isinstance(old_value, bool):
+                         old_value = 'Yes' if old_value else 'No'
+                         new_value = 'Yes' if new_value else 'No'
 
-               # Track Many2many field changes
-               for field, field_label in tracked_many2many_fields.items():
-                    if field in vals:
-                         old_values = rec[field].mapped(field_label)
-                         new_values = self.env[rec._fields[field].comodel_name].browse(vals[field]).mapped(field_label)
+                    # Format the change entry
+                    changes.append(f"""
+                     <li>
+                         <strong>{field_label}</strong><br>
+                         <span style='color: red;'>Old value:</span> {old_value}
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                         <span style='color: green;'>New value:</span> {new_value}
+                     </li>
+                 """)
 
-                         added_values = set(new_values) - set(old_values)
-                         removed_values = set(old_values) - set(new_values)
-
-                         if added_values:
-                              msg_string += f"• Added to {rec._fields[field].string}: {', '.join(added_values)}\n"
-                         if removed_values:
-                              msg_string += f"• Removed from {rec._fields[field].string}: {', '.join(removed_values)}\n"
-
-               # Save history log
-               if msg_string:
-                    rec.history_log = msg_string + "\n" + (rec.history_log or '')
+               if changes:
+                    user_info = f"<small>Updated by <strong>{user_name}</strong> on {time_now}</small>"
+                    full_message = f"""
+                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                         {user_info}
+                         <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                     </div>
+                 """
+                    rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
 
           return super(ProductTemplate, self).write(vals)
 

@@ -79,7 +79,7 @@
                                                    </div>
                                                </page>
                                                <page name="History">
-                                                   <field name="history_log"/>
+                                                   <field name="history_log" nolabel="1" readonly="1"/>
                                                </page>
                                            </notebook>
                                        </sheet>

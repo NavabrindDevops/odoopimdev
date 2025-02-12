@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, tools
 from odoo.exceptions import ValidationError
 from datetime import datetime
 
@@ -23,47 +23,52 @@ class PimCategory(models.Model):
     parent_path = fields.Char(index=True, unaccent=False)
     category_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories', compute='_compute_category_ids')
     child_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories')
-    history_log = fields.Text(string='History Log', help="This field stores the history of changes.")
-    # is_primary = fields.Boolean()
+    history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
     def write(self, vals):
         for rec in self:
-            time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            msg_string = ''
-            old_code = rec.code or 'N/A'
-            new_code = vals.get('code', old_code)
-            old_active = rec.active
-            new_active = vals.get('active', old_active)
-            old_parent = rec.parent_id.display_name if rec.parent_id else 'N/A'
-            new_parent = self.env['pim.category'].browse(vals['parent_id']).display_name if vals.get(
-                'parent_id') else 'N/A'
-            old_complete_name = rec.complete_name or 'N/A'
-            new_complete_name = vals.get('complete_name', old_complete_name)
-            old_write_date = rec.write_date.strftime("%d/%m/%Y %H:%M:%S") if rec.write_date else 'N/A'
-            new_write_date = fields.Datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            old_write_uid = rec.write_uid.display_name if rec.write_uid else 'N/A'
+            old_write_date = rec.write_date.strftime("%d %b, %Y %I:%M %p") if rec.write_date else 'N/A'
+            new_write_date = fields.Datetime.now().strftime("%d %b, %Y %I:%M %p")
+            old_write_uid = rec.write_uid.display_name if rec.write_uid else 'System'
             new_write_uid = self.env.user.display_name
+
+            changes = []  # Store changes in list
 
             for key in vals:
                 if key in ['name', 'code', 'active', 'parent_id', 'complete_name']:
                     attribute = rec._fields[key].string
-                    header = "• %s" % attribute
 
                     if key == 'parent_id':
-                        old_value = old_parent
-                        new_value = new_parent
+                        old_value = rec.parent_id.display_name if rec.parent_id else 'N/A'
+                        new_value = self.env['pim.category'].browse(vals[key]).display_name if vals.get(key) else 'N/A'
                     else:
                         old_value = getattr(rec, key) or 'N/A'
                         new_value = vals[key] or 'N/A'
 
-                    msg_string += ("Old value: %s | New Value: %s | Updated Date: %s | Updated By: %s\n") % (
-                        old_value, new_value, old_write_date, old_write_uid
-                    )
-                    full_message = header + "\n" + msg_string
-                    rec.history_log = full_message + "\n" + (rec.history_log or '')
+                    # Formatting Old & New values on the same line with space
+                    change_entry = f"""
+                        <li>
+                            <strong>{attribute}</strong><br>
+                            <span style='color: red;'>Old value:</span> {old_value}  
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span style='color: green;'>New value:</span> {new_value}
+                        </li>
+                    """
+                    changes.append(change_entry)
 
-            res = super(PimCategory, self).write(vals)
-            return res
+            if changes:
+                user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+
+                full_message = f"""
+                    <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                        {user_info}
+                        <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                    </div>
+                """
+
+                rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
+
+        return super(PimCategory, self).write(vals)
 
     @api.model
     def create(self, vals):

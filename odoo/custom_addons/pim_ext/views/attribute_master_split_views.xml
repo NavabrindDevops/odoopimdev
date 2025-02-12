@@ -172,16 +172,9 @@
 
                                                 </page>
                                                 <page name="History">
-                                                    <field name="history_log"/>
-<!--                                                    <field name="history_ids">-->
-<!--                                                        <list default_order="create_date desc" edit="false" create="false">-->
-<!--                                                            <field name="old_name" string="Old Name"/>-->
-<!--                                                            <field name="new_name" string="New Name"/>-->
-<!--                                                            <field name="old_code" string="Old Code"/>-->
-<!--                                                            <field name="new_code" string="New Code"/>-->
-<!--                                                            <field name="change_date" string="Change Date"/>-->
-<!--                                                        </list>-->
-<!--                                                    </field>-->
+                                                    <group>
+                                                        <field name="history_log" nolabel="1" readonly="1"/>
+                                                    </group>
                                                 </page>
                                             </notebook>
                                         </sheet>
