@@ -210,6 +210,7 @@ class ProductCreateMaster(models.Model):
                                             
                                         </page>
                                 """
+            group_visible_condition = f'invisible="1 if family_id != {rec.family_id.id} else 0"'
             if variant_notebook_xml:
                 print('iffffffffff')
                 dynamic_notebook_xml = f"""

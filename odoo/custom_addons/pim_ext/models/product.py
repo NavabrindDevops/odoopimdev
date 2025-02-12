@@ -1090,7 +1090,6 @@ class ProductTemplate(models.Model):
      attribute3_val = fields.Char('Value 3')
      attribute4_id = fields.Many2one('product.attribute4','Attribute 4')
      attribute4_val = fields.Char('Value 4')
-     family_id = fields.Many2one('family.attribute','Product Family')
      active_label = fields.Char(string="Status", compute="_compute_active_label")
 
      readable_variant_names = fields.Char(string="Variants", compute="_compute_readable_variant_names")
@@ -1149,7 +1148,103 @@ class ProductTemplate(models.Model):
      image_6 = fields.Image("Image6", max_width=1920, max_height=1920)
      image_7 = fields.Image("Image7", max_width=1920, max_height=1920)
      image_8 = fields.Image("Image8", max_width=1920, max_height=1920)
+     history_log = fields.Text(string="History Log")
 
+     def write(self, vals):
+          for rec in self:
+               time_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+               msg_string = ''
+
+               # Fields to track (including One2many and Many2many)
+               tracked_fields = [
+                    'hs_code', 'mpn_number', 'status', 'origin', 'po_min', 'po_max', 'p65',
+                    'attribute1_id', 'attribute1_val', 'attribute2_id', 'attribute2_val',
+                    'attribute3_id', 'attribute3_val', 'attribute4_id', 'attribute4_val',
+                    'family_id', 'sku', 'brand_id', 'parent_id', 'product_master_id', 'product_parent_id',
+                    'is_update_from_attribute', 'percentage_complete', 'progress_state',
+                    'is_variant', 'variant_id', 'is_variant_values_updated', 'is_variant_update'
+               ]
+
+               tracked_one2many_fields = {
+                    'product_attr_ids': ['name'],
+               }
+
+               tracked_many2many_fields = {
+                    'product_attr_values_id': 'name'
+               }
+
+               # Track direct field changes
+               for key in vals:
+                    if key in tracked_fields:
+                         attribute = rec._fields[key].string
+                         old_value = getattr(rec, key) or 'N/A'
+                         new_value = vals[key] or 'N/A'
+
+                         # Handle Many2one fields
+                         if isinstance(rec._fields[key], fields.Many2one):
+                              old_value = old_value.display_name if old_value != 'N/A' else 'N/A'
+                              new_value = self.env[rec._fields[key].comodel_name].browse(
+                                   new_value).display_name if new_value != 'N/A' else 'N/A'
+
+                         msg_string += (
+                              f"• {attribute}\nOld value: {old_value} | New Value: {new_value} | "
+                              f"Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
+                         )
+
+               # Track One2many field changes
+               for field, subfields in tracked_one2many_fields.items():
+                    if field in vals:
+                         for command in vals[field]:
+                              if command[0] == 1:  # Update existing record
+                                   line_id = rec[field].browse(command[1])
+                                   for subfield in subfields:
+                                        if subfield in command[2]:
+                                             old_value = getattr(line_id, subfield) or 'N/A'
+                                             new_value = command[2][subfield] or 'N/A'
+
+                                             msg_string += (
+                                                  f"• {subfield} (in {rec._fields[field].string})\n"
+                                                  f"  Old value: {old_value} | New Value: {new_value} | "
+                                                  f"Updated Date: {time_now} | Updated By: {self.env.user.display_name}\n"
+                                             )
+
+                              elif command[0] == 0:  # New record
+                                   msg_string += f"• New record added to {rec._fields[field].string}\n"
+
+                              elif command[0] == 2:  # Deletion
+                                   removed_record = rec[field].browse(command[1])
+                                   if removed_record.exists():
+                                        removed_name = removed_record.display_name or f"Record ID {command[1]}"
+                                        removed_write_date = removed_record.write_date.strftime(
+                                             "%d/%m/%Y %H:%M:%S") if removed_record.write_date else "N/A"
+                                        removed_write_uid = removed_record.write_uid.display_name if removed_record.write_uid else "Unknown"
+
+                                        msg_string += (
+                                             f"• Record removed from {rec._fields[field].string}: {removed_name}\n"
+                                             f"  Last Updated Date: {removed_write_date} | Last Updated By: {removed_write_uid}\n"
+                                        )
+                                   else:
+                                        msg_string += f"• Record removed from {rec._fields[field].string}: Record ID {command[1]} (Already Deleted)\n"
+
+               # Track Many2many field changes
+               for field, field_label in tracked_many2many_fields.items():
+                    if field in vals:
+                         old_values = rec[field].mapped(field_label)
+                         new_values = self.env[rec._fields[field].comodel_name].browse(vals[field]).mapped(field_label)
+
+                         added_values = set(new_values) - set(old_values)
+                         removed_values = set(old_values) - set(new_values)
+
+                         if added_values:
+                              msg_string += f"• Added to {rec._fields[field].string}: {', '.join(added_values)}\n"
+                         if removed_values:
+                              msg_string += f"• Removed from {rec._fields[field].string}: {', '.join(removed_values)}\n"
+
+               # Save history log
+               if msg_string:
+                    rec.history_log = msg_string + "\n" + (rec.history_log or '')
+
+          return super(ProductTemplate, self).write(vals)
 
      def _compute_products_ids(self):
           for record in self:
