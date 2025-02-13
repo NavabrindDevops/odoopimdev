@@ -150,7 +150,6 @@ class ProductCreateMaster(models.Model):
 
                 for attribute in group_attributes:
                     field_mandatory = attribute.is_mandatory
-                    print('dskjdskjdskj', field_mandatory)
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
                     display_type = attribute.display_type
 
@@ -160,7 +159,6 @@ class ProductCreateMaster(models.Model):
                     attributes_list.append(field_name)
 
                     # Generate field XML for inclusion in the view
-                    print('dskdjsdkjdsk', rec.family_id.id)
                     field_name_xml = f'<field name="{field_name}"/>'
                     new_field_xml += field_name_xml
 
@@ -168,7 +166,6 @@ class ProductCreateMaster(models.Model):
 
             variant_notebook_xml = ''
             if rec.variant_id:
-                print('dskdjskjdkf')
                 variant_lines = rec.variant_id.filtered(lambda v: v.variant_familiy_id == rec.family_id)
 
                 for variant in variant_lines:
@@ -179,7 +176,6 @@ class ProductCreateMaster(models.Model):
                         # self._create_dynamic_field(field_name, False, 'many2many')
 
                         # Create a notebook page for each variant
-                        print('dsjhdsjhds', variant_name)
                         # variant_visible_condition = f'invisible="1 if is_variant != True else 0"'
                         variant_visible_condition = f'invisible="1 if is_variant != True or family_id != {rec.family_id.id} else 0"'
                         # variant_notebook_xml += f"""
@@ -190,7 +186,6 @@ class ProductCreateMaster(models.Model):
                         #         </page>
                         # """
 
-                        print('dkjfjfkdjfd')
                         variant_invisible_rec = f'invisible="1 if is_variant_update != True else 0"'
                         variant_notebook_xml += f"""
                                         <page string="{variant_name}" name="{field_name}_page" {variant_visible_condition}>
@@ -212,7 +207,6 @@ class ProductCreateMaster(models.Model):
                                 """
             group_visible_condition = f'invisible="1 if family_id != {rec.family_id.id} else 0"'
             if variant_notebook_xml:
-                print('iffffffffff')
                 dynamic_notebook_xml = f"""
                         <xpath expr="//notebook/page[1]" position="before">
                             <page string="Attributes" name="attributes_page" {group_visible_condition}>
@@ -271,7 +265,6 @@ class ProductCreateMaster(models.Model):
                         </xpath>
                     """
             else:
-                print('delseeeeeee')
                 dynamic_notebook_xml = f"""
                             <xpath expr="//notebook/page[1]" position="before">
                                 <page string="Attributes" name="attributes_page" {group_visible_condition}>
@@ -318,78 +311,53 @@ class ProductCreateMaster(models.Model):
             }
 
     def _create_dynamic_field(self, field_name, field_mandatory, display_type):
-        print('dskskdjskd', field_name)
-        print('dk333333333333333333', display_type)
         """ Creates a dynamic field in product.template if it doesn't already exist """
         # Check if the field exists in product.template
         existing_field = self.env['ir.model.fields'].search([
             ('name', '=', field_name),
             ('model', '=', 'product.template')
         ])
-        print('djkdjfdkjfd', existing_field)
         if display_type == 'number':
-            print('numberrrrrrrr')
             display_type = 'integer'
         if display_type == 'radio':
-            print('radiooooooo')
             display_type = 'boolean'
         if display_type == 'file':
-            print('fileeeeeee')
             display_type = 'binary'
         if display_type == 'image':
-            print('imageeeeeeeeeeee')
             display_type = 'binary'
 
         if display_type == 'link':
-            print('linkssssss')
             display_type = 'char'
         if display_type == 'identifier':
-            print('identifierrrrrrr')
             display_type = 'integer'
         if display_type == 'measurement':
-            print('measureeeeeeeeee')
             display_type = 'float'
         if display_type == 'multi_select':
-            print('multi_selectccccccccc')
             display_type = 'many2many'
         if display_type == 'price':
-            print('priceeeeeeee')
             display_type = 'float'
         if display_type == 'ref_data_multi':
-            print('ref_data_multiref_data_multi')
             display_type = 'many2many'
         if display_type == 'ref_data_simple_select':
-            print('ref_data_simple_selectref_data_simple_select')
             display_type = 'many2many'
         if display_type == 'simple_select':
-            print('simple_selectsimple_select')
             display_type = 'many2one'
         if display_type == 'text':
-            print('testttttttttttttt')
             display_type = 'char'
         if display_type == 'textarea':
-            print('textareasssssss')
             display_type = 'text'
         if display_type == 'yes_no':
-            print('yes_noyes_no')
             display_type = 'boolean'
         if display_type == 'pills':
-            print('pillspills')
             display_type = 'many2many'
         if display_type == 'select':
-            print('selectselect')
             display_type = 'selection'
         if display_type == 'color':
-            print('colorcolor')
             display_type = 'char'
         if display_type == 'multi':
-            print('multimulti')
             display_type = 'many2many'
 
         if not existing_field:
-            print('fkjfdkjfdkfjd', field_name)
-            print('djijdsiijds', self.env['ir.model']._get('product.template').id)
-            print('44444444444444', field_name.replace('x_', ''), )
             # field_values = {
             #     'name': field_name,
             #     'model_id': self.env['ir.model']._get('product.template').id,
@@ -406,7 +374,6 @@ class ProductCreateMaster(models.Model):
                 'store': True,
                 'required': True if field_mandatory else False,
             })
-            print('ddddddddddddddd')
             print(f"Field '{field_name}' created dynamically in product.template.")
         else:
             print(f"Field '{field_name}' already exists in product.template.")
@@ -421,10 +388,8 @@ class ProductCreateMaster(models.Model):
         ])
 
         if view_exist:
-            print('dkjkfjdkfjdj3333333')
             view_exist.arch = arch_value
         else:
-            print('9033333333333333')
             self.env['ir.ui.view'].sudo().create({
                 'name': view_name,
                 'type': 'form',

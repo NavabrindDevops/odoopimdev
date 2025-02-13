@@ -2,7 +2,7 @@
 {
     'name': 'Product Information Management',
     'version': '18.0',
-    "author": "Abhinav By Navabrind",
+    "author": "Navabrind",
     'summary': 'Dealing with product information management',
     'description': """
         Project Information Management

@@ -521,9 +521,6 @@ class AttributeGroup(models.Model):
           for record in self:
                record.child_ids = self.env['attribute.group'].search([])
 
-     def attribute_group_unlink(self):
-          print('deleteeeeeeeeeee')
-
      # attribute group edit button
      def attribute_group_open_form_view(self):
           all_attribute_group_ids = self.env['attribute.group'].search([]).ids
@@ -589,11 +586,6 @@ class AttributeGroup(models.Model):
                'context': {'no_breadcrumbs': True},
                'target': 'current',
           }
-
-     # def attribute_group_unlink(self):
-     #      print('dskjncccccccc')
-     #      self.unlink()
-     #      return {'type': 'ir.actions.client', 'tag': 'reload'}
 
      def create_pim_attribute_groups(self):
 
@@ -1307,7 +1299,6 @@ class ProductTemplate(models.Model):
                record.product_tmplt_ids = self.env['product.template'].search([])
 
      def action_back_to_product_menu(self):
-          print('fdfidofjdkfjd')
           return {
                'name': 'products',
                'res_model': 'product.template',
@@ -1319,7 +1310,6 @@ class ProductTemplate(models.Model):
                     'no_breadcrumbs': True,
                }
           }
-
 
      def _compute_percentage_complete(self):
           for product in self:
@@ -1335,7 +1325,6 @@ class ProductTemplate(models.Model):
                                    attribute_value = getattr(product, field_name, None)
                                    print(f"Checking field {field_name}: Value = {attribute_value}")
                                    if isinstance(product._fields[field_name], fields.Boolean):
-                                        print('dsskdjskdjs')
                                         if attribute_value:
                                              filled_count += 1
                                    else:
@@ -1349,7 +1338,6 @@ class ProductTemplate(models.Model):
                     product.percentage_complete = 0
 
      def _compute_progress_state(self, percentage_complete):
-          print('dskjskjdsk', percentage_complete)
           for product in self:
                if percentage_complete >= 70:
                     product.progress_state = 'fully_completed'
@@ -1363,7 +1351,6 @@ class ProductTemplate(models.Model):
                     product.progress_state = 'incomplete'
 
      def update_variant_values(self):
-          print('dksjdksjd', self.variant_id.variant_ids, self.variant_id.variant_ids[:1])
           attribute_value = self.variant_id.variant_ids[:1]
           return {
                'type': 'ir.actions.act_window',
@@ -1415,8 +1402,6 @@ class ProductTemplate(models.Model):
           }
 
      def custom_product_open_form_view(self):
-          print('dksdjskdjs')
-
           return {
               'type': 'ir.actions.act_window',
               'name': 'Products',

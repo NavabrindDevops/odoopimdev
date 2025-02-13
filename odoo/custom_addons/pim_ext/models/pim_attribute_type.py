@@ -74,6 +74,12 @@ class PIMAttributeType(models.Model):
           string='Locale specific',
           default='no'
      )
+     value_ids = fields.Many2many(
+          comodel_name='product.attribute.value',
+          relation='attribute_text_value_product_template_rel',
+          string="Values",
+          # domain="[('attribute_id', '=', attribute_id)]",
+          ondelete='cascade')
 
      def create_attributes(self):
 
