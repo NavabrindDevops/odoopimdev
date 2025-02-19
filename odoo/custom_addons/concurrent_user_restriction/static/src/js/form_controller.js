@@ -29,7 +29,7 @@ patch(FormController.prototype, {
         if (!disableAutofocus) {
             useEffect(
                 (isInEdition) => {
-                if (['product.brand','family.attribute','supplier.info','product.template',
+                if (['product.brand','family.attribute','supplier.info','product.template','pim.attribute.type',
                 'product.attribute','attribute.group','pim.category'].includes(this.model.root.resModel)){
                 this._run_concurrent_fun();
                 }
@@ -61,7 +61,7 @@ patch(FormController.prototype, {
     async onPagerUpdate({ offset, resIds }) {
 
         const dirty = await this.model.root.isDirty();
-        if (['product.brand','family.attribute','supplier.info','pim.category','product.template',
+        if (['product.brand','family.attribute','supplier.info','pim.category','product.template','pim.attribute.type',
                 'product.attribute','attribute.group'].includes(this.model.root.resModel)){
                  await this.orm.call(this.model.root.resModel, "clear_edit_session", [
                   [this.model.root.resId]
@@ -132,7 +132,7 @@ patch(FormController.prototype, {
      async beforeLeave() {
      console.log("before leave");
 
-     if (['product.brand','family.attribute','supplier.info','pim.category','product.template',
+     if (['product.brand','family.attribute','supplier.info','pim.category','product.template','pim.attribute.type',
                 'product.attribute','attribute.group'].includes(this.model.root.resModel)){
                 this.orm.call(this.model.root.resModel, "clear_edit_session", [
                     [this.model.root.resId]
@@ -151,7 +151,7 @@ patch(FormController.prototype, {
 
     get actionMenuItems() {
         const actionMenus = super.actionMenuItems;
-        if (['product.brand','family.attribute','supplier.info','pim.category','product.template',
+        if (['product.brand','family.attribute','supplier.info','pim.category','product.template','pim.attribute.type',
                 'product.attribute','attribute.group'].includes(this.props.resModel)){
 //        if (this.props.resModel == 'product.template') {
             const {action} = actionMenus;
@@ -164,7 +164,7 @@ patch(FormController.prototype, {
         return actionMenus;
     },
     async can_edit_session(model,id){
-        if (['product.brand','family.attribute','supplier.info','pim.category','product.template',
+        if (['product.brand','family.attribute','supplier.info','pim.category','product.template','pim.attribute.type',
                 'product.attribute','attribute.group'].includes(model)){
                     const res = await this.orm.call(model, "can_edit_session", [[id]]);
                     if(res == 0){
@@ -186,7 +186,7 @@ patch(FormController.prototype, {
                 }
     },
      async _myScheduledFunction(){
-         if (['product.brand','family.attribute','supplier.info','pim.category','product.template',
+         if (['product.brand','family.attribute','supplier.info','pim.category','product.template','pim.attribute.type',
                 'product.attribute','attribute.group'].includes(this.model.root.config.resModel)){
 
                     try{

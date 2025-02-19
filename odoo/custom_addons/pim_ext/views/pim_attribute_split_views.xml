@@ -321,6 +321,11 @@
                                                </page>
                                                <page name="type_label_translation" string="Label Translations" invisible="1">
                                                </page>
+                                               <page string="History">
+                                                   <group>
+                                                       <field name="history_log" nolabel="1" readonly="1"/>
+                                                   </group>
+                                               </page>
                                            </notebook>
                                        </sheet>
                                    </div>

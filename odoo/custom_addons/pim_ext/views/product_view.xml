@@ -452,6 +452,9 @@
             <xpath expr="//field[@name='visibility']" position="attributes">
                 <attribute name="column_invisible">1</attribute>
             </xpath>
+            <xpath expr="//field[@name='sequence']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='display_type']" position="attributes">
                 <attribute name="string">Type</attribute>
             </xpath>
@@ -472,7 +475,7 @@
     </record>
 
     <record id="product.attribute_action" model="ir.actions.act_window">
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list</field>
         <field name="view_id" ref="inherit_product_attribute_tree_pim"/>
     </record>
 

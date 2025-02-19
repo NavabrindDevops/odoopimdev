@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, api, fields,_
+from odoo import models, api, fields,_,tools
 
 
 class PIMAttributeType(models.Model):
@@ -80,6 +80,61 @@ class PIMAttributeType(models.Model):
           string="Values",
           # domain="[('attribute_id', '=', attribute_id)]",
           ondelete='cascade')
+
+     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
+
+     def write(self, vals):
+          for rec in self:
+               new_write_date = fields.Datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+               new_write_uid = self.env.user.display_name
+
+               changes = []  # Store changes in list
+
+               for key in vals:
+                    if key in ['name', 'code', 'active', 'create_variant', 'sequence', 'attribute_group',
+                               'display_type',
+                               'attribute_type_id', 'is_mandatory', 'is_required_in_clone', 'is_cloning',
+                               'is_completeness',
+                               'original_name', 'attribute_types', 'attribute_types_id', 'completed_in_percent',
+                               'state',
+                               'position_ref_field_id', 'unique_value', 'value_per_channel', 'value_per_locale',
+                               'usable_in_grid',
+                               'locale_specific', 'master_attribute_ids', 'label_transaltion']:
+
+                         attribute = rec._fields[key].string
+
+                         if key == 'attribute_group':
+                              old_value = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
+                              new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
+                                   key) else 'N/A'
+                         else:
+                              old_value = getattr(rec, key) or 'N/A'
+                              new_value = vals[key] or 'N/A'
+
+                         # Formatting Old & New values on the same line with space
+                         change_entry = f"""
+                         <li>
+                             <strong>{attribute}</strong><br>
+                             <span style='color: red;'>Old value:</span> {old_value}  
+                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             <span style='color: green;'>New value:</span> {new_value}
+                         </li>
+                     """
+                         changes.append(change_entry)
+
+               if changes:
+                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+
+                    full_message = f"""
+                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                         {user_info}
+                         <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                     </div>
+                 """
+
+                    rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
+
+          return super(PIMAttributeType, self).write(vals)
 
      def create_attributes(self):
 

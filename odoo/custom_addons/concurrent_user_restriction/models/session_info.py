@@ -18,6 +18,7 @@ class SessionInfo(models.Model):
     brand_id = fields.Many2one('product.brand')
     attribute_id = fields.Many2one('product.attribute')
     attribute_group_id = fields.Many2one('attribute.group')
+    pim_attribute_id = fields.Many2one('pim.attribute.type')
     product_template_id = fields.Many2one('product.template')
     supplier_id = fields.Many2one('supplier.info')
     active_state = fields.Boolean(default=True)
