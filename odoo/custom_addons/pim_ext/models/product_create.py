@@ -153,7 +153,7 @@ class ProductCreateMaster(models.Model):
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
                     display_type = attribute.display_type
 
-                    self._create_dynamic_field(field_name, field_mandatory, display_type)
+                    self._create_dynamic_field(field_name, field_mandatory, display_type,attribute)
 
                     # Add field to product template dynamically
                     attributes_list.append(field_name)
@@ -341,7 +341,8 @@ class ProductCreateMaster(models.Model):
         if display_type == 'ref_data_simple_select':
             display_type = 'many2many'
         if display_type == 'simple_select':
-            display_type = 'many2one'
+            print('simple_selectsimple_select')
+            display_type = 'selection'
         if display_type == 'text':
             display_type = 'char'
         if display_type == 'textarea':
@@ -366,7 +367,7 @@ class ProductCreateMaster(models.Model):
             #     'store': True,
             #     'required': field_mandatory,
             # }
-            self.env['ir.model.fields'].create({
+            create_field = self.env['ir.model.fields'].create({
                 'name': field_name,
                 'model_id': self.env['ir.model']._get('product.template').id,
                 'field_description': field_name.replace('x_', ''),
@@ -374,6 +375,17 @@ class ProductCreateMaster(models.Model):
                 'store': True,
                 'required': True if field_mandatory else False,
             })
+            if display_type == 'selection' and attribute.value_ids:
+                for value in attribute.value_ids:
+                    sel_name = value.name
+                    sel_value = value.name
+                    sel_val = self.env['ir.model.fields.selection'].create({
+                        'name': sel_name,
+                        'value': sel_value,
+                        'field_id': create_field.id
+                    })
+                    # print('sel_val -- ', sel_val.value)
+            print('ddddddddddddddd')
             print(f"Field '{field_name}' created dynamically in product.template.")
         else:
             print(f"Field '{field_name}' already exists in product.template.")

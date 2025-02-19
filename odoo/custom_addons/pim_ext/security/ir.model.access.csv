@@ -14,6 +14,7 @@ access_product_multi_select,product.multi.select.user,model_product_multi_select
 access_product_val_select,product.val.select.user,model_product_val_select,,1,1,1,1
 
 access_pim_attribute_type,pim.attribute.type.user,model_pim_attribute_type,,1,1,1,1
+access_pim_attribute_value,pim.attribute.value.user,model_pim_attribute_value,,1,1,1,1
 access_pim_attribute_group_line,pim.attribute.group.line.user,model_attribute_group_lines,,1,1,1,1
 access_pim_attribute_group_wizard,pim.attribute.group.wizard.user,model_attribute_group_wizard,,1,1,1,1
 access_pim_attribute_add_wizard,pim.add.attributes.wizard.user,model_add_attribute_wizard,,1,1,1,1

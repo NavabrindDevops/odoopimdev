@@ -51,7 +51,7 @@
                                                    <div id="o_type_properties" class="d-lg-flex top_property">
                                                        <div id="o_type_properties_main" class="flex-grow-1">
                                                            <group string="General Parameters" class="general_param">
-                                                               <label for="name" string="Product Name" style="font-weight:bold;"/>
+                                                               <label for="name" string="Name" style="font-weight:bold;"/>
                                                            </group>
                                                        </div>
                                                    </div>
@@ -116,6 +116,18 @@
                                                        </div>
                                                        <div class="d-flex">
                                                            <field name="write_date"
+                                                                  readonly="1"
+                                                                  class="attribute_type_class"/>
+                                                       </div><br/>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="image_1920" string="Image"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="image_1920" widget="image"
                                                                   readonly="1"
                                                                   class="attribute_type_class"/>
                                                        </div><br/>

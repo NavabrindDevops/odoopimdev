@@ -74,12 +74,10 @@ class PIMAttributeType(models.Model):
           string='Locale specific',
           default='no'
      )
-     value_ids = fields.Many2many(
-          comodel_name='product.attribute.value',
-          relation='attribute_text_value_product_template_rel',
-          string="Values",
-          # domain="[('attribute_id', '=', attribute_id)]",
-          ondelete='cascade')
+     value_ids = fields.One2many(
+          comodel_name='pim.attribute.value',
+          inverse_name='attribute_type_id',
+          string="Values", copy=True)
 
      history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
@@ -142,7 +140,9 @@ class PIMAttributeType(models.Model):
           return super(PIMAttributeType, self).write(vals)
 
      def create_attributes(self):
-
+          values_list = []
+          for value in self.value_ids:
+               values_list.append([0,0,{'name':value.name}])
           if all([self.name, self.display_type]):
                attribute_vals = {
                     'name': self.name,
@@ -158,9 +158,10 @@ class PIMAttributeType(models.Model):
                     'is_required_in_clone': self.is_required_in_clone,
                     'is_cloning': self.is_cloning,
                     'is_completeness': self.is_completeness,
-                    'value_ids': [(0, 0, {
-                         'name': self.display_type.replace('_', ' '),
-                    })]
+                    'value_ids':values_list
+                    # 'value_ids': [(0, 0, {
+                    #      'name': self.display_type.replace('_', ' '),
+                    # })]
                }
           attribute = self.env['product.attribute'].create(attribute_vals)
 
@@ -507,3 +508,11 @@ class PIMAttributeType(models.Model):
                },
           }
 
+
+class PimAttributeValue(models.Model):
+    _name = 'pim.attribute.value'
+
+    attribute_type_id = fields.Many2one('pim.attribute.type',ondelete='cascade',
+         required=True,
+         index=True)
+    name = fields.Char(string="Value", required=True, translate=True)

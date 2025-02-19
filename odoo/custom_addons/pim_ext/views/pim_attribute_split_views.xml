@@ -278,10 +278,12 @@
                                                        <div class="d-flex">
                                                            <field name="locale_specific" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
                                                        </div>
-<!--                                                       <div class="d-flex">-->
-<!--                                                           <field name="value_ids"/>-->
-<!--                                                       </div>-->
                                                    </div>
+                                                   <field name="value_ids">
+                                                       <list editable="bottom">
+                                                           <field name="name"/>
+                                                       </list>
+                                                   </field>
                                                </page>
                                                <page name="type_label_translation" string="Label Translations" invisible="1">
                                                </page>
