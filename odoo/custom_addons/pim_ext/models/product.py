@@ -5,6 +5,7 @@ import re
 from datetime import datetime,timedelta,timezone,date
 from email.policy import default
 from markupsafe import Markup
+import pytz
 
 from lxml import etree
 from odoo import models, api, fields,_, tools
@@ -15,6 +16,7 @@ import traceback,pdb,inspect
 from odoo.tools import drop_view_if_exists
 import logging
 from googletrans import Translator
+
 
 _logger = logging.getLogger(__name__)
 
@@ -322,7 +324,11 @@ class AttributeForm(models.Model):
 
      def write(self, vals):
           for rec in self:
-               new_write_date = fields.Datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+               updated_write_date_utc = fields.Datetime.now()
+               # Convert to the user's timezone
+               user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
+               updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime(
+                    "%d/%m/%Y %H:%M:%S")
                new_write_uid = self.env.user.display_name
 
                changes = []  # Store changes in list
@@ -360,7 +366,7 @@ class AttributeForm(models.Model):
                          changes.append(change_entry)
 
                if changes:
-                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
 
                     full_message = f"""
                      <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
@@ -424,8 +430,11 @@ class AttributeGroup(models.Model):
 
      def write(self, vals):
           for rec in self:
-               old_write_date = rec.write_date.strftime("%d %b, %Y %I:%M %p") if rec.write_date else 'N/A'
-               new_write_date = fields.Datetime.now().strftime("%d %b, %Y %I:%M %p")
+               updated_write_date_utc = fields.Datetime.now()
+               # Convert to the user's timezone
+               user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
+               updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime(
+                    "%d/%m/%Y %H:%M:%S")
                old_write_uid = rec.write_uid.display_name if rec.write_uid else 'System'
                new_write_uid = self.env.user.display_name
 
@@ -488,7 +497,7 @@ class AttributeGroup(models.Model):
                                         f"<li><strong>Attribute Group Line Removed:</strong> {line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'}</li>")
 
                if changes:
-                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
                     full_message = f"""
                      <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
                          {user_info}
@@ -839,8 +848,11 @@ class FamilyAttribute(models.Model):
 
      def write(self, vals):
           for rec in self:
-               old_write_date = rec.write_date.strftime("%d %b, %Y %I:%M %p") if rec.write_date else 'N/A'
-               new_write_date = fields.Datetime.now().strftime("%d %b, %Y %I:%M %p")
+               updated_write_date_utc = fields.Datetime.now()
+               # Convert to the user's timezone
+               user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
+               updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime(
+                    "%d/%m/%Y %H:%M:%S")
                old_write_uid = rec.write_uid.display_name if rec.write_uid else 'System'
                new_write_uid = self.env.user.display_name
 
@@ -922,7 +934,7 @@ class FamilyAttribute(models.Model):
                                    changes.append(change_entry)
 
                if changes:
-                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
 
                     full_message = f"""
                  <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
@@ -1193,7 +1205,11 @@ class ProductTemplate(models.Model):
 
      def write(self, vals):
           for rec in self:
-               time_now = datetime.now().strftime("%d %b, %Y %I:%M %p")
+               updated_write_date_utc = fields.Datetime.now()
+               # Convert to the user's timezone
+               user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
+               updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime(
+                    "%d/%m/%Y %H:%M:%S")
                user_name = self.env.user.display_name
                changes = []
 
@@ -1283,7 +1299,7 @@ class ProductTemplate(models.Model):
                  """)
 
                if changes:
-                    user_info = f"<small>Updated by <strong>{user_name}</strong> on {time_now}</small>"
+                    user_info = f"<small>Updated by <strong>{user_name}</strong> on {updated_write_date}</small>"
                     full_message = f"""
                      <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
                          {user_info}

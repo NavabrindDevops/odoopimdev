@@ -2,6 +2,7 @@
 from odoo import models, fields, api, _, tools
 from odoo.exceptions import ValidationError
 from datetime import datetime
+import pytz
 
 
 class PimCategory(models.Model):
@@ -27,8 +28,12 @@ class PimCategory(models.Model):
 
     def write(self, vals):
         for rec in self:
-            old_write_date = rec.write_date.strftime("%d %b, %Y %I:%M %p") if rec.write_date else 'N/A'
-            new_write_date = fields.Datetime.now().strftime("%d %b, %Y %I:%M %p")
+            # Get the current time in UTC
+            updated_write_date_utc = fields.Datetime.now()
+            # Convert to the user's timezone
+            user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
+            updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime("%d/%m/%Y %H:%M:%S")
+
             old_write_uid = rec.write_uid.display_name if rec.write_uid else 'System'
             new_write_uid = self.env.user.display_name
 
@@ -57,7 +62,7 @@ class PimCategory(models.Model):
                     changes.append(change_entry)
 
             if changes:
-                user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {new_write_date}</small>"
+                user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
 
                 full_message = f"""
                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
