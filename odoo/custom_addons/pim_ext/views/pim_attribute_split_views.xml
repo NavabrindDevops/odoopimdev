@@ -5,7 +5,7 @@
             <field name="name">product.attribute.custom.layout</field>
             <field name="model">pim.attribute.type</field>
             <field name="arch" type="xml">
-                <form string="Attribute" create="false" edit="false" class="page_form">
+                <form string="Attribute" create="false" class="page_form">
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="attribute_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">

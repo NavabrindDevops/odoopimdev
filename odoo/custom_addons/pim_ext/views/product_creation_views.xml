@@ -5,7 +5,7 @@
             <field name="name">product.product.template.custom</field>
             <field name="model">product.create</field>
             <field name="arch" type="xml">
-                <form string="Create Product" create="false" edit="false" delete="false" class="page_form">
+                <form string="Create Product" create="false" delete="false" class="page_form">
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="master_products_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
@@ -22,7 +22,7 @@
                             </field>
                         </div>
                         <div class="right-column">
-                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                            <form create="false" delete="false" readonly="1" class="attribute_type">
                                 <header>
                                     <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
                                 </header>
@@ -81,7 +81,7 @@
             <field name="name">product.product.template.master.custom</field>
             <field name="model">product.create.master</field>
             <field name="arch" type="xml">
-                <form string="Create Product" create="false" edit="false" class="page_form">
+                <form string="Create Product" create="false" class="page_form">
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="master_products_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
@@ -98,7 +98,7 @@
                             </field>
                         </div>
                         <div class="right-column"  invisible="is_invisible">
-                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                            <form create="false" delete="false" readonly="1" class="attribute_type">
                                 <header>
                                     <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
                                 </header>
@@ -156,7 +156,7 @@
                         </div>
 
                         <div class="right-column" invisible="is_product_model_invisible or is_product_bundle or is_product_grouped">
-                            <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                            <form create="false" delete="false" readonly="1" class="attribute_type">
                                 <header>
                                     <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
                                 </header>

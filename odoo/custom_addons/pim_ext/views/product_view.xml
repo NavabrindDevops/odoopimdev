@@ -143,7 +143,6 @@
         <field name="arch" type="xml">
             <search string="Family Attribute">
                 <group expand="0" string="Group By">
-                    <field name="name"/>
                     <field name="code"/>
                     <field name="description"/>
                     <filter string="Family Group Name" name="family_attribute" domain="[]" context="{'group_by': 'name'}"/>
@@ -240,7 +239,6 @@
         <field name="priority" eval="15"/>
         <field name="arch" type="xml">
             <search string="Attribute Group">
-                <field name="name"/>
                 <group expand="0" string="Group By">
                     <filter string="Attribute Group Name" name="attribute_group" domain="[]" context="{'group_by': 'name'}"/>
                 </group>
