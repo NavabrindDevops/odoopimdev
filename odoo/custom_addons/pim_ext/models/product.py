@@ -1320,8 +1320,8 @@ class ProductTemplate(models.Model):
                'name': 'products',
                'res_model': 'product.template',
                'type': 'ir.actions.act_window',
-               'view_id': self.env.ref('pim_ext.view_product_management_tree').id,
-               'view_mode': 'list',
+               'view_id': self.env.ref('pim_ext.view_product_management_kanban').id,
+               'view_mode': 'kanban',
                'target': 'current',
                'context': {
                     'no_breadcrumbs': True,
