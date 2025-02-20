@@ -141,7 +141,6 @@
                                                        </div>
                                                        <div class="d-flex">
                                                            <field name="image_1920" widget="image"
-                                                                  readonly="1"
                                                                   class="attribute_type_class"/>
                                                        </div><br/>
                                                    </div>

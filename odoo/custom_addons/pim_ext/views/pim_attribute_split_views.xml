@@ -279,7 +279,8 @@
                                                            <field name="locale_specific" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
                                                        </div>
                                                    </div>
-                                                   <field name="value_ids">
+
+                                                   <field name="value_ids" invisible="display_type not in ['simple_select','radio','pills','color','multi_select']">
                                                        <list editable="bottom">
                                                            <field name="name"/>
                                                        </list>

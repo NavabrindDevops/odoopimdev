@@ -90,8 +90,8 @@ class ProductCreate(models.Model):
 
 
 class ProductCreateMaster(models.Model):
-    _name='product.create.master'
-    _description='Product creation page'
+    _name = 'product.create.master'
+    _description = 'Product creation page'
     _rec_name = 'sku'
 
     family_id = fields.Many2one('family.attribute', string='Family')
@@ -109,9 +109,8 @@ class ProductCreateMaster(models.Model):
     is_product_model_invisible = fields.Boolean(default=False, string='Invisible Types')
     is_product_grouped = fields.Boolean(default=False, string='Is Bundle')
     is_product_bundle = fields.Boolean(default=False, string='Is Grouped')
-    variant_id = fields.Many2one('family.variant.line', string='Variants',domain="[('variant_familiy_id', '=', family_id)]")
-
-
+    variant_id = fields.Many2one('family.variant.line', string='Variants',
+                                 domain="[('variant_familiy_id', '=', family_id)]")
 
     def action_back_to_product_menu(self):
         menu_id = self.env.ref('pim_ext.product_creation_menu')
@@ -153,7 +152,7 @@ class ProductCreateMaster(models.Model):
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
                     display_type = attribute.display_type
 
-                    self._create_dynamic_field(field_name, field_mandatory, display_type)
+                    self._create_dynamic_field(field_name, field_mandatory, display_type, attribute)
 
                     # Add field to product template dynamically
                     attributes_list.append(field_name)
@@ -310,7 +309,7 @@ class ProductCreateMaster(models.Model):
                 'target': 'current',
             }
 
-    def _create_dynamic_field(self, field_name, field_mandatory, display_type):
+    def _create_dynamic_field(self, field_name, field_mandatory, display_type, attribute):
         """ Creates a dynamic field in product.template if it doesn't already exist """
         # Check if the field exists in product.template
         existing_field = self.env['ir.model.fields'].search([
@@ -320,7 +319,7 @@ class ProductCreateMaster(models.Model):
         if display_type == 'number':
             display_type = 'integer'
         if display_type == 'radio':
-            display_type = 'boolean'
+            display_type = 'selection'
         if display_type == 'file':
             display_type = 'binary'
         if display_type == 'image':
@@ -354,7 +353,7 @@ class ProductCreateMaster(models.Model):
         if display_type == 'select':
             display_type = 'selection'
         if display_type == 'color':
-            display_type = 'char'
+            display_type = 'selection'
         if display_type == 'multi':
             display_type = 'many2many'
 
@@ -367,14 +366,27 @@ class ProductCreateMaster(models.Model):
             #     'store': True,
             #     'required': field_mandatory,
             # }
-            create_field = self.env['ir.model.fields'].create({
-                'name': field_name,
-                'model_id': self.env['ir.model']._get('product.template').id,
-                'field_description': field_name.replace('x_', ''),
-                'ttype': display_type,
-                'store': True,
-                'required': True if field_mandatory else False,
-            })
+            if display_type == 'many2many':
+                for value in attribute.value_ids:
+                    self.env['many2many.selection.values'].create({'name':value.name,'field_name':field_name})
+                create_field = self.env['ir.model.fields'].create({
+                            'name': field_name,
+                            'field_description': field_name.replace('x_', ''),
+                            'model_id': self.env['ir.model']._get('product.template').id,
+                            'ttype': 'many2many',
+                            'relation': 'many2many.selection.values',
+                            'domain': "[('field_name','=',field_name)]",
+                            'store': True,
+                })
+            else:
+                create_field = self.env['ir.model.fields'].create({
+                    'name': field_name,
+                    'model_id': self.env['ir.model']._get('product.template').id,
+                    'field_description': field_name.replace('x_', ''),
+                    'ttype': display_type,
+                    'store': True,
+                    'required': True if field_mandatory else False,
+                })
             if display_type == 'selection' and attribute.value_ids:
                 for value in attribute.value_ids:
                     sel_name = value.name
@@ -422,3 +434,8 @@ class ProductCreateMaster(models.Model):
 
         }
 
+class Many2manySelectionValues(models.Model):
+    _name = 'many2many.selection.values'
+
+    name = fields.Char()
+    field_name = fields.Char()
