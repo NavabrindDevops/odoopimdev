@@ -319,92 +319,74 @@ class ProductCreateMaster(models.Model):
             ('name', '=', field_name),
             ('model', '=', 'product.template')
         ])
-        if display_type == 'number':
-            display_type = 'integer'
-        if display_type == 'radio':
-            display_type = 'selection'
-        if display_type == 'file':
-            display_type = 'binary'
-        if display_type == 'image':
-            display_type = 'binary'
-        if display_type == 'link':
-            display_type = 'char'
-        if display_type == 'identifier':
-            display_type = 'integer'
-        if display_type == 'measurement':
-            display_type = 'float'
-        if display_type == 'multi_select':
-            display_type = 'many2many'
-        if display_type == 'price':
-            display_type = 'float'
-        if display_type == 'ref_data_multi':
-            display_type = 'many2many'
-        if display_type == 'ref_data_simple_select':
-            display_type = 'many2many'
-        if display_type == 'simple_select':
-            print('simple_selectsimple_select')
-            display_type = 'selection'
-        if display_type == 'text':
-            display_type = 'char'
-        if display_type == 'textarea':
-            display_type = 'text'
-        if display_type == 'yes_no':
-            display_type = 'boolean'
-        if display_type == 'pills':
-            display_type = 'many2many'
-        if display_type == 'select':
-            display_type = 'selection'
-        if display_type == 'color':
-            display_type = 'selection'
-        if display_type == 'multi':
-            display_type = 'many2many'
+
+        # Map display types to Odoo field types
+        display_type_mapping = {
+            'number': 'integer',
+            'radio': 'selection',
+            'file': 'binary',
+            'image': 'binary',
+            'link': 'char',
+            'identifier': 'integer',
+            'measurement': 'float',
+            'multi_select': 'many2many',
+            'price': 'float',
+            'ref_data_multi': 'many2many',
+            'ref_data_simple_select': 'many2many',
+            'simple_select': 'selection',
+            'text': 'char',
+            'textarea': 'text',
+            'yes_no': 'boolean',
+            'pills': 'many2many',
+            'select': 'selection',
+            'color': 'selection',
+            'multi': 'many2many',
+        }
+
+        # Get the correct display type
+        ttype = display_type_mapping.get(display_type, 'char')  # Default to 'char' if not found
 
         if not existing_field:
-            # field_values = {
-            #     'name': field_name,
-            #     'model_id': self.env['ir.model']._get('product.template').id,
-            #     'field_description': field_name.replace('x_', ''),  # Set field label
-            #     'ttype': display_type,  # Dynamic field type
-            #     'store': True,
-            #     'required': field_mandatory,
-            # }
-            if display_type == 'many2many':
-                for value in attribute.value_ids:
-                    self.env['many2many.selection.values'].create({'name':value.name,'field_name':field_name})
-                create_field = self.env['ir.model.fields'].create({
-                            'name': field_name,
-                            'field_description': field_name.replace('x_', ''),
-                            'model_id': self.env['ir.model']._get('product.template').id,
-                            'ttype': 'many2many',
-                            'relation': 'many2many.selection.values',
-                            'domain': "[('field_name','=','"+field_name+"')]",
-                            'store': True,
-                })
-            else:
-                create_field = self.env['ir.model.fields'].create({
-                    'name': field_name,
-                    'model_id': self.env['ir.model']._get('product.template').id,
-                    'field_description': field_name.replace('x_', ''),
-                    'ttype': display_type,
-                    'store': True,
-                    'required': True if field_mandatory else False,
-                })
-            if display_type == 'selection' and attribute.value_ids:
+            # Create the field with a user-friendly description
+            create_field = self.env['ir.model.fields'].create({
+                'name': field_name,
+                'model_id': self.env['ir.model']._get('product.template').id,
+                'field_description': self._format_field_description(attribute.name),  # Format the attribute name
+                'ttype': ttype,  # Dynamic field type
+                'store': True,
+                'required': field_mandatory,
+            })
+
+            # Handle selection fields if applicable
+            if ttype == 'selection' and attribute.value_ids:
                 for value in attribute.value_ids:
                     sel_name = value.name
                     sel_value = value.name
-                    sel_val = self.env['ir.model.fields.selection'].create({
+                    self.env['ir.model.fields.selection'].create({
                         'name': sel_name,
                         'value': sel_value,
                         'field_id': create_field.id
                     })
-                    # print('sel_val -- ', sel_val.value)
-            print('ddddddddddddddd')
-            print(f"Field '{field_name}' created dynamically in product.template.")
+            if ttype == 'many2many':
+                # Create the relation model if it doesn't exist
+                self.env['many2many.selection.values'].create({'name': value.name, 'field_name': field_name})
+                # Update the field to set the relation
+                create_field.write({
+                    'relation': 'many2many.selection.values',
+                    'domain': f"[('field_name', '=', '{field_name}')]",
+                })
+
+            print(f"Field '{field_name}' created dynamically in product.template with description '{attribute.name}'.")
         else:
-            return existing_field
             print(f"Field '{field_name}' already exists in product.template.")
+            return existing_field
+
         return create_field
+
+    def _format_field_description(self, field_name):
+        """ Format the field name to a user-friendly description """
+        # Capitalize the first letter of each word and replace underscores with spaces
+        return ' '.join(word.capitalize() for word in field_name.split('_'))
 
     def _update_or_create_view(self, view_name, model_name, inherit_view_id, arch_value):
         model_id = self.env['ir.model'].search([('model', '=', model_name)])
