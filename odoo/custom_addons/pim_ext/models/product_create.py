@@ -153,7 +153,7 @@ class ProductCreateMaster(models.Model):
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
                     display_type = attribute.display_type
 
-                    self._create_dynamic_field(field_name, field_mandatory, display_type,attribute)
+                    self._create_dynamic_field(field_name, field_mandatory, display_type)
 
                     # Add field to product template dynamically
                     attributes_list.append(field_name)
