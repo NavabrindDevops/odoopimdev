@@ -48,7 +48,7 @@
                                                <h1 class="name"><field name="name" readonly="1" class="oe_inline choose_pim_attribute_type"/></h1>
                                            </div>
                                            <notebook class="type_properties">
-                                               <page name="type_properties" string="product Info">
+                                               <page name="type_properties" string="Product Info">
                                                    <div id="o_type_properties" class="d-lg-flex top_property">
                                                        <div id="o_type_properties_main" class="flex-grow-1">
                                                            <group string="General Parameters" class="general_param">

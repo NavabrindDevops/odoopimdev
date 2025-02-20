@@ -152,13 +152,16 @@ class ProductCreateMaster(models.Model):
                     field_name = f"x_{attribute.name.replace(' ', '_').lower()}"
                     display_type = attribute.display_type
 
-                    self._create_dynamic_field(field_name, field_mandatory, display_type, attribute)
+                    created_field = self._create_dynamic_field(field_name, field_mandatory, display_type, attribute)
 
                     # Add field to product template dynamically
                     attributes_list.append(field_name)
-
-                    # Generate field XML for inclusion in the view
-                    field_name_xml = f'<field name="{field_name}"/>'
+                    if attribute.display_type == 'radio':
+                        field_name_xml = f'<field name="{field_name}" widget="radio"/>'
+                    elif created_field.ttype == 'many2many':
+                        field_name_xml = f'<field name="{field_name}" widget="many2many_tags"/>'
+                    else:
+                        field_name_xml = f'<field name="{field_name}"/>'
                     new_field_xml += field_name_xml
 
                 new_field_xml += '</group>'
@@ -324,7 +327,6 @@ class ProductCreateMaster(models.Model):
             display_type = 'binary'
         if display_type == 'image':
             display_type = 'binary'
-
         if display_type == 'link':
             display_type = 'char'
         if display_type == 'identifier':
@@ -375,7 +377,7 @@ class ProductCreateMaster(models.Model):
                             'model_id': self.env['ir.model']._get('product.template').id,
                             'ttype': 'many2many',
                             'relation': 'many2many.selection.values',
-                            'domain': "[('field_name','=',field_name)]",
+                            'domain': "[('field_name','=','"+field_name+"')]",
                             'store': True,
                 })
             else:
@@ -400,7 +402,9 @@ class ProductCreateMaster(models.Model):
             print('ddddddddddddddd')
             print(f"Field '{field_name}' created dynamically in product.template.")
         else:
+            return existing_field
             print(f"Field '{field_name}' already exists in product.template.")
+        return create_field
 
     def _update_or_create_view(self, view_name, model_name, inherit_view_id, arch_value):
         model_id = self.env['ir.model'].search([('model', '=', model_name)])

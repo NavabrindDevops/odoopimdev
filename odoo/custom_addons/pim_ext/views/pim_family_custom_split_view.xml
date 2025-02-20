@@ -67,8 +67,8 @@
                                                                    options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
                                                                    group_by="attribute_group_id"/>
                     <!--                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>-->
-                                                           <field name="product_id"/>
-                                                           <field name="product_id_stored"/>
+                                                           <field name="product_id" column_invisible="True"/>
+                                                           <field name="product_id_stored" column_invisible="True"/>
                                                            <field name="attribute_id"/>
                                                            <field name="completeness_percent" widget="progressbar_extended" optional="hide"/>
 <!--                                                           <field name="attribute_group_id" optional="hide"/>-->
