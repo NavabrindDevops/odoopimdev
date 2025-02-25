@@ -22,7 +22,7 @@
         'views/pim.xml',
         'views/product_view.xml',
         'views/product_template_view.xml',
-        'views/pim_attribute_type_views.xml',
+        # 'views/pim_attribute_type_views.xml',
         # 'views/pim_attribute_details_views.xml',
         'views/pim_attribute_group_views.xml',
         'wizard/attribute_group_wizard_views.xml',

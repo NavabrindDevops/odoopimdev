@@ -4,7 +4,7 @@
         <xpath expr="//t[@t-set-slot='control-panel-create-button'][2]" position="before">
 <!--            <t t-esc="canEdit"/>-->
             <div class="row-12" style="text-align:center;">
-                <t t-if="props.resModel=='product.brand' || props.resModel=='family.attribute'|| props.resModel=='product.attribute'|| props.resModel=='attribute.group'|| props.resModel=='pim.category'|| props.resModel=='product.template'|| props.resModel=='supplier.info'">
+                <t t-if="props.resModel=='product.brand' || props.resModel=='family.attribute'|| props.resModel=='pim.attribute.type' || props.resModel=='product.attribute'|| props.resModel=='attribute.group'|| props.resModel=='pim.category'|| props.resModel=='product.template'|| props.resModel=='supplier.info'">
                     <t t-if="state.danger_warning">
                         <span style="color:red">
                             <t t-esc="state.danger_warning"/>

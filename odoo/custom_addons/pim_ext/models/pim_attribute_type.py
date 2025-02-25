@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-
+from random import randint
 from odoo import models, api, fields,_,tools
 import pytz
+import colorsys
 
 class PIMAttributeType(models.Model):
      _name = 'pim.attribute.type'
@@ -10,7 +11,8 @@ class PIMAttributeType(models.Model):
 
      name = fields.Char(string="Attribute Name", default=' ')
      type_name = fields.Char(string="Attribute Type Name")
-     attribute_ids = fields.One2many('product.attribute', 'attribute_types_id', string='Attributes')
+     attribute_types_id = fields.Many2one('pim.attribute.type', string='Parent Attributes', index=True, ondelete="cascade")
+     attribute_ids = fields.One2many('pim.attribute.type', 'attribute_types_id', string='Attributes',  compute='_compute_attribute_ids')
      is_invisible=fields.Boolean(default=False, string='Invisible Types')
      attribute_group = fields.Many2one('attribute.group', string='Attribute Group', tracking=True)
      attribute_types = fields.Selection([('basic', 'Basic'), ('optional', 'Optional')], string='Attribute Type')
@@ -81,63 +83,131 @@ class PIMAttributeType(models.Model):
 
      history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
+     def _compute_attribute_ids(self):
+          for record in self:
+               record.attribute_ids = self.env['pim.attribute.type'].search([])
+
+     def sort_colors(self):
+          for record in self:
+               colors_rgb = [tuple(int(rec.html_color[i:i + 2], 16) for i in (1, 3, 5)) for rec in record.value_ids]
+               colors_hsv = [colorsys.rgb_to_hsv(r / 255.0, g / 255.0, b / 255.0) for r, g, b in colors_rgb]
+               sorted_colors_hsv = sorted(colors_hsv, key=lambda x: (x[0], x[1], x[2]))
+               sorted_colors_rgb = [colorsys.hsv_to_rgb(h, s, v) for h, s, v in sorted_colors_hsv]
+               sorted_colors_rgb = [(round(r * 255), round(g * 255), round(b * 255)) for r, g, b in sorted_colors_rgb]
+               # # Clear existing sorted colors
+               vals_list = []
+               for r, g, b in sorted_colors_rgb:
+                    color = '#{:02x}{:02x}{:02x}'.format(r, g, b)
+                    record_name = self.env['pim.attribute.value'].search([('html_color', '=', color),
+                                                                              ('attribute_type_id', '=', record.id)],
+                                                                             order="id", limit=1)
+                    vals_list.append((0, 0, {
+                         'name': record_name.name,
+                         'html_color': color,
+                         'attribute_type_id': record.id,
+                         'image': record_name.image
+                    }))
+               record.value_ids.unlink()
+               record.value_ids = vals_list
+
+     def _log_changes(self, rec, vals, action):
+          # Get the current time in UTC
+          updated_write_date_utc = fields.Datetime.now()
+          # Convert to the user's timezone
+          user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
+          updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime("%d/%m/%Y %H:%M:%S")
+          new_write_uid = self.env.user.display_name
+
+          changes = []  # Store changes in list
+
+          for key in vals:
+               if key in ['name', 'code', 'active', 'create_variant', 'sequence', 'attribute_group',
+                          'display_type', 'attribute_type_id', 'is_mandatory', 'is_required_in_clone',
+                          'is_cloning', 'is_completeness', 'original_name', 'attribute_types',
+                          'attribute_types_id', 'completed_in_percent', 'state', 'position_ref_field_id',
+                          'unique_value', 'value_per_channel', 'value_per_locale', 'usable_in_grid',
+                          'locale_specific', 'master_attribute_ids', 'label_transaltion']:
+
+                    attribute = rec._fields[key].string
+
+                    if key == 'attribute_group':
+                         old_value = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
+                         new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
+                              key) else 'N/A'
+                    else:
+                         # Set old_value to 'N/A' if creating a new record
+                         old_value = getattr(rec, key, 'N/A') if action == "update" else 'N/A'
+                         new_value = vals[key] or 'N/A'
+
+                    # Formatting Old & New values on the same line with space
+                    change_entry = f"""
+                  <li>
+                      <strong>{attribute}</strong><br>
+                      <span style='color: red;'>Old value:</span> {old_value}  
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span style='color: green;'>New value:</span> {new_value}
+                  </li>
+                  """
+                    changes.append(change_entry)
+
+          if changes:
+               action_text = "Created by" if action == "create" else "Updated by"
+               user_info = f"<small>{action_text} <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
+
+               full_message = f"""
+              <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                  {user_info}
+                  <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+              </div>
+              """
+
+               rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
+
      def write(self, vals):
           for rec in self:
-               # Get the current time in UTC
-               updated_write_date_utc = fields.Datetime.now()
-               # Convert to the user's timezone
-               user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
-               updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime(
-                    "%d/%m/%Y %H:%M:%S")
-               new_write_uid = self.env.user.display_name
-
-               changes = []  # Store changes in list
-
-               for key in vals:
-                    if key in ['name', 'code', 'active', 'create_variant', 'sequence', 'attribute_group',
-                               'display_type',
-                               'attribute_type_id', 'is_mandatory', 'is_required_in_clone', 'is_cloning',
-                               'is_completeness',
-                               'original_name', 'attribute_types', 'attribute_types_id', 'completed_in_percent',
-                               'state',
-                               'position_ref_field_id', 'unique_value', 'value_per_channel', 'value_per_locale',
-                               'usable_in_grid',
-                               'locale_specific', 'master_attribute_ids', 'label_transaltion']:
-
-                         attribute = rec._fields[key].string
-
-                         if key == 'attribute_group':
-                              old_value = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
-                              new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
-                                   key) else 'N/A'
-                         else:
-                              old_value = getattr(rec, key) or 'N/A'
-                              new_value = vals[key] or 'N/A'
-
-                         # Formatting Old & New values on the same line with space
-                         change_entry = f"""
-                         <li>
-                             <strong>{attribute}</strong><br>
-                             <span style='color: red;'>Old value:</span> {old_value}  
-                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                             <span style='color: green;'>New value:</span> {new_value}
-                         </li>
-                     """
-                         changes.append(change_entry)
-
-               if changes:
-                    user_info = f"<small>Updated by <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
-
-                    full_message = f"""
-                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
-                         {user_info}
-                         <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
-                     </div>
-                 """
-
-                    rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
-
+               self._log_changes(rec, vals, action="update")
           return super(PIMAttributeType, self).write(vals)
+
+     def create(self, vals):
+          record = super(PIMAttributeType, self).create(vals)
+          self._log_changes(record, vals, action="create")
+          return record
+
+     def attribute_edit_open_form_view(self):
+          self.ensure_one()
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Edit Attribute',
+               # 'res_model': 'product.attribute',
+               'view_mode': 'form',
+               'res_model': 'pim.attribute.type',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+               'context': {'no_breadcrumbs': True},
+               'res_id': self.id,
+          }
+
+     def attribute_master_unlink(self):
+          return {
+               'name': 'Confirm Deletion',
+               'type': 'ir.actions.act_window',
+               'res_model': 'attribute.master.unlink.wizard',
+               'view_mode': 'form',
+               'target': 'new',
+               'context': {'default_attribute_types_id': self.id},
+          }
+     def create_pim_attribute_type(self):
+          # Return the action to open the product.attribute custom layout
+          return {
+               'type': 'ir.actions.act_window',
+               'name': 'Create Attribute',
+               'res_model': 'pim.attribute.type',
+               'view_mode': 'form',
+               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+               'target': 'current',
+               'context': {
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
+               },
+          }
 
      def create_attributes(self):
           values_list = []
@@ -228,7 +298,7 @@ class PIMAttributeType(models.Model):
                'view_mode': 'form',
                'context': {
                     # 'default_attribute_type_id': self.id,
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_display_type': 'date',
                     'default_is_invisible': True,
                     'default_type_name': 'Date',
@@ -244,7 +314,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'file',
                     'default_type_name': 'File',
@@ -263,7 +333,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'identifier',
                     'default_type_name': 'Identifier',
@@ -279,7 +349,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'image',
                     'default_type_name': 'Image',
@@ -311,7 +381,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'link',
                     'default_type_name': 'Link',
@@ -327,7 +397,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'multi_select',
                     'default_type_name': 'Multi_select',
@@ -343,7 +413,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'number',
                     'default_type_name': 'Integer',
@@ -359,7 +429,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'price',
                     'default_type_name': 'Price',
@@ -375,7 +445,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'ref_data_multi',
                     'default_type_name': 'Ref Data Multi Select Attribute',
@@ -391,7 +461,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'ref_data_simple_select',
                     'default_type_name': 'Ref Data Simple Select Attribute',
@@ -407,7 +477,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'multi_checkbox',
                     'default_type_name': 'Multi Checkbox',
@@ -423,7 +493,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'color',
                     'default_type_name': 'Color',
@@ -439,7 +509,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'radio',
                     'default_type_name': 'Radio',
@@ -455,7 +525,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'simple_select',
                     'default_type_name': 'Simple Select Attribute',
@@ -471,7 +541,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'text',
                     'default_type_name': 'Text Attribute',
@@ -487,7 +557,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'textarea',
                     'default_type_name': 'TextArea',
@@ -503,7 +573,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
                'view_mode': 'form',
                'context': {
-                    'default_attribute_ids': self.env['product.attribute'].search([]).ids,
+                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
                     'default_is_invisible': True,
                     'default_display_type': 'yes_no',
                     'default_type_name': 'Checkbox',
@@ -514,7 +584,23 @@ class PIMAttributeType(models.Model):
 class PimAttributeValue(models.Model):
     _name = 'pim.attribute.value'
 
+    def _get_default_color(self):
+        return randint(1, 11)
+
     attribute_type_id = fields.Many2one('pim.attribute.type',ondelete='cascade',
          required=True,
          index=True)
     name = fields.Char(string="Value", required=True, translate=True)
+    sequence = fields.Integer(string="Sequence", help="Determine the display order", index=True)
+    html_color = fields.Char(
+         string="Color",
+         help="Here you can set a specific HTML color index (e.g. #ff0000)"
+              " to display the color if the attribute type is 'Color'.")
+    display_type = fields.Selection(related='attribute_type_id.display_type')
+    color = fields.Integer(string="Color Index", default=_get_default_color)
+    image = fields.Image(
+         string="Image",
+         help="You can upload an image that will be used as the color of the attribute value.",
+         max_width=70,
+         max_height=70,
+    )

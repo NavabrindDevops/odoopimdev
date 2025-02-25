@@ -9,7 +9,7 @@
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="attribute_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
-                                <list create="false" edit="false" default_order="create_date desc">
+                                <list create="false" edit="false" delete="false" default_order="create_date desc">
                                     <field name="name"/>
                                     <field name="display_type"/>
                                     <field name="attribute_group"/>
@@ -17,6 +17,8 @@
                                     <field name="is_required_in_clone" widget="boolean_toggle"/>
                                     <field name="is_cloning" widget="boolean_toggle" invisible="1"/>
                                     <field name="is_completeness" widget="boolean_toggle"/>
+                                    <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
+                                    <button name="attribute_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
                                 </list>
                             </field>
                         </div>
@@ -278,13 +280,34 @@
                                                        <div class="d-flex">
                                                            <field name="locale_specific" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
                                                        </div>
-                                                   </div>
+                                                       <div id="o_type_properties" class="d-lg-flex top_property" invisible="display_type not in ['simple_select','radio','pills','color','multi_select']">
+                                                       <div id="o_type_properties_main" class="flex-grow-1">
+                                                           <group string="Attribute Values" class="general_param">
+                                                           </group>
+                                                       <div class="d-flex">
+                                                   <button name="sort_colors" string="Sort Colors" type="object" invisible="display_type != 'color'"></button>
+                                                           <br/>
+                                                       </div>
+                                                       <div class="d-flex">
 
                                                    <field name="value_ids" invisible="display_type not in ['simple_select','radio','pills','color','multi_select']">
                                                        <list editable="bottom">
+                                                           <field name="sequence" widget="handle"/>
                                                            <field name="name"/>
+                                                           <field name="display_type" column_invisible="True"/>
+                                                           <field name="html_color"
+                                                                  column_invisible="parent.display_type != 'color'"
+                                                                  invisible="image" widget="color"/>
+                                                           <field name="image"
+                                                                  class="oe_avatar text-start float-none"
+                                                                  column_invisible="parent.display_type != 'color'"
+                                                                  options="{'size': [70, 70]}"
+                                                                  widget="image"/>
                                                        </list>
                                                    </field>
+                                                       </div>
+                                                   </div>
+                                                   </div></div>
                                                </page>
                                                <page name="type_label_translation" string="Label Translations" invisible="1">
                                                </page>
@@ -340,13 +363,37 @@
             </field>
         </record>
 
+        <record id="view_tree_pim_attribute_type" model="ir.ui.view">
+            <field name="name">pim.attribute.type.tree.view</field>
+            <field name="model">pim.attribute.type</field>
+            <field name="arch" type="xml">
+                <list create="false" default_order="create_date desc">
+                    <header>
+                        <button name="create_pim_attribute_type" type="object" class="btn-primary"
+                            string="Create Attribute" display="always"
+                            invisible="context.get('active_model', 'pim.attribute.type') != 'pim.attribute.type'"/>
+                    </header>
+                    <field name="name"/>
+                    <field name="display_type" string="Type"/>
+                    <field name="attribute_group"/>
+                <field name="is_mandatory" widget="boolean_toggle"/>
+                <field name="is_required_in_clone" widget="boolean_toggle"/>
+                <field name="is_cloning" widget="boolean_toggle" column_invisible="True"/>
+                <field name="is_completeness" widget="boolean_toggle"/>
+<!--                <field name="state" widget="badge" decoration-success="state == 'publish'" decoration-danger="state == 'unpublish'"/>-->
+                <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
+                <button name="attribute_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+                </list>
+            </field>
+        </record>
+
         <!-- Action to open the custom view -->
         <record id="action_products_attributes_custom" model="ir.actions.act_window">
             <field name="name">Create Attribute</field>
             <field name="res_model">pim.attribute.type</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_product_attribute_custom"/>
-            <field name="target">current</field>
+            <field name="view_mode">list</field>
+<!--            <field name="view_id" ref="view_product_attribute_custom"/>-->
+<!--            <field name="target">current</field>-->
         </record>
     </data>
 </odoo>

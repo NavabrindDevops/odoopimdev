@@ -30,91 +30,91 @@
 <!--    sequence="100"/>-->
 
 
-<!--    Family Attribute-->
-        <record id="view_family_form" model="ir.ui.view">
-            <field name="name">Family Group</field>
-            <field name="model">family.attribute</field>
-            <field name="arch" type="xml">
-                <form string="Family Group" create="false" delete="false">
-                    <!-- <header>
-                        <button class="oe_stat_button" name="action_update" icon="fa-list-ul" type="object" string="Get Attribute Groups"/>
-                    </header>-->
-                    <sheet>
-                        <style>
-                            .o_group .o_wrap_label .o_form_label{font-weight:250; font-size:12px;}
-                            .o_tag{font-size:var(--Tag-font-size, -2.1875rem);}
-                        </style>
-                        <div class="oe_title">
-                            <h1><field name="name" class="oe_inline" readonly="1"/></h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="name"/>
-                                <field name="code" readonly="1"/>
-                                <field name="description"/>
-                            </group>
-                        </group>
+<!--&lt;!&ndash;    Family Attribute&ndash;&gt;-->
+<!--        <record id="view_family_form" model="ir.ui.view">-->
+<!--            <field name="name">Family Group</field>-->
+<!--            <field name="model">family.attribute</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Family Group" create="false" delete="false">-->
+<!--                    &lt;!&ndash; <header>-->
+<!--                        <button class="oe_stat_button" name="action_update" icon="fa-list-ul" type="object" string="Get Attribute Groups"/>-->
+<!--                    </header>&ndash;&gt;-->
+<!--                    <sheet>-->
+<!--                        <style>-->
+<!--                            .o_group .o_wrap_label .o_form_label{font-weight:250; font-size:12px;}-->
+<!--                            .o_tag{font-size:var(&#45;&#45;Tag-font-size, -2.1875rem);}-->
+<!--                        </style>-->
+<!--                        <div class="oe_title">-->
+<!--                            <h1><field name="name" class="oe_inline" readonly="1"/></h1>-->
+<!--                        </div>-->
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                <field name="name"/>-->
+<!--                                <field name="code" readonly="1"/>-->
+<!--                                <field name="description"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
 
 
-                      <group >
+<!--                      <group >-->
 
-                      </group>
-                    <notebook>
-                        <page name="Properties">
-                            <group>
-                                <group string="General Properties">
-                                    <field name="code"/>
-                                </group>
-                            </group>
-                            <group>
-                                <group string="Label Translation">
-                                    <field name="attribute_label"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page name="attibute_list" string="Attributes">
-                            <br/>
-                            <div style="display:flex; gap:10px; width:max-content;">
-                                <button name="action_open_attribute_group_wizard" type="object"
-                                      string="Add By Groups" class="oe_button btn-primary"/>
-                                <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>
-                            </div>
-                            <br/>
-                            <field name="product_families_ids">
-                                <list edit="false" create="false" default_order="create_date desc">
-<!--                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>-->
-                                    <field name="product_id"/>
-                                    <field name="product_id_stored"/>
-                                    <field name="attribute_id"/>
-                                    <field name="completeness_percent" widget="progressbar_extended" optional="hide"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page name="variant_rec" string="Variants">
-                            <br/>
-                            <div style="display:flex; gap:10px; width:max-content;">
-                                <button name="action__add_variant_wizard" type="object" string="Add Variant" class="oe_button btn-primary"/>
-                            </div>
-                            <br/>
-                            <field name="variant_line_ids">
-                                <list create="false" edit="false" default_order="create_date desc">
-<!--                                    <field name="variant_id" string="Variant" invisible="1"/>-->
-                                    <field name="name"/>
-                                    <field name="variant_ids" string="Variants" widget="many2many_tags"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                    </sheet>
-                    <chatter/>
-<!--                    <div class="oe_chatter">-->
-<!--                        <field name="message_follower_ids" groups="base.group_user"/>-->
-<!--                        <field name="activity_ids"/>-->
-<!--                        <field name="message_ids"/>-->
-<!--                    </div>-->
-                </form>
-            </field>
-        </record>
+<!--                      </group>-->
+<!--                    <notebook>-->
+<!--                        <page name="Properties">-->
+<!--                            <group>-->
+<!--                                <group string="General Properties">-->
+<!--                                    <field name="code"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                            <group>-->
+<!--                                <group string="Label Translation">-->
+<!--                                    <field name="attribute_label"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </page>-->
+<!--                        <page name="attibute_list" string="Attributes">-->
+<!--                            <br/>-->
+<!--                            <div style="display:flex; gap:10px; width:max-content;">-->
+<!--                                <button name="action_open_attribute_group_wizard" type="object"-->
+<!--                                      string="Add By Groups" class="oe_button btn-primary"/>-->
+<!--                                <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>-->
+<!--                            </div>-->
+<!--                            <br/>-->
+<!--                            <field name="product_families_ids">-->
+<!--                                <list edit="false" create="false" default_order="create_date desc">-->
+<!--&lt;!&ndash;                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>&ndash;&gt;-->
+<!--                                    <field name="product_id"/>-->
+<!--                                    <field name="product_id_stored"/>-->
+<!--                                    <field name="attribute_id"/>-->
+<!--                                    <field name="completeness_percent" widget="progressbar_extended" optional="hide"/>-->
+<!--                                </list>-->
+<!--                            </field>-->
+<!--                        </page>-->
+<!--                        <page name="variant_rec" string="Variants">-->
+<!--                            <br/>-->
+<!--                            <div style="display:flex; gap:10px; width:max-content;">-->
+<!--                                <button name="action__add_variant_wizard" type="object" string="Add Variant" class="oe_button btn-primary"/>-->
+<!--                            </div>-->
+<!--                            <br/>-->
+<!--                            <field name="variant_line_ids">-->
+<!--                                <list create="false" edit="false" default_order="create_date desc">-->
+<!--&lt;!&ndash;                                    <field name="variant_id" string="Variant" invisible="1"/>&ndash;&gt;-->
+<!--                                    <field name="name"/>-->
+<!--                                    <field name="variant_ids" string="Variants" widget="many2many_tags"/>-->
+<!--                                </list>-->
+<!--                            </field>-->
+<!--                        </page>-->
+<!--                    </notebook>-->
+<!--                    </sheet>-->
+<!--                    <chatter/>-->
+<!--&lt;!&ndash;                    <div class="oe_chatter">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="message_follower_ids" groups="base.group_user"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="activity_ids"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="message_ids"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
 
         <record id="view_family_attribute_tree" model="ir.ui.view">
             <field name="name">Family</field>
@@ -183,36 +183,36 @@
 
 
     <!--  Attribute Group-->
-        <record id="view_attribute_group_form" model="ir.ui.view">
-            <field name="name">Attribute Group Form</field>
-            <field name="model">attribute.group</field>
-            <field name="arch" type="xml">
-                <form string="Attribute Group">
-                    <sheet>
-                        <group>
-                            <field name="name" placeholder="eg.Technical Specifications"/>
-                            <field name="attribute_family_id" widget="many2many_tags"/>
-                        </group>
+<!--        <record id="view_attribute_group_form" model="ir.ui.view">-->
+<!--            <field name="name">Attribute Group Form</field>-->
+<!--            <field name="model">attribute.group</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Attribute Group">-->
+<!--                    <sheet>-->
+<!--                        <group>-->
+<!--                            <field name="name" placeholder="eg.Technical Specifications"/>-->
+<!--                            <field name="attribute_family_id" widget="many2many_tags"/>-->
+<!--                        </group>-->
 
-                        <notebook>
-                            <page>
-                                <field name="attributes_ids" mode="list,form">
-                                    <list string="Attribute" default_order="create_date desc">
-                                        <field name="name"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <chatter/>
-<!--                     <div class="oe_chatter">-->
-<!--                        <field name="message_follower_ids" groups="base.group_user"/>-->
-<!--                        <field name="activity_ids"/>-->
-<!--                        <field name="message_ids"/>-->
-<!--                    </div>-->
-                </form>
-            </field>
-        </record>
+<!--                        <notebook>-->
+<!--                            <page>-->
+<!--                                <field name="attributes_ids" mode="list,form">-->
+<!--                                    <list string="Attribute" default_order="create_date desc">-->
+<!--                                        <field name="name"/>-->
+<!--                                    </list>-->
+<!--                                </field>-->
+<!--                            </page>-->
+<!--                        </notebook>-->
+<!--                    </sheet>-->
+<!--                    <chatter/>-->
+<!--&lt;!&ndash;                     <div class="oe_chatter">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="message_follower_ids" groups="base.group_user"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="activity_ids"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="message_ids"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
 
         <record id="view_attribute_group_tree" model="ir.ui.view">
             <field name="name">Attribute Group</field>
@@ -261,7 +261,7 @@
               sequence="30"/>
 
     <menuitem id="menu_pim_attribute_action"
-              action="product.attribute_action" name="Attributes"
+              action="action_products_attributes_custom" name="Attributes"
               parent="pim_ext.menu_root_product_management" sequence="10"/>
 
     <menuitem id="menu_pim_attribute_action2"
