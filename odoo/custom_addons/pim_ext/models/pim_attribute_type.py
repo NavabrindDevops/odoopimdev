@@ -3,6 +3,7 @@ from random import randint
 from odoo import models, api, fields,_,tools
 import pytz
 import colorsys
+from odoo.exceptions import ValidationError
 
 class PIMAttributeType(models.Model):
      _name = 'pim.attribute.type'
@@ -164,9 +165,28 @@ class PIMAttributeType(models.Model):
                rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
 
      def write(self, vals):
+          res = super(PIMAttributeType, self).write(vals)
+
+          # Fields that need to be updated in product.attribute
+          fields_to_update = [
+               'is_mandatory', 'is_required_in_clone', 'is_cloning', 'is_completeness'
+          ]
+
+          # Check if any of these fields were modified
+          update_needed = any(field in vals for field in fields_to_update)
+
+          if update_needed:
+               for record in self:
+                    product_attr = self.env['product.attribute'].search([('name', '=', record.name)], limit=1)
+                    if product_attr:
+                         update_vals = {field: record[field] for field in fields_to_update if field in vals}
+                         product_attr.write(update_vals)
+
+          # Log changes (existing functionality)
           for rec in self:
                self._log_changes(rec, vals, action="update")
-          return super(PIMAttributeType, self).write(vals)
+
+          return res
 
      def create(self, vals):
           record = super(PIMAttributeType, self).create(vals)
@@ -210,38 +230,55 @@ class PIMAttributeType(models.Model):
           }
 
      def create_attributes(self):
+          self.ensure_one()
+          attribute = self.env['product.attribute']
+
           values_list = []
           for value in self.value_ids:
-               values_list.append([0,0,{'name':value.name}])
-          if all([self.name, self.display_type]):
-               attribute_vals = {
-                    'name': self.name,
-                    'display_type': self.display_type,
-                    'attribute_group': self.attribute_group.id,
-                    'code': self.code,
-                    'is_mandatory': self.is_mandatory,
-                    'unique_value': self.unique_value,
-                    'value_per_channel': self.value_per_channel,
-                    'value_per_locale': self.value_per_locale,
-                    'usable_in_grid': self.usable_in_grid,
-                    'locale_specific': self.locale_specific,
-                    'is_required_in_clone': self.is_required_in_clone,
-                    'is_cloning': self.is_cloning,
-                    'is_completeness': self.is_completeness,
-                    'value_ids':values_list if values_list else [(0, 0, {
-                         'name': self.display_type.replace('_', ' '),
-                    })]
-                    # 'value_ids': [(0, 0, {
-                    #      'name': self.display_type.replace('_', ' '),
-                    # })]
-               }
-          attribute = self.env['product.attribute'].create(attribute_vals)
+               values_list.append([0, 0, {'name': value.name}])
 
+          attribute_vals = {
+               'name': self.name,
+               'display_type': self.display_type,
+               'attribute_group': self.attribute_group.id,
+               'code': self.code,
+               'is_mandatory': self.is_mandatory,
+               'unique_value': self.unique_value,
+               'value_per_channel': self.value_per_channel,
+               'value_per_locale': self.value_per_locale,
+               'usable_in_grid': self.usable_in_grid,
+               'locale_specific': self.locale_specific,
+               'is_required_in_clone': self.is_required_in_clone,
+               'is_cloning': self.is_cloning,
+               'is_completeness': self.is_completeness,
+               'value_ids': values_list if values_list else [(0, 0, {
+                    'name': self.display_type.replace('_', ' '),
+               })]
+          }
+
+          # Check if an existing attribute exists
+          existing_attribute = attribute.search([('name', '=', self.name)], limit=1)
+
+          if existing_attribute:
+               # Update existing attribute
+               existing_attribute.write(attribute_vals)
+               attribute = existing_attribute
+          else:
+               # Create new attribute
+               attribute = attribute.create(attribute_vals)
+
+          # Ensure attribute group lines are updated
           if self.attribute_group:
-               self.env['attribute.group.lines'].create({
-                    'attr_group_id': self.attribute_group.id,
-                    'product_attribute_id': attribute.id,
-               })
+               group_line = self.env['attribute.group.lines'].search([
+                    ('attr_group_id', '=', self.attribute_group.id),
+                    ('product_attribute_id', '=', attribute.id),
+               ], limit=1)
+
+               if not group_line:
+                    self.env['attribute.group.lines'].create({
+                         'attr_group_id': self.attribute_group.id,
+                         'product_attribute_id': attribute.id,
+                    })
 
           menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
           return {
@@ -262,8 +299,34 @@ class PIMAttributeType(models.Model):
      #           'context': {'no_breadcrumbs': True},
      #      }
 
+     # def action_back_to_menu_attribute(self):
+     #      menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
+     #      return {
+     #           'type': 'ir.actions.client',
+     #           'tag': 'reload',
+     #           'params': {
+     #                'menu_id': menu_id.id,
+     #           },
+     #      }
+
      def action_back_to_menu_attribute(self):
+          self.ensure_one()
           menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
+          print(f"Current Record ID: {self.id}")
+          print(f"Attribute Name: '{self.name}'")
+          print(f"Display Type: '{self.display_type}'")
+          if not self.name or self.name.strip() == '' and not self.display_type:
+               self._cr.execute("DELETE FROM pim_attribute_type WHERE id = %s", (self._origin.id,))
+               self._cr.commit()
+               return {
+                    'type': 'ir.actions.client',
+                    'tag': 'reload',
+                    'params': {
+                         'menu_id': menu_id.id,
+                    },
+               }
+          elif self.display_type and self.name.strip() == '':
+               raise ValidationError("You should fill the attribute name.")
           return {
                'type': 'ir.actions.client',
                'tag': 'reload',

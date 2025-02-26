@@ -1368,31 +1368,33 @@ class ProductTemplate(models.Model):
                }
           }
 
+     @api.depends('family_id')
      def _compute_percentage_complete(self):
-          for product in self:
-               filled_count = 0
-               total_count = 0
-               if product.family_id:
-                    attributes = product.family_id.mapped('product_families_ids').mapped('attribute_id')
-                    for attr_rec in attributes:
-                         if attr_rec.is_completeness:
-                              total_count += 1
-                              field_name = f"x_{attr_rec.name.lower()}"
-                              if field_name in product._fields:
-                                   attribute_value = getattr(product, field_name, None)
-                                   print(f"Checking field {field_name}: Value = {attribute_value}")
-                                   if isinstance(product._fields[field_name], fields.Boolean):
-                                        if attribute_value:
-                                             filled_count += 1
-                                   else:
-                                        if attribute_value not in [False, None, ""]:
-                                             filled_count += 1
-                              else:
-                                   print(f"Field {field_name} does not exist in product.template")
-                    product.percentage_complete = (filled_count / total_count * 100) if total_count > 0 else 0
-                    product._compute_progress_state(product.percentage_complete)
-               else:
-                    product.percentage_complete = 0
+         for product in self:
+             filled_count = 0
+             total_count = 0
+             if product.family_id:
+                 attributes = product.family_id.mapped('product_families_ids').mapped('attribute_id')
+                 for attr_rec in attributes:
+                     if attr_rec.is_completeness:
+                         total_count += 1
+                         # Correctly format the field name to replace spaces with underscores
+                         field_name = f"x_{attr_rec.name.replace(' ', '_').lower()}"
+                         if field_name in product._fields:
+                             attribute_value = getattr(product, field_name, None)
+                             if isinstance(product._fields[field_name], fields.Boolean):
+                                 if attribute_value:
+                                     filled_count += 1
+                             else:
+                                 if attribute_value not in [False, None, ""]:
+                                     filled_count += 1
+                         else:
+                             # Log or handle missing field (debugging purposes)
+                             pass  # Consider adding a debug log here
+                 product.percentage_complete = (filled_count / total_count * 100) if total_count > 0 else 0
+                 product._compute_progress_state(product.percentage_complete)
+             else:
+                 product.percentage_complete = 0
 
      def _compute_progress_state(self, percentage_complete):
           for product in self:
