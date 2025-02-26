@@ -141,18 +141,16 @@
                                                        style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
                                             </div>
 
-
-                                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div style="margin-top: 20px; display: flex; gap: 10px;">
                                                 <button name="product_cancel" string="Cancel" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
                                                 <button name="product_save" string="Save"
                                                         type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;"
                                                         class="oe_highlight"/>
                                             </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
 
                         <div class="right-column" invisible="is_product_model_invisible or is_product_bundle or is_product_grouped">
@@ -197,15 +195,14 @@
                                                        style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 5px; border-radius: 8px;"/>
                                             </div>
 
-                                            <div style="margin-top: 20px; display: flex; gap: 10px;">
-                                                <button name="product_cancel" string="Cancel" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
-                                                <button name="product_save" string="Save" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;" class="oe_highlight"/>
-                                            </div>
-
                                         </div>
                                     </div>
                                 </div>
                             </form>
+                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                                <button name="product_cancel" string="Cancel" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #d3d3d3; border: none; color: #555555;" class="btn btn-secondary"/>
+                                                <button name="product_save" string="Save" type="object" style="border-radius: 30px; padding: 10px 20px; background-color: #6B3FA0; border: none; color: white;" class="oe_highlight"/>
+                                            </div>
                         </div>
                     </div>
                 </form>

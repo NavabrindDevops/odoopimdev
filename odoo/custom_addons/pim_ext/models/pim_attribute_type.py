@@ -251,13 +251,6 @@ class PIMAttributeType(models.Model):
                     'menu_id': menu_id.id,
                },
           }
-          # return {
-          #      'type': 'ir.actions.act_window',
-          #      'res_model': 'product.attribute',
-          #      'view_mode':'list,form',
-          #      'target': 'current',
-          #      'context': {'no_breadcrumbs': True},
-          # }
 
 
      # def cancel_attributes(self):
@@ -271,15 +264,6 @@ class PIMAttributeType(models.Model):
 
      def action_back_to_menu_attribute(self):
           menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
-
-          # return {
-          #      'type': 'ir.actions.act_window',
-          #      'res_model': 'product.attribute',
-          #      'view_mode': 'list',
-          #      'view_id': action_id,
-          #      # 'context': {'no_breadcrumbs': True},
-          #      'target': 'current',
-          # }
           return {
                'type': 'ir.actions.client',
                'tag': 'reload',

@@ -89,13 +89,6 @@
                                                        <div>
                                                            <field name="name" nolabel="1"/>
                                                        </div>
-                                                       <div class="attr_creation">
-                                                           <button type="object" string="Save"
-                                                                   name="create_product" class="oe_highlight"/>
-<!--                                                           <button type="object" string="Cancal"-->
-<!--                                                                   name="cancel_attributes" class="oe_highlight"/>-->
-
-                                                       </div>
                                                    </div>
                                                </page>
 
@@ -104,6 +97,13 @@
                                    </div>
                                 </div>
                             </form>
+                             <div class="attr_creation">
+                                                           <button type="object" string="Save"
+                                                                   name="create_product" class="oe_highlight"/>
+<!--                                                           <button type="object" string="Cancal"-->
+<!--                                                                   name="cancel_attributes" class="oe_highlight"/>-->
+
+                                                       </div>
                         </div>
                     </div>
                 </form>

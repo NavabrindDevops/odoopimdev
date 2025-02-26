@@ -162,10 +162,6 @@
                                                                 <field name="is_completeness" style="padding-left: 6.5%;"/>
                                                             </div>
                                                         </div>
-                                                        <div class="attr_creation" style="margin-top: 16px;">
-                                                            <button type="object" string="Save"
-                                                               name="save_attributes" class="oe_highlight"/>
-                                                        </div>
                                                     </div>
                                                 </page>
                                                 <page name="type_label_translation" string="Label Translations" invisible="1">
@@ -181,6 +177,10 @@
                                     </div>
                                 </div>
                             </form>
+                            <div class="attr_creation" style="margin-top: 16px;">
+                                                            <button type="object" string="Save"
+                                                               name="save_attributes" class="oe_highlight"/>
+                                                        </div>
                         </div>
                     </div>
                 </form>

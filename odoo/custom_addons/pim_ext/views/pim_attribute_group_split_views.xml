@@ -73,10 +73,6 @@
                                                            <field name="enable" force_save="1"/>
                                                        </list>
                                                    </field>
-                                                   <div class="attr_creation" style="margin-top: 16px;">
-                                                       <button type="object" string="Save"
-                                                               name="save_attributes" class="oe_highlight"/>
-                                                   </div>
                                                </page>
                                                <page name="History">
                                                    <group>
@@ -88,6 +84,10 @@
                                    </div>
                                 </div>
                             </form>
+                            <div class="attr_creation" style="margin-top: 16px;">
+                                                       <button type="object" string="Save"
+                                                               name="save_attributes" class="oe_highlight"/>
+                                                   </div>
                         </div>
                     </div>
                 </form>

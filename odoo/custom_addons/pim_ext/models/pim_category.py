@@ -109,6 +109,11 @@ class PimCategory(models.Model):
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
             'res_model': 'pim.category',
+            'view_id': self.env.ref('pim_ext.view_form_pim_categories').id,
+            'target': 'current',
+            'context': {
+                'default_category_ids': self.env['pim.category'].search([]).ids,
+            },
         }
 
     def _compute_category_ids(self):

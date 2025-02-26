@@ -336,13 +336,6 @@
                                                                <field name="is_completeness" style="padding-left: 6.5%;"/>
                                                            </div>
                                                        </div>
-                                                       <div class="attr_creation" style="margin-top: 16px;">
-                                                           <button type="object" string="Save"
-                                                                   name="create_attributes" class="oe_highlight"/>
-<!--                                                           <button type="object" string="Cancal"-->
-<!--                                                                   name="cancel_attributes" class="oe_highlight"/>-->
-
-                                                       </div>
                                                    </div>
                                                </page>
                                                <page name="type_label_translation" string="Label Translations" invisible="1">
@@ -354,6 +347,13 @@
                                                </page>
                                            </notebook>
                                        </sheet>
+                                       <div class="attr_creation" style="margin-top: 16px;">
+                                                           <button type="object" string="Save"
+                                                                   name="create_attributes" class="oe_highlight"/>
+<!--                                                           <button type="object" string="Cancal"-->
+<!--                                                                   name="cancel_attributes" class="oe_highlight"/>-->
+
+                                                       </div>
                                    </div>
                                 </div>
                             </form>
@@ -367,7 +367,7 @@
             <field name="name">pim.attribute.type.tree.view</field>
             <field name="model">pim.attribute.type</field>
             <field name="arch" type="xml">
-                <list create="false" default_order="create_date desc">
+                <list create="false" edit="true" default_order="create_date desc">
                     <header>
                         <button name="create_pim_attribute_type" type="object" class="btn-primary"
                             string="Create Attribute" display="always"
