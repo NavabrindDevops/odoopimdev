@@ -340,6 +340,7 @@
                     <field name="write_date" string="Updated"/>
                     <field name="readable_variant_names" string="Variant products"/>
                     <button name="custom_product_open_form_view" string = " " icon="fa-edit" type="object" />
+                    <button name="custom_product_open_default_form_view" string = " " icon="fa-info" type="object" />
                     <button name="custom_product_unlink" string = " " icon="fa-trash-o" type="object" />
                 </list>
             </field>

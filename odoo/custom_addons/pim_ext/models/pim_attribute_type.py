@@ -312,9 +312,6 @@ class PIMAttributeType(models.Model):
      def action_back_to_menu_attribute(self):
           self.ensure_one()
           menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
-          print(f"Current Record ID: {self.id}")
-          print(f"Attribute Name: '{self.name}'")
-          print(f"Display Type: '{self.display_type}'")
           if not self.name or self.name.strip() == '' and not self.display_type:
                self._cr.execute("DELETE FROM pim_attribute_type WHERE id = %s", (self._origin.id,))
                self._cr.commit()
@@ -337,71 +334,155 @@ class PIMAttributeType(models.Model):
 
      def action_select_date(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Date Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    # 'default_attribute_type_id': self.id,
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_display_type': 'date',
-                    'default_is_invisible': True,
-                    'default_type_name': 'Date',
-                           },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'date',
+                    'type_name': 'Date',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Date Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'date',
+                    'type_name': 'Date',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Date Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_file(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'File Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'file',
-                    'default_type_name': 'File',
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
 
-               },
-          }
-
-
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'file',
+                    'type_name': 'File',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'File Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'file',
+                    'type_name': 'File',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'File Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_identifier(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Identifier Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'identifier',
-                    'default_type_name': 'Identifier',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'identifier',
+                    'type_name': 'Identifier',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Identifier Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'identifier',
+                    'type_name': 'Identifier',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Identifier Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_image(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Image Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'image',
-                    'default_type_name': 'Image',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'image',
+                    'type_name': 'Image',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Image Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'image',
+                    'type_name': 'Image',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Image Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      # def action_select_measurement(self):
      #      self.ensure_one()
@@ -421,211 +502,504 @@ class PIMAttributeType(models.Model):
 
      def action_select_link(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Link',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'link',
-                    'default_type_name': 'Link',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'link',
+                    'type_name': 'Link',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Link',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'link',
+                    'type_name': 'Link',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Link',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_multiselect(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Multi Select Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'multi_select',
-                    'default_type_name': 'Multi_select',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'multi_select',
+                    'type_name': 'Multi_select',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Multi Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'multi_select',
+                    'type_name': 'Multi_select',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Multi Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_number(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Number Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'number',
-                    'default_type_name': 'Integer',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'number',
+                    'type_name': 'Integer',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Number Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'number',
+                    'type_name': 'Integer',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Number Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_price(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Price Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'price',
-                    'default_type_name': 'Price',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'price',
+                    'type_name': 'Price',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Price Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'price',
+                    'type_name': 'Price',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Price Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_ref_data_multi(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Ref Data Multi Select Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'ref_data_multi',
-                    'default_type_name': 'Ref Data Multi Select Attribute',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'ref_data_multi',
+                    'type_name': 'Ref Data Multi Select Attribute',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Ref Data Multi Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'ref_data_multi',
+                    'type_name': 'Ref Data Multi Select Attribute',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Ref Data Multi Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_ref_data_simple(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Ref Data Simple Select Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'ref_data_simple_select',
-                    'default_type_name': 'Ref Data Simple Select Attribute',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'ref_data_simple_select',
+                    'type_name': 'Ref Data Simple Select Attribute',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Ref Data Simple Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'ref_data_simple_select',
+                    'type_name': 'Ref Data Simple Select Attribute',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Ref Data Simple Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_multi_checkbox(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Multi Checkbox',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'multi_checkbox',
-                    'default_type_name': 'Multi Checkbox',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'multi_checkbox',
+                    'type_name': 'Multi Checkbox',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Multi Checkbox',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'multi_checkbox',
+                    'type_name': 'Multi Checkbox',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Multi Checkbox',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_multi_color(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Color',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'color',
-                    'default_type_name': 'Color',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'color',
+                    'type_name': 'Color',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Color',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'color',
+                    'type_name': 'Color',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Color',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_radio(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Radio',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'radio',
-                    'default_type_name': 'Radio',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'radio',
+                    'type_name': 'Radio',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Radio',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'radio',
+                    'type_name': 'Radio',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Radio',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_simple(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Simple Select Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'simple_select',
-                    'default_type_name': 'Simple Select Attribute',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'simple_select',
+                    'type_name': 'Simple Select Attribute',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Simple Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'simple_select',
+                    'type_name': 'Simple Select Attribute',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Simple Select Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_text(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'Text Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'text',
-                    'default_type_name': 'Text Attribute',
-               },
-          }
+
+          # First, let's find the most recently created empty record
+          # Assuming an empty record means minimal fields filled
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),  # or other fields that would be empty
+               ('create_uid', '=', self.env.user.id),  # created by current user
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               # Update the empty record with the context values
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'text',
+                    'type_name': 'Text Attribute',
+               })
+
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Text Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,  # Open the updated record
+               }
+          else:
+               # If no empty record found, create a new one
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'text',
+                    'type_name': 'Text Attribute',
+               })
+
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Text Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_text_area(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'TextArea Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'textarea',
-                    'default_type_name': 'TextArea',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'textarea',
+                    'type_name': 'TextArea',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'TextArea Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'textarea',
+                    'type_name': 'TextArea',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'TextArea Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
      def action_select_yes_no(self):
           self.ensure_one()
-          return {
-               'type': 'ir.actions.act_window',
-               'name': 'yes/No Attribute',
-               'res_model': 'pim.attribute.type',
-               'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
-               'view_mode': 'form',
-               'context': {
-                    'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
-                    'default_is_invisible': True,
-                    'default_display_type': 'yes_no',
-                    'default_type_name': 'Checkbox',
-               },
-          }
+          empty_record = self.env['pim.attribute.type'].search([
+               ('type_name', '=', False),
+               ('create_uid', '=', self.env.user.id),
+          ], order='create_date desc', limit=1)
+
+          if empty_record:
+               empty_record.write({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'yes_no',
+                    'type_name': 'Checkbox',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Yes/No Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': empty_record.id,
+               }
+          else:
+               new_record = self.env['pim.attribute.type'].create({
+                    'attribute_ids': [(6, 0, self.env['pim.attribute.type'].search([]).ids)],
+                    'is_invisible': True,
+                    'display_type': 'yes_no',
+                    'type_name': 'Checkbox',
+               })
+               return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Yes/No Attribute',
+                    'res_model': 'pim.attribute.type',
+                    'view_id': self.env.ref('pim_ext.view_product_attribute_custom').id,
+                    'view_mode': 'form',
+                    'res_id': new_record.id,
+               }
 
 
 class PimAttributeValue(models.Model):
