@@ -294,7 +294,7 @@ class ProductCreateMaster(models.Model):
                 'is_variant': True if rec.variant_id else False,
                 'variant_id': rec.variant_id.id,
                 'is_update_from_attribute': True,
-                'image_1920': self.image,
+                # 'image_1920': self.image,
                 'family_id': rec.family_id.id,
                 # 'attribute_line_ids': [(0, 0, {
                 #         'attribute_id':

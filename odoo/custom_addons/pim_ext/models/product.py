@@ -1223,7 +1223,11 @@ class ProductTemplate(models.Model):
      image_7 = fields.Image("Image7", max_width=1920, max_height=1920)
      image_8 = fields.Image("Image8", max_width=1920, max_height=1920)
      history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
-
+     image_ids = fields.One2many(
+          'product.image',
+          'product_tmpl_id',
+          string='Images'
+     )
      def _prepare_history_log(self, vals, is_create=False):
           for rec in self:
                current_datetime_utc = fields.Datetime.now()
@@ -1267,8 +1271,7 @@ class ProductTemplate(models.Model):
                     # Handle relational fields
                     if field_type == 'many2one':
                          old_value = 'N/A' if is_create else (old_value.display_name if old_value else 'N/A')
-                         new_value = self.env[field.comodel_name].browse(
-                              new_value).display_name if new_value else 'N/A'
+                         new_value = self.env[field.comodel_name].browse(new_value).display_name if new_value else 'N/A'
 
                     elif field_type == 'one2many' and not is_create:
                          for command in new_value:
@@ -1278,40 +1281,56 @@ class ProductTemplate(models.Model):
                                         sub_old = getattr(sub_rec, subfield, 'N/A')
                                         if sub_old != subval:
                                              changes.append(f"""
-                                        <li>
-                                            <strong>{field_label} ({subfield})</strong><br>
-                                            <span style='color: red;'>Old value:</span> {sub_old}
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <span style='color: green;'>New value:</span> {subval}
-                                        </li>
-                                    """)
+                                         <li>
+                                             <strong>{field_label} ({subfield})</strong><br>
+                                             <span style='color: red;'>Old value:</span> {sub_old}
+                                                  
+                                             <span style='color: green;'>New value:</span> {subval}
+                                         </li>
+                                     """)
                               elif command[0] == 0:  # Create
                                    changes.append(f"""
-                                <li><strong>Added to {field_label}:</strong> {command[2].get('name', 'New Record')}</li>
-                            """)
+                                 <li><strong>Added to {field_label}:</strong> {command[2].get('name', 'New Record')}</li>
+                             """)
                               elif command[0] == 2:  # Delete
                                    deleted_rec = rec[field_name].browse(command[1])
                                    changes.append(f"""
-                                <li><strong>Removed from {field_label}:</strong> {deleted_rec.display_name}</li>
-                            """)
+                                 <li><strong>Removed from {field_label}:</strong> {deleted_rec.display_name}</li>
+                             """)
                          continue
 
                     elif field_type == 'many2many' and not is_create:
-                         old_ids = rec[field_name].ids
-                         new_ids = vals[field_name]
+                         old_ids = rec[field_name].ids  # Current IDs before update
+                         # Handle many2many commands in vals
+                         new_ids = []
+                         if isinstance(new_value, list) and new_value and isinstance(new_value[0], (list, tuple)):
+                              # Process command list like [(6, 0, [ids])] or [(4, id), ...]
+                              for command in new_value:
+                                   if command[0] == 6:  # Replace with new list of IDs
+                                        new_ids = command[2]
+                                   elif command[0] == 4:  # Add an ID
+                                        new_ids.append(command[1])
+                                   elif command[0] == 3:  # Remove an ID
+                                        if command[1] in new_ids:
+                                             new_ids.remove(command[1])
+                         else:
+                              # Assume it's a direct list of IDs
+                              new_ids = new_value if isinstance(new_value, (list, tuple)) else []
+
+                         # Calculate added and removed IDs
                          added = set(new_ids) - set(old_ids)
                          removed = set(old_ids) - set(new_ids)
 
                          if added:
                               added_names = self.env[field.comodel_name].browse(added).mapped('display_name')
                               changes.append(f"""
-                            <li><strong>Added to {field_label}:</strong> {', '.join(added_names)}</li>
-                        """)
+                             <li><strong>Added to {field_label}:</strong> {', '.join(added_names)}</li>
+                         """)
                          if removed:
                               removed_names = self.env[field.comodel_name].browse(removed).mapped('display_name')
                               changes.append(f"""
-                            <li><strong>Removed from {field_label}:</strong> {', '.join(removed_names)}</li>
-                        """)
+                             <li><strong>Removed from {field_label}:</strong> {', '.join(removed_names)}</li>
+                         """)
                          continue
 
                     # Handle boolean values
@@ -1322,23 +1341,23 @@ class ProductTemplate(models.Model):
 
                     # Format the change entry
                     changes.append(f"""
-                    <li>
-                        <strong>{field_label}</strong><br>
-                        <span style='color: red;'>Old value:</span> {old_value}
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span style='color: green;'>New value:</span> {new_value}
-                    </li>
-                """)
+                     <li>
+                         <strong>{field_label}</strong><br>
+                         <span style='color: red;'>Old value:</span> {old_value}
+                              
+                         <span style='color: green;'>New value:</span> {new_value}
+                     </li>
+                 """)
 
                if changes:
                     action_text = 'Created by' if is_create else 'Updated by'
                     user_info = f"<small>{action_text} <strong>{user_name}</strong> on {current_datetime}</small>"
                     full_message = f"""
-                    <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
-                        {user_info}
-                        <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
-                    </div>
-                """
+                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                         {user_info}
+                         <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                     </div>
+                 """
                     rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
 
      @api.model
