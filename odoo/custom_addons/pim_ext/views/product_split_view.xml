@@ -180,5 +180,6 @@
             <field name="view_id" ref="view_product_creation_split_view_custom"/>
             <field name="target">current</field>
         </record>
+
     </data>
 </odoo>

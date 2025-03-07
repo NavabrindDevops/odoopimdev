@@ -7,13 +7,41 @@
             <div>
                 <t t-if="model_name === 'family.attribute'">
                     <button type="button" class="btn btn-secondary">
-                        <i class="fa fa-lg fa-plus "></i> Create
+                        <i class="fa fa-lg fa-plus "></i>
+                        Create
                     </button>
                 </t>
            </div>
        </xpath>
    </t>
+    <t t-inherit="web.FormView" t-inherit-mode="extension" t-name="form_view_create_button" owl="1">
+           <xpath expr="//t[@t-set-slot='control-panel-create-button'][2]" position="replace">
+            <t t-set-slot="control-panel-create-button">
+                 <t t-if="canCreate">
+                    <t t-if="props.resModel == 'pim.category'">
+                        <button type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c"
+                                t-on-click.stop="create">Create Category</button>
+                    </t>
+                     <t t-if="props.resModel == 'pim.attribute.type'">
+                        <button type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c"
+                                t-on-click.stop="create">Create Attribute</button>
+                    </t>
+                     <t t-if="props.resModel == 'attribute.group'">
+                        <button type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c"
+                                t-on-click.stop="create">Create Attribute Group</button>
+                    </t>
+                     <t t-if="props.resModel == 'family.attribute'">
+                        <button type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c"
+                                t-on-click.stop="create">Create Family</button>
+                    </t>
+                     <t t-if="props.resModel == 'product.template'">
+                        <button type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c"
+                                t-on-click.stop="create">Create Product</button>
+                    </t>
 
-
+                 </t>
+            </t>
+           </xpath>
+    </t>
 
 </templates>

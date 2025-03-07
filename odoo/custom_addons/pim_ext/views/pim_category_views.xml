@@ -42,7 +42,7 @@
             <field name="name">pim.categories.form.view</field>
             <field name="model">pim.category</field>
             <field name="arch" type="xml">
-                <form string="Category" create="false" edit="true" delete="false" class="page_form">
+                <form string="Category" create="true" edit="true" delete="false" class="page_form">
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="category_ids">

@@ -15,7 +15,7 @@ class PimCategory(models.Model):
     _order = 'complete_name'
 
     name = fields.Char(string='Name', required=True, translate=False)
-    code = fields.Char(string='Code')
+    code = fields.Char(string='Code', readonly=True)
     active = fields.Boolean('Active', default=True)
     complete_name = fields.Char(
         'Complete Name', compute='_compute_complete_name', recursive=True,

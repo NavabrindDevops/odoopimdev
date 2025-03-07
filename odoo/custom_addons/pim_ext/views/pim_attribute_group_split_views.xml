@@ -5,7 +5,7 @@
             <field name="name">product.attribute.groups.custom.layout</field>
             <field name="model">attribute.group</field>
             <field name="arch" type="xml">
-                <form string="Attribute Group" create="false" edit="true" delete="false" class="page_form">
+                <form string="Attribute Group" create="true" edit="true" delete="false" class="page_form">
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="child_ids">

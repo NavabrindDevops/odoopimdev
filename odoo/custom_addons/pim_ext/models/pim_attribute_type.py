@@ -46,7 +46,7 @@ class PIMAttributeType(models.Model):
           ],
           help="The display type used in the Product Configurator.")
 
-     code = fields.Char(string='Code')
+     code = fields.Char(string='Code', readonly=True)
 
      unique_value = fields.Selection(
           [('yes', 'Yes'), ('no', 'No')],
@@ -189,9 +189,24 @@ class PIMAttributeType(models.Model):
           return res
 
      def create(self, vals):
+          vals['code'] = self.env['ir.sequence'].next_by_code(
+               'pim.attribute.type') or None
           record = super(PIMAttributeType, self).create(vals)
           self._log_changes(record, vals, action="create")
           return record
+
+     @api.model
+     def init(self):
+          # Update existing records' codes
+          self.update_existing_codes()
+
+     def update_existing_codes(self):
+          # Get all existing records
+          existing_records = self.search([])
+          for record in existing_records:
+               # Generate a new code for each record
+               new_code = self.env['ir.sequence'].next_by_code('pim.attribute.type') or None
+               record.write({'code': new_code})
 
      def attribute_edit_open_form_view(self):
           self.ensure_one()
@@ -281,13 +296,13 @@ class PIMAttributeType(models.Model):
                     })
 
           menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
-          return {
-               'type': 'ir.actions.client',
-               'tag': 'reload',
-               'params': {
-                    'menu_id': menu_id.id,
-               },
-          }
+          # return {
+          #      'type': 'ir.actions.client',
+          #      'tag': 'reload',
+          #      'params': {
+          #           'menu_id': menu_id.id,
+          #      },
+          # }
 
 
      # def cancel_attributes(self):

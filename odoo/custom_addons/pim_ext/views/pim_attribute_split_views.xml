@@ -5,7 +5,7 @@
             <field name="name">product.attribute.custom.layout</field>
             <field name="model">pim.attribute.type</field>
             <field name="arch" type="xml">
-                <form string="Attribute" create="false" class="page_form">
+                <form string="Attribute" create="true" class="page_form">
                     <div class="d-flex align-items-start">
                         <div class="left-column">
                             <field name="attribute_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
@@ -290,7 +290,8 @@
                                                        </div>
                                                        <div class="d-flex">
 
-                                                   <field name="value_ids" invisible="display_type not in ['simple_select','radio','pills','color','multi_select']">
+                                                   <field name="value_ids" invisible="display_type not in ['simple_select','radio','pills','color','multi_select']"
+                                                          required="display_type in ['simple_select','radio','pills','color','multi_select']">
                                                        <list editable="bottom">
                                                            <field name="sequence" widget="handle"/>
                                                            <field name="name"/>
