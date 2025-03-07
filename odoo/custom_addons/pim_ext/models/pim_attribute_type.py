@@ -195,19 +195,6 @@ class PIMAttributeType(models.Model):
           self._log_changes(record, vals, action="create")
           return record
 
-     @api.model
-     def init(self):
-          # Update existing records' codes
-          self.update_existing_codes()
-
-     def update_existing_codes(self):
-          # Get all existing records
-          existing_records = self.search([])
-          for record in existing_records:
-               # Generate a new code for each record
-               new_code = self.env['ir.sequence'].next_by_code('pim.attribute.type') or None
-               record.write({'code': new_code})
-
      def attribute_edit_open_form_view(self):
           self.ensure_one()
           return {

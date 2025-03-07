@@ -437,19 +437,6 @@ class AttributeGroup(models.Model):
 
      is_create_mode = fields.Boolean(default=False, string='Create Mode')
 
-     @api.model
-     def init(self):
-          # Update existing records' codes
-          self.update_existing_codes()
-
-     def update_existing_codes(self):
-          # Get all existing records
-          existing_records = self.search([])
-          for record in existing_records:
-               # Generate a new code for each record
-               new_code = self.env['ir.sequence'].next_by_code('attribute.group') or None
-               record.write({'attribute_code_rec': new_code})
-
      def _log_changes(self, rec, vals, action):
           updated_write_date_utc = fields.Datetime.now()
           user_tz = self.env.user.tz or 'UTC'
