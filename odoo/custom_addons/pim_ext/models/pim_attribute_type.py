@@ -253,9 +253,9 @@ class PIMAttributeType(models.Model):
                'is_required_in_clone': self.is_required_in_clone,
                'is_cloning': self.is_cloning,
                'is_completeness': self.is_completeness,
-               'value_ids': values_list if values_list else [(0, 0, {
-                    'name': self.display_type.replace('_', ' '),
-               })]
+               # 'value_ids': values_list if values_list else [(0, 0, {
+               #      'name': self.display_type.replace('_', ' '),
+               # })]
           }
 
           # Check if an existing attribute exists
@@ -281,6 +281,11 @@ class PIMAttributeType(models.Model):
                          'attr_group_id': self.attribute_group.id,
                          'product_attribute_id': attribute.id,
                     })
+          for record in self:
+               if record.display_type in ['simple_select', 'radio', 'pills', 'color',
+                                          'multi_select'] and not record.value_ids:
+                    raise ValidationError(
+                         "Please fill the Attribute values for dropdown.")
 
           menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
           # return {
