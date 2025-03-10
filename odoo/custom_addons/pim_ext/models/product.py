@@ -988,9 +988,8 @@ class FamilyAttribute(models.Model):
           tracked_fields = ['name', 'description', 'supplier_id', 'brand_id', 'manufacture_id', 'availability',
                             'swatch', 'gift']
           tracked_one2many_fields = {
-               'product_families_ids': ['product_id', 'attribute_id', 'attribute_group_id', 'completeness_percent',
-                                        'product_id_stored'],
-               'variant_line_ids': ['variant_familiy_id', 'variant_id', 'name', 'variant_ids'],
+               'product_families_ids': ['attribute_id', 'attribute_group_id', 'completeness_percent'],
+               'variant_line_ids': ['name', 'variant_ids'],
           }
 
           # Track direct field changes
