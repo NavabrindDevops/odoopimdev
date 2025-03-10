@@ -285,22 +285,28 @@ class ProductCreateMaster(models.Model):
             self._update_or_create_view('sku_field_add_attribute_custom_' + family_name.lower().replace(' ', '_'),
                                         'product.template', custom_view_id, dynamic_notebook_xml)
 
+            # Check if the x_product_name field exists
+            x_product_name_field = f"x_{'product_name'.replace(' ', '_').lower()}"
+            x_product_name_value = rec.name if x_product_name_field in attributes_list else False
+
             # Create the product record
-            new_product = self.env['product.template'].create({
-                'name': self.name if self.name else 'Product',
-                'default_code': self.sku if self.sku else 'SKU',
+            product_vals = {
+                'name': rec.name if rec.name else 'Product',
+                'default_code': rec.sku if rec.sku else 'SKU',
                 'categ_id': 1,
-                'sku': self.sku,
+                'sku': rec.sku,
                 'is_variant': True if rec.variant_id else False,
                 'variant_id': rec.variant_id.id,
                 'is_update_from_attribute': True,
                 # 'image_1920': self.image,
                 'family_id': rec.family_id.id,
-                # 'attribute_line_ids': [(0, 0, {
-                #         'attribute_id':
-                # })]
-            })
+            }
 
+            # Add the x_product_name field value if it exists
+            if x_product_name_value:
+                product_vals[x_product_name_field] = x_product_name_value
+
+            new_product = self.env['product.template'].create(product_vals)
 
             return {
                 'type': 'ir.actions.act_window',

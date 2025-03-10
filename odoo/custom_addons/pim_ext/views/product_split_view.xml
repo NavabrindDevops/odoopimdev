@@ -162,10 +162,10 @@
                                    </div>
                                 </div>
                             </form>
-<!--                            <div class="attr_creation" style="margin-top: 16px;">-->
-<!--                                <button type="object" string="Save"-->
-<!--                                        name="save_product_rec" class="oe_highlight"/>-->
-<!--                            </div>-->
+                            <div class="attr_creation" style="margin-top: 16px;">
+                                <button type="object" string="Save"
+                                        name="save_product_rec" class="oe_highlight"/>
+                            </div>
                         </div>
                     </div>
                 </form>

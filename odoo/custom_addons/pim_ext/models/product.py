@@ -321,8 +321,6 @@ class AttributeForm(models.Model):
                     raise ValidationError("Attribute name already exist")
                if rec.name and not re.match(pattern, rec.name):
                     raise ValidationError("Attribute Name should be AlphaNumeric")
-               if not rec.value_ids:
-                    raise ValidationError("Please fill the Attribute values for dropdown")
 
      def _log_changes(self, rec, vals, action):
           # Get the current time in UTC
@@ -979,10 +977,9 @@ class FamilyAttribute(models.Model):
      is_create_mode = fields.Boolean(default=False, string='Create Mode')
 
      def _log_changes(self, rec, vals, action):
-          # Get the current time in UTC
+          # Get the current time in UTC and convert to user's timezone
           updated_write_date_utc = fields.Datetime.now()
-          # Convert to the user's timezone
-          user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
+          user_tz = self.env.user.tz or 'UTC'
           updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime("%d/%m/%Y %H:%M:%S")
           user_name = self.env.user.display_name
           changes = []
@@ -993,28 +990,26 @@ class FamilyAttribute(models.Model):
           tracked_one2many_fields = {
                'product_families_ids': ['product_id', 'attribute_id', 'attribute_group_id', 'completeness_percent',
                                         'product_id_stored'],
-               'variant_line_ids': ['variant_id', 'name', 'variant_ids'],
+               'variant_line_ids': ['variant_familiy_id', 'variant_id', 'name', 'variant_ids'],
           }
 
           # Track direct field changes
           for key in vals:
                if key in tracked_fields:
-                    attribute = rec._fields[key].string  # Get field's display name
-                    # Set old_value to 'N/A' if creating a new record
+                    field_label = rec._fields[key].string
                     old_value = getattr(rec, key, 'N/A') if action == "update" else 'N/A'
-                    new_value = vals[key] or 'N/A'
+                    new_value = vals[key] if vals[key] is not None else 'N/A'
 
-                    # Handle Many2one fields to show display_name
                     if isinstance(rec._fields[key], fields.Many2one):
-                         old_value = old_value.display_name if old_value != 'N/A' else 'N/A'
+                         old_value = old_value.display_name if old_value and old_value != 'N/A' else 'N/A'
                          new_value = self.env[rec._fields[key].comodel_name].browse(
-                              new_value).display_name if new_value else 'N/A'
+                              new_value).display_name if new_value != 'N/A' else 'N/A'
 
                     change_entry = f"""
                   <li>
-                      <strong>{attribute}</strong><br>
+                      <strong>{field_label}</strong><br>
                       <span style='color: red;'>Old value:</span> {old_value}  
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                           
                       <span style='color: green;'>New value:</span> {new_value}
                   </li>
                   """
@@ -1023,52 +1018,109 @@ class FamilyAttribute(models.Model):
           # Track One2many field changes
           for field, subfields in tracked_one2many_fields.items():
                if field in vals:
-                    field_label = rec._fields[field].string  # Get One2many field's display name
+                    field_label = rec._fields[field].string
                     for command in vals[field]:
                          if command[0] == 1:  # Update existing record
-                              line_id = rec[field].browse(command[1])  # Browse the One2many record
+                              line_id = rec[field].browse(command[1])
                               for subfield in subfields:
                                    if subfield in command[2]:
-                                        subfield_label = line_id._fields[subfield].string  # Get field's display name
+                                        subfield_label = line_id._fields[subfield].string
                                         old_value = getattr(line_id, subfield, 'N/A')
-                                        new_value = command[2][subfield] or 'N/A'
+                                        new_value = command[2][subfield] if command[2][subfield] is not None else 'N/A'
+
+                                        if isinstance(line_id._fields[subfield], fields.Many2one):
+                                             old_value = old_value.display_name if old_value and old_value != 'N/A' else 'N/A'
+                                             new_value = self.env[line_id._fields[subfield].comodel_name].browse(
+                                                  new_value).display_name if new_value != 'N/A' else 'N/A'
+                                        elif isinstance(line_id._fields[subfield], fields.Many2many):
+                                             old_value = ', '.join(
+                                                  old_value.mapped('display_name')) if old_value else 'N/A'
+                                             if isinstance(new_value, (list, tuple)):
+                                                  ids = [cmd[1] if isinstance(cmd, tuple) and cmd[0] in (1, 4) else cmd
+                                                         for cmd in new_value if isinstance(cmd, (int, tuple))]
+                                                  new_value = ', '.join(
+                                                       self.env[line_id._fields[subfield].comodel_name].browse(
+                                                            ids).mapped('display_name')) if ids else 'N/A'
+                                             else:
+                                                  new_value = new_value if new_value is not None else 'N/A'
 
                                         change_entry = f"""
                                   <li>
                                       <strong>{subfield_label} (in {field_label})</strong><br>
                                       <span style='color: red;'>Old value:</span> {old_value}  
-                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                           
                                       <span style='color: green;'>New value:</span> {new_value}
                                   </li>
                                   """
                                         changes.append(change_entry)
 
                          elif command[0] == 0:  # New record added
-                              new_name = command[2].get('name', "Unnamed Record")  # Fetch name directly from vals
-                              change_entry = f"""
-                          <li>
-                              <strong>New record added to {field_label}:</strong> {new_name}
-                          </li>
-                          """
-                              changes.append(change_entry)
+                              new_vals = command[2]
+                              for subfield in subfields:
+                                   subfield_label = self.env[rec._fields[field].comodel_name]._fields[subfield].string
+                                   new_value = new_vals.get(subfield, 'N/A') if subfield in new_vals else 'N/A'
+                                   old_value = 'N/A'  # New records have no old value
+
+                                   if isinstance(self.env[rec._fields[field].comodel_name]._fields[subfield],
+                                                 fields.Many2one):
+                                        new_value = self.env[self.env[rec._fields[field].comodel_name]._fields[
+                                             subfield].comodel_name].browse(
+                                             new_value).display_name if new_value != 'N/A' else 'N/A'
+                                   elif isinstance(self.env[rec._fields[field].comodel_name]._fields[subfield],
+                                                   fields.Many2many):
+                                        if isinstance(new_value, (list, tuple)):
+                                             ids = [cmd[1] if isinstance(cmd, tuple) and cmd[0] in (1, 4) else cmd for
+                                                    cmd in new_value if isinstance(cmd, (int, tuple))]
+                                             new_value = ', '.join(self.env[self.env[
+                                                  rec._fields[field].comodel_name]._fields[
+                                                  subfield].comodel_name].browse(ids).mapped(
+                                                  'display_name')) if ids else 'N/A'
+                                        else:
+                                             new_value = new_value if new_value is not None else 'N/A'
+
+                                   change_entry = f"""
+                              <li>
+                                  <strong>{subfield_label} (in New {field_label})</strong><br>
+                                  <span style='color: red;'>Old value:</span> {old_value}  
+                                       
+                                  <span style='color: green;'>New value:</span> {new_value}
+                              </li>
+                              """
+                                   changes.append(change_entry)
 
                          elif command[0] == 2:  # Deletion
-                              removed_record = rec[field].browse(command[1])  # Fetch record before deleting
-                              removed_name = removed_record.display_name if removed_record.exists() else "Unknown"
-                              change_entry = f"""
-                          <li>
-                              <strong>Record removed from {field_label}:</strong> {removed_name}
-                          </li>
-                          """
-                              changes.append(change_entry)
+                              removed_record = rec[field].browse(command[1])
+                              if removed_record.exists():
+                                   for subfield in subfields:
+                                        subfield_label = removed_record._fields[subfield].string
+                                        old_value = getattr(removed_record, subfield, 'N/A')
+                                        new_value = 'N/A'  # Removed records have no new value
+
+                                        if isinstance(removed_record._fields[subfield], fields.Many2one):
+                                             old_value = old_value.display_name if old_value and old_value != 'N/A' else 'N/A'
+                                        elif isinstance(removed_record._fields[subfield], fields.Many2many):
+                                             old_value = ', '.join(
+                                                  old_value.mapped('display_name')) if old_value else 'N/A'
+
+                                        change_entry = f"""
+                                  <li>
+                                      <strong>{subfield_label} (in Removed {field_label})</strong><br>
+                                      <span style='color: red;'>Old value:</span> {old_value}  
+                                           
+                                      <span style='color: green;'>New value:</span> {new_value}
+                                  </li>
+                                  """
+                                        changes.append(change_entry)
 
           if changes:
                action_text = "Created by" if action == "create" else "Updated by"
-               user_info = f"<small>{action_text} <strong>{user_name}</strong> on {updated_write_date}</small>"
+               header = f"<small>{action_text} {user_name} on {updated_write_date}</small>"
                full_message = f"""
               <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
-                  {user_info}
-                  <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                  {header}
+                  <ul style="list-style-type: none; padding-left: 0;">
+                      {''.join(changes)}
+                  </ul>
               </div>
               """
                rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
@@ -1340,6 +1392,7 @@ class ProductTemplate(models.Model):
           'product_tmpl_id',
           string='Images'
      )
+
      def _prepare_history_log(self, vals, is_create=False):
           for rec in self:
                current_datetime_utc = fields.Datetime.now()
