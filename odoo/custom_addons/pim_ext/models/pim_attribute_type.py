@@ -117,50 +117,174 @@ class PIMAttributeType(models.Model):
           # Convert to the user's timezone
           user_tz = self.env.user.tz or 'UTC'  # Default to UTC if no timezone is set
           updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime("%d/%m/%Y %H:%M:%S")
-          new_write_uid = self.env.user.display_name
 
+          new_write_uid = self.env.user.display_name
           changes = []  # Store changes in list
 
-          for key in vals:
-               if key in ['name', 'code', 'active', 'create_variant', 'sequence', 'attribute_group',
-                          'display_type', 'attribute_type_id', 'is_mandatory', 'is_required_in_clone',
-                          'is_cloning', 'is_completeness', 'original_name', 'attribute_types',
-                          'attribute_types_id', 'completed_in_percent', 'state', 'position_ref_field_id',
-                          'unique_value', 'value_per_channel', 'value_per_locale', 'usable_in_grid',
-                          'locale_specific', 'master_attribute_ids', 'label_transaltion']:
+          # Filter out relational fields (like One2many, Many2one, etc.) from vals for the SQL query
+          direct_fields = [key for key in vals.keys() if key in rec._fields and not isinstance(rec._fields[key], (
+          fields.Many2one, fields.One2many, fields.Many2many))]
 
+          # Fetch old values directly from the database for direct fields only
+          if direct_fields:
+               query = f"SELECT {', '.join(direct_fields)} FROM {rec._table} WHERE id = %s"
+               rec.env.cr.execute(query, (rec.id,))
+               old_values = dict(zip(direct_fields, rec.env.cr.fetchone()))
+          else:
+               old_values = {}
+
+          # Track changes in direct fields
+          for key in vals:
+               if key in [
+                    'name', 'code', 'attribute_group', 'display_type',
+                    'is_mandatory', 'is_required_in_clone', 'is_completeness',
+                    'unique_value', 'value_per_channel', 'value_per_locale',
+                    'usable_in_grid', 'locale_specific'
+               ]:
                     attribute = rec._fields[key].string
 
                     if key == 'attribute_group':
-                         old_value = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
-                         new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
-                              key) else 'N/A'
+                         # Handle Many2one field (attribute_group)
+                         old_group_id = old_values.get(key)  # Get the ID of the attribute group
+                         old_value = self.env['attribute.group'].browse(
+                              old_group_id).display_name if old_group_id else 'N/A'
+                         new_group_id = vals.get(key)  # Get the new ID from vals
+                         new_value = self.env['attribute.group'].browse(
+                              new_group_id).display_name if new_group_id else 'N/A'
                     else:
-                         # Set old_value to 'N/A' if creating a new record
-                         old_value = getattr(rec, key, 'N/A') if action == "update" else 'N/A'
+                         # Retrieve the old value from the pre-fetched old_values
+                         old_value = old_values.get(key, 'N/A') if action == "update" else 'N/A'
                          new_value = vals[key] or 'N/A'
-
                     # Formatting Old & New values on the same line with space
                     change_entry = f"""
-                  <li>
-                      <strong>{attribute}</strong><br>
-                      <span style='color: red;'>Old value:</span> {old_value}  
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span style='color: green;'>New value:</span> {new_value}
-                  </li>
-                  """
+                   <li>
+                       <strong>{attribute}</strong><br>
+                       <span style='color: red;'>Old value:</span> {old_value}  
+                            
+                       <span style='color: green;'>New value:</span> {new_value}
+                   </li>
+               """
                     changes.append(change_entry)
+
+          # Track changes in value_ids (One2many field)
+          if 'value_ids' in vals:
+               for command in vals['value_ids']:
+                    if command[0] == 1:  # Update existing record
+                         value_record = rec.value_ids.browse(command[1])
+                         for field in command[2]:
+                              field_label = value_record._fields[field].string
+                              old_value = getattr(value_record, field, 'N/A')
+                              new_value = command[2][field] if command[2][field] is not None else 'N/A'
+
+                              if isinstance(value_record._fields[field], fields.Many2one):
+                                   old_value = old_value.display_name if old_value and old_value != 'N/A' else 'N/A'
+                                   new_value = self.env[value_record._fields[field].comodel_name].browse(
+                                        new_value).display_name if new_value != 'N/A' else 'N/A'
+                              elif isinstance(value_record._fields[field], fields.Many2many):
+                                   old_value = ', '.join(old_value.mapped('display_name')) if old_value else 'N/A'
+                                   if isinstance(new_value, (list, tuple)):
+                                        ids = [cmd[1] if isinstance(cmd, tuple) and cmd[0] in (1, 4) else cmd
+                                               for cmd in new_value if isinstance(cmd, (int, tuple))]
+                                        new_value = ', '.join(
+                                             self.env[value_record._fields[field].comodel_name].browse(ids).mapped(
+                                                  'display_name')) if ids else 'N/A'
+                                   else:
+                                        new_value = new_value if new_value is not None else 'N/A'
+
+                              change_entry = f"""
+                         <li>
+                             <strong>{field_label} (in Value)</strong><br>
+                             <span style='color: red;'>Old value:</span> {old_value}  
+                                  
+                             <span style='color: green;'>New value:</span> {new_value}
+                         </li>
+                     """
+                              changes.append(change_entry)
+
+                    elif command[0] == 0:  # New record added
+                         new_vals = command[2]
+                         for field in new_vals:
+                              field_label = self.env['pim.attribute.value']._fields[field].string
+                              new_value = new_vals.get(field, 'N/A') if field in new_vals else 'N/A'
+                              old_value = 'N/A'  # New records have no old value
+
+                              if isinstance(self.env['pim.attribute.value']._fields[field], fields.Many2one):
+                                   new_value = self.env[
+                                        self.env['pim.attribute.value']._fields[field].comodel_name].browse(
+                                        new_value).display_name if new_value != 'N/A' else 'N/A'
+                              elif isinstance(self.env['pim.attribute.value']._fields[field], fields.Many2many):
+                                   if isinstance(new_value, (list, tuple)):
+                                        ids = [cmd[1] if isinstance(cmd, tuple) and cmd[0] in (1, 4) else cmd
+                                               for cmd in new_value if isinstance(cmd, (int, tuple))]
+                                        new_value = ', '.join(self.env[self.env['pim.attribute.value']._fields[
+                                             field].comodel_name].browse(ids).mapped('display_name')) if ids else 'N/A'
+                                   else:
+                                        new_value = new_value if new_value is not None else 'N/A'
+
+                              change_entry = f"""
+                         <li>
+                             <strong>{field_label} (in New Value)</strong><br>
+                             <span style='color: red;'>Old value:</span> {old_value}  
+                                  
+                             <span style='color: green;'>New value:</span> {new_value}
+                         </li>
+                     """
+                              changes.append(change_entry)
+
+                    elif command[0] == 2:  # Deletion
+                         # Browse the record from the current value_ids before it’s removed
+                         removed_record = rec.value_ids.filtered(lambda r: r.id == command[1])
+                         if removed_record:
+                              # Define the fields you want to log for the removed record
+                              fields_to_log = ['name','sequence', 'value', 'color', 'image']  # Adjust based on your model
+                              for field in fields_to_log:
+                                   if field in removed_record._fields:
+                                        field_label = removed_record._fields[field].string
+                                        old_value = getattr(removed_record, field, 'N/A')
+                                        new_value = 'N/A'  # Removed records have no new value
+
+                                        # Handle special field types
+                                        if isinstance(removed_record._fields[field], fields.Many2one):
+                                             old_value = old_value.display_name if old_value and old_value != 'N/A' else 'N/A'
+                                        elif isinstance(removed_record._fields[field], fields.Many2many):
+                                             old_value = ', '.join(
+                                                  old_value.mapped('display_name')) if old_value else 'N/A'
+                                        elif old_value is False:
+                                             old_value = 'False'  # Explicitly show False as a string
+                                        elif old_value is None:
+                                             old_value = 'N/A'
+
+                                        change_entry = f"""
+                                 <li>
+                                     <strong>{field_label} (in Removed Value)</strong><br>
+                                     <span style='color: red;'>Old value:</span> {old_value}  
+                                          
+                                     <span style='color: green;'>New value:</span> {new_value}
+                                 </li>
+                                 """
+                                        changes.append(change_entry)
+                         else:
+                              # Fallback: If the record is already gone, log the ID only
+                              change_entry = f"""
+                         <li>
+                             <strong>Removed Value</strong><br>
+                             <span style='color: red;'>Old value:</span> Record ID {command[1]}  
+                                  
+                             <span style='color: green;'>New value:</span> N/A
+                         </li>
+                         """
+                              changes.append(change_entry)
 
           if changes:
                action_text = "Created by" if action == "create" else "Updated by"
                user_info = f"<small>{action_text} <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
 
                full_message = f"""
-              <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
-                  {user_info}
-                  <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
-              </div>
-              """
+                 <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                     {user_info}
+                     <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                 </div>
+             """
 
                rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
 
