@@ -16,6 +16,7 @@
                                     <field name="brand_id"/>
                                     <field name="category_id"/>
                                     <field name="name"/>
+                                    <field name="product_attr_values_id" widget="many2many_tags" string="Variant Values"/>
                                     <field name="is_variant" optional="hide"/>
                                     <field name="variant_id" optional="hide"/>
                                     <field name="is_variant_values_updated" optional="hide"/>

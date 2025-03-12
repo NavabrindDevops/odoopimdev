@@ -25,13 +25,13 @@
             <form string="Variant values">
                 <group>
                     <field name="variant_value_ids" widget="many2many_tags"
-                           domain="[('attribute_id', '=', attribute_id)]"
                            required="1"
                            options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
                     <field name="product_id" readonly="1" options="{'no_open': True}" invisible="1"/>
                     <field name="attribute_family_id" string="Family" readonly="1" options="{'no_open': True}" invisible="1"/>
                     <field name="variant_id" string="Varaint" readonly="1" options="{'no_open': True}" invisible="1"/>
                     <field name="attribute_id" string="Attribute" readonly="1" invisible="1"/>
+                    <field name="allowed_attribute_type_ids" invisible="1"/>
                 </group>
                 <footer>
                     <button name="update_variant_value_rec" string="Update" type="object" class="btn-primary"/>

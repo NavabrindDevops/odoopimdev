@@ -1374,7 +1374,7 @@ class ProductTemplate(models.Model):
      is_variant = fields.Boolean(string='Variant Product')
      variant_id = fields.Many2one('family.variant.line', string='Family Variant')
      is_variant_values_updated = fields.Boolean(default=False, string='Is Variant value updated')
-     product_attr_values_id = fields.Many2many('product.attribute.value', 'attr_value_id', 'products_id', string='Attribute Values')
+     product_attr_values_id = fields.Many2many('product.attribute.value', 'attr_value_id', 'products_id', string='Attribute Values', readonly=True)
      product_attr_ids = fields.One2many('product.attribute', 'products_id', string='Attributes')
      is_variant_update = fields.Boolean(string='Variant updated', default=False)
      image_1 = fields.Image("Image1", max_width=1920, max_height=1920)

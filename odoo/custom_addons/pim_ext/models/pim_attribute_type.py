@@ -377,9 +377,9 @@ class PIMAttributeType(models.Model):
                'is_required_in_clone': self.is_required_in_clone,
                'is_cloning': self.is_cloning,
                'is_completeness': self.is_completeness,
-               # 'value_ids': values_list if values_list else [(0, 0, {
-               #      'name': self.display_type.replace('_', ' '),
-               # })]
+               'value_ids': values_list if values_list else [(0, 0, {
+                    'name': values_list,
+               })]
           }
 
           # Check if an existing attribute exists

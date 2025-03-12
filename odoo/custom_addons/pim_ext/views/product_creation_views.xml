@@ -335,6 +335,7 @@
                     <field name="brand_id"/>
                     <field name="category_id"/>
                     <field name="name"/>
+                    <field name="product_attr_values_id" widget="many2many_tags" string="Variant Values"/>
                     <field name="active_label"/>
                     <field name="create_date" string="Created"/>
                     <field name="write_date" string="Updated"/>

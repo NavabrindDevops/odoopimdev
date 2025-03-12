@@ -199,7 +199,7 @@ class ProductCreateMaster(models.Model):
                                                 <sheet>
                                                     <group>
                                                         <group>
-                                                            <field name="product_attr_values_id" string=""  {variant_invisible_rec} widget="many2many_tags"/>
+                                                            <field name="product_attr_values_id" string="Variant Values"  {variant_invisible_rec} widget="many2many_tags"/>
                                                         </group>
                                                     </group>
                                                 </sheet>
@@ -287,7 +287,7 @@ class ProductCreateMaster(models.Model):
 
             # Check if the x_product_name field exists
             x_product_name_field = f"x_{'product_name'.replace(' ', '_').lower()}"
-            x_product_name_value = rec.name if x_product_name_field in attributes_list else False
+            x_product_name_value = rec.name if rec.name and x_product_name_field in attributes_list else "Product"
 
             # Create the product record
             product_vals = {

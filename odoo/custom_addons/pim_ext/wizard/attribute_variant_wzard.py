@@ -56,11 +56,37 @@ class AttributeVariantValuesWizard(models.TransientModel):
     _name = 'attribute.variant.values.wizard'
     _description = 'Attribute Variant Values'
 
-    variant_value_ids = fields.Many2many('product.attribute.value', 'product_attribute_value_rel', 'attribute_variant_value_id', 'values_id',  string='Variant values')
+    variant_value_ids = fields.Many2many('product.attribute.value', 'product_attribute_value_rel', 'attribute_variant_value_id', 'values_id',
+                                         domain="[('id', 'in', allowed_attribute_type_ids)]", string='Variant values')
     product_id = fields.Many2one('product.template', string='Product')
     attribute_family_id = fields.Many2one('family.attribute', string='Families')
     variant_id = fields.Many2one('family.variant.line', string='Variant')
     attribute_id = fields.Many2one('product.attribute', string='Attributes')
+
+    allowed_attribute_type_ids = fields.Many2many(
+        'product.attribute.value',
+        string='Allowed Attribute Types',
+        compute='_compute_allowed_attribute_type_ids',
+        store=False
+    )
+
+    @api.depends('attribute_family_id')
+    def _compute_allowed_attribute_type_ids(self):
+        for record in self:
+            if record.attribute_family_id:
+                # Get the variant line IDs associated with the attribute family
+                variant_line_ids = record.attribute_family_id.variant_line_ids
+                print(variant_line_ids, 'variant_line_ids')
+                # Get the variant IDs from the variant lines
+                variant_ids = variant_line_ids.mapped('variant_ids')
+                print(variant_ids, 'variant_ids')
+                # Get the attribute type IDs from the variants
+                attribute_type_ids = variant_ids.mapped('value_ids')
+                print(attribute_type_ids, 'attribute_type_ids')
+                # Set the allowed attribute type IDs
+                record.allowed_attribute_type_ids = attribute_type_ids
+            else:
+                record.allowed_attribute_type_ids = False
 
     def update_variant_value_rec(self):
         for rec in self:
