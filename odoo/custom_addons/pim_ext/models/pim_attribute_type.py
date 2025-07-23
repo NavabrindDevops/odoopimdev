@@ -4,6 +4,7 @@ from odoo import models, api, fields,_,tools
 import pytz
 import colorsys
 from odoo.exceptions import ValidationError
+import re
 
 class PIMAttributeType(models.Model):
      _name = 'pim.attribute.type'
@@ -47,7 +48,7 @@ class PIMAttributeType(models.Model):
           help="The display type used in the Product Configurator.")
 
      code = fields.Char(string='Code', readonly=True)
-
+     original_name = fields.Char('Field Names')
      unique_value = fields.Selection(
           [('yes', 'Yes'), ('no', 'No')],
           string='Unique Value',
@@ -355,63 +356,134 @@ class PIMAttributeType(models.Model):
                },
           }
 
+     def sanitize_field_name(self, name):
+          name = name.lower()
+          name = name.replace(' #', '_1')
+          name = re.sub(r'[^a-z0-9_]', '_', name)
+          name = re.sub(r'_+', '_', name)
+          name = name.strip('_')
+          name = f'x_{name}'
+          if not name[0].isalpha():
+               name = 'x_' + name
+          return name[:63]
+
      def create_attributes(self):
           self.ensure_one()
-          attribute = self.env['product.attribute']
+          for vals in self:
+               self.original_name = self.sanitize_field_name(vals.name)
+               model_id = self.env['ir.model'].sudo().search([('model', '=', 'product.management')])
+               d_type = ''
 
-          values_list = []
-          for value in self.value_ids:
-               values_list.append([0, 0, {'name': value.name}])
+               if vals['display_type']:
+                    if vals['display_type'] in ['select', 'color']:
+                         d_type = 'selection'
 
-          attribute_vals = {
-               'name': self.name,
-               'display_type': self.display_type,
-               'attribute_group': self.attribute_group.id,
-               'code': self.code,
-               'is_mandatory': self.is_mandatory,
-               'unique_value': self.unique_value,
-               'value_per_channel': self.value_per_channel,
-               'value_per_locale': self.value_per_locale,
-               'usable_in_grid': self.usable_in_grid,
-               'locale_specific': self.locale_specific,
-               'is_required_in_clone': self.is_required_in_clone,
-               'is_cloning': self.is_cloning,
-               'is_completeness': self.is_completeness,
-               'value_ids': values_list if values_list else [(0, 0, {
-                    'name': values_list,
-               })]
-          }
+                    elif vals['display_type'] in ['text']:
+                         d_type = 'char'
 
-          # Check if an existing attribute exists
-          existing_attribute = attribute.search([('name', '=', self.name)], limit=1)
+                    elif vals['display_type'] in ['textarea']:
+                         d_type = 'text'
+                    elif vals['display_type'] in ['date']:
+                         d_type = 'date'
 
-          if existing_attribute:
-               # Update existing attribute
-               existing_attribute.write(attribute_vals)
-               attribute = existing_attribute
-          else:
-               # Create new attribute
-               attribute = attribute.create(attribute_vals)
+                    elif vals['display_type'] in ['number']:
+                         d_type = 'integer'
 
-          # Ensure attribute group lines are updated
-          if self.attribute_group:
-               group_line = self.env['attribute.group.lines'].search([
-                    ('attr_group_id', '=', self.attribute_group.id),
-                    ('product_attribute_id', '=', attribute.id),
-               ], limit=1)
+                    elif vals['display_type'] in ['link','file','image']:
+                         d_type = 'binary'
 
-               if not group_line:
-                    self.env['attribute.group.lines'].create({
-                         'attr_group_id': self.attribute_group.id,
-                         'product_attribute_id': attribute.id,
-                    })
-          for record in self:
-               if record.display_type in ['simple_select', 'radio', 'pills', 'color',
-                                          'multi_select'] and not record.value_ids:
-                    raise ValidationError(
-                         "Please fill the Attribute values for dropdown.")
+                    elif vals['display_type'] in ['yes_no']:
+                         d_type = 'boolean'
 
-          menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
+                    elif vals['display_type'] in ['simple_select']:
+                         d_type = 'many2one'
+                    elif vals['display_type'] in ['multi_select']:
+                         d_type = 'many2many'
+                    elif vals['display_type'] in ['price']:
+                         d_type = 'monetary'
+
+               if d_type == 'many2one':
+                    create_vals = {
+                         'name': vals.original_name,
+                         'field_description': vals['name'],
+                         'model': model_id.model,
+                         'model_id': model_id.id,
+                         'ttype': d_type,
+                         'relation': 'pim.attribute.value',
+                         'domain': '[("attribute_type_id", "=", %d)]' % vals.id,
+                    }
+               elif d_type == 'many2many':
+                    create_vals = {
+                         'name': vals.original_name,
+                         'field_description': vals['name'],
+                         'model': model_id.model,
+                         'model_id': model_id.id,
+                         'ttype': d_type,
+                         'relation': 'pim.attribute.value',
+                         'domain': '[("attribute_type_id", "=", %d)]' % vals.id,
+                    }
+               else:
+                    create_vals = {
+                         'name': vals.original_name,
+                         'field_description': vals.name,
+                         'model_id': model_id.id,
+                         'ttype': d_type,
+                    }
+               print("create_vals === ", create_vals)
+               create_field = self.env['ir.model.fields'].sudo().create(create_vals)
+
+               if d_type == 'selection' and vals.value_ids:
+
+                    for rec in vals.value_ids:
+                         sel_name = rec[2]['name']
+                         sel_value = rec[2]['name']
+                         sel_val = self.env['ir.model.fields.selection'].sudo().create({
+                              'name': sel_name,
+                              'value': sel_value,
+                              'field_id': create_field.id
+                         })
+
+               # creates a filename field for binary field
+               if d_type == 'binary':
+                    file_name = vals.original_name + '_file_name'
+                    create_vals_file = {'name': file_name,
+                                        'field_description': vals.name,
+                                        'model_id': model_id,
+                                        'ttype': 'char',
+                                        }
+                    create_field_file_name = self.env['ir.model.fields'].sudo().create(create_vals_file)
+
+
+          # # Check if an existing attribute exists
+          # existing_attribute = attribute.search([('name', '=', self.name)], limit=1)
+          #
+          # if existing_attribute:
+          #      # Update existing attribute
+          #      existing_attribute.write(attribute_vals)
+          #      attribute = existing_attribute
+          # else:
+          #      # Create new attribute
+          #      attribute = attribute.create(attribute_vals)
+          #
+          # # Ensure attribute group lines are updated
+          # if self.attribute_group:
+          #      group_line = self.env['attribute.group.lines'].search([
+          #           ('attr_group_id', '=', self.attribute_group.id),
+          #           ('product_attribute_id', '=', attribute.id),
+          #      ], limit=1)
+          #
+          #      if not group_line:
+          #           self.env['attribute.group.lines'].create({
+          #                'attr_group_id': self.attribute_group.id,
+          #                'product_attribute_id': attribute.id,
+          #           })
+          # for record in self:
+          #      if record.display_type in ['simple_select', 'radio', 'pills', 'color',
+          #                                 'multi_select'] and not record.value_ids:
+          #           raise ValidationError(
+          #                "Please fill the Attribute values for dropdown.")
+          #
+          # menu_id = self.env.ref('pim_ext.menu_pim_attribute_action')
           # return {
           #      'type': 'ir.actions.client',
           #      'tag': 'reload',

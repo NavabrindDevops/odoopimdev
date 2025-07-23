@@ -11,12 +11,12 @@
                             <field name="attribute_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
                                 <list create="false" edit="false" delete="false" default_order="create_date desc">
                                     <field name="name"/>
-                                    <field name="display_type"/>
-                                    <field name="attribute_group"/>
-                                    <field name="attribute_types"/>
-                                    <field name="is_required_in_clone" widget="boolean_toggle"/>
-                                    <field name="is_cloning" widget="boolean_toggle" invisible="1"/>
-                                    <field name="is_completeness" widget="boolean_toggle"/>
+<!--                                    <field name="display_type"/>-->
+<!--                                    <field name="attribute_group"/>-->
+<!--                                    <field name="attribute_types"/>-->
+<!--                                    <field name="is_required_in_clone" widget="boolean_toggle"/>-->
+<!--                                    <field name="is_cloning" widget="boolean_toggle" invisible="1"/>-->
+<!--                                    <field name="is_completeness" widget="boolean_toggle"/>-->
                                     <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
                                     <button name="attribute_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
                                 </list>
@@ -63,9 +63,10 @@
                                             <div class="attribute-button">
                                                 <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
                                                     <i class="fa fa-dollar fa-2x"></i>
-                                                    <span>Price</span>
+                                                    <span>Table</span>
                                                 </button>
                                             </div>
+
                                         </div>
             <!--                            row2-->
                                         <div class="d-grid grid_column">
@@ -90,11 +91,12 @@
                                                 </button>
                                             </div>
                                             <div class="attribute-button">
-                                                <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-check fa-2x"></i>
-                                                    <span>Checkbox</span>
+                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-dollar fa-2x"></i>
+                                                    <span>Measurement</span>
                                                 </button>
                                             </div>
+
 <!--                                            <div class="attribute-button">-->
 <!--                                                <button name="action_select_identifier" type="object" class="btn btn-light attribute-icon-button">-->
 <!--                                                    <i class="fa fa-id-badge fa-2x"></i>-->
@@ -117,22 +119,28 @@
                                                 </button>
                                             </div>
 
-                                            <div class="attribute-button">
-                                                <button name="action_select_ref_data_multi" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-plus-square fa-2x"></i>
-                                                    <span>Reference data multi select</span>
-                                                </button>
-                                            </div>
+<!--                                            <div class="attribute-button">-->
+<!--                                                <button name="action_select_ref_data_multi" type="object" class="btn btn-light attribute-icon-button">-->
+<!--                                                    <i class="fa fa-plus-square fa-2x"></i>-->
+<!--                                                    <span>Reference data multi select</span>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
 
                                         </div>
             <!--                            row4-->
                                         <div class="d-grid grid_column">
                                             <div class="attribute-button">
-                                                <button name="action_select_radio" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-check-circle fa-2x"></i>
-                                                    <span>Radio</span>
+                                                <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-check fa-2x"></i>
+                                                    <span>Checkbox</span>
                                                 </button>
                                             </div>
+<!--                                            <div class="attribute-button">-->
+<!--                                                <button name="action_select_radio" type="object" class="btn btn-light attribute-icon-button">-->
+<!--                                                    <i class="fa fa-check-circle fa-2x"></i>-->
+<!--                                                    <span>Radio</span>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
 <!--                                                comment based on arpita request dec-19-2024-->
 <!--                                            <div class="attribute-button">-->
 <!--                                                <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">-->
@@ -153,6 +161,12 @@
 <!--                                                    <span>Reference data simple select</span>-->
 <!--                                                </button>-->
 <!--                                            </div>-->
+                                            <div class="attribute-button">
+                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
+                                                    <i class="fa fa-dollar fa-2x"></i>
+                                                    <span>Price</span>
+                                                </button>
+                                            </div>
                                             <div class="attribute-button">
                                                 <button name="action_select_multi_color" type="object" class="btn btn-light attribute-icon-button">
                                                     <i class="fa fa-paint-brush fa-2x"></i>
@@ -392,8 +406,8 @@
         <record id="action_products_attributes_custom" model="ir.actions.act_window">
             <field name="name">Create Attribute</field>
             <field name="res_model">pim.attribute.type</field>
-            <field name="view_mode">list</field>
-<!--            <field name="view_id" ref="view_product_attribute_custom"/>-->
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_tree_pim_attribute_type"/>
 <!--            <field name="target">current</field>-->
         </record>
     </data>

@@ -92,26 +92,20 @@
                                         </button>
                                     </div>
 
-                                    <div class="attribute-button">
-                                        <button name="action_select_ref_data_multi" type="object" class="btn btn-light attribute-icon-button">
-                                            <i class="fa fa-plus-square fa-2x"></i>
-                                            <span>Reference data multi select</span>
-                                        </button>
-                                    </div>
+<!--                                    <div class="attribute-button">-->
+<!--                                        <button name="action_select_ref_data_multi" type="object" class="btn btn-light attribute-icon-button">-->
+<!--                                            <i class="fa fa-plus-square fa-2x"></i>-->
+<!--                                            <span>Reference data multi select</span>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
 
-                                    <div class="attribute-button">
-                                        <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
-                                            <i class="fa fa-check fa-2x"></i>
-                                            <span>Checkbox</span>
-                                        </button>
-                                    </div>
                                 </div>
     <!--                            row5-->
                                 <div style="display: flex; flex-direction: column; gap: 20px;">
                                     <div class="attribute-button">
-                                        <button name="action_select_radio" type="object" class="btn btn-light attribute-icon-button">
-                                            <i class="fa fa-check-circle fa-2x"></i>
-                                            <span>Radio</span>
+                                        <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
+                                            <i class="fa fa-check fa-2x"></i>
+                                            <span>Checkbox</span>
                                         </button>
                                     </div>
 <!--                                    comment based on arpita request dec-19-2024-->
