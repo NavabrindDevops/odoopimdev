@@ -353,6 +353,7 @@ class PIMAttributeType(models.Model):
                'target': 'current',
                'context': {
                     'default_attribute_ids': self.env['pim.attribute.type'].search([]).ids,
+                    'no_breadcrumbs': True
                },
           }
 
@@ -524,7 +525,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'date', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True, 'default_display_type': 'date', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_file(self):
@@ -536,7 +537,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'file', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'file', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
      def action_select_identifier(self):
           self.ensure_one()
@@ -547,7 +548,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'text', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'text', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_image(self):
@@ -559,7 +560,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'image', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'image', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_table(self):
@@ -571,7 +572,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'table', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'table', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_measurement(self):
@@ -583,7 +584,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'measurement', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'measurement', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      # def action_select_measurement(self):
@@ -611,7 +612,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'link', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'link', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_multiselect(self):
@@ -623,7 +624,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'multi_select', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'multi_select', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_number(self):
@@ -635,7 +636,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'number', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'number', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_price(self):
@@ -647,7 +648,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_ref_data_multi(self):
@@ -659,7 +660,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_ref_data_simple(self):
@@ -671,7 +672,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_multi_checkbox(self):
@@ -683,7 +684,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
      def action_select_multi_color(self):
           self.ensure_one()
@@ -694,7 +695,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'color', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'color', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
      def action_select_radio(self):
           self.ensure_one()
@@ -705,7 +706,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'price', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_simple(self):
@@ -717,7 +718,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'simple_select', 'default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'simple_select', 'default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_text(self):
@@ -729,7 +730,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'text','default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'text','default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_text_area(self):
@@ -741,7 +742,7 @@ class PIMAttributeType(models.Model):
                'view_id': self.env.ref('pim_ext.view_product_attribute_master_custom').id,
                'view_mode': 'form',
                'target': 'current',
-               'context': {'default_display_type': 'textarea','default_attribute_types_id': self.id,'default_code': self.code},
+               'context': {'no_breadcrumbs': True,'default_display_type': 'textarea','default_attribute_types_id': self.id,'default_code': self.code},
           }
 
      def action_select_yes_no(self):
@@ -755,6 +756,7 @@ class PIMAttributeType(models.Model):
                'target': 'current',
                'context': {'default_display_type': 'yes_no','default_code': self.code,
                            'default_attribute_types_id': self.id},
+                              'no_breadcrumbs': True,
           }
 
 

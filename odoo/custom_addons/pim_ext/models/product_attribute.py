@@ -6,6 +6,7 @@ from datetime import datetime,timedelta,timezone,date
 from email.policy import default
 from markupsafe import Markup
 import pytz
+import colorsys
 
 from lxml import etree
 from odoo import models, api, fields,_, tools
@@ -362,7 +363,7 @@ class AttributeForm(models.Model):
                           'is_cloning', 'is_completeness', 'original_name', 'attribute_types',
                           'attribute_types_id', 'state', 'position_ref_field_id',
                           'unique_value', 'value_per_channel', 'value_per_locale', 'usable_in_grid',
-                          'locale_specific', 'master_attribute_ids', 'label_transaltion']:
+                          'locale_specific', 'master_attribute_ids', 'label_transaltion','max_value','alpha_numeric_value']:
 
                     attribute = rec._fields[key].string
 
@@ -422,12 +423,12 @@ class AttributeForm(models.Model):
                for r, g, b in sorted_colors_rgb:
                     color = '#{:02x}{:02x}{:02x}'.format(r, g, b)
                     record_name = self.env['product.attribute.value'].search([('html_color', '=', color),
-                                                                              ('attribute_type_id', '=', record.id)],
+                                                                              ('attribute_id', '=', record.id)],
                                                                              order="id", limit=1)
                     vals_list.append((0, 0, {
                          'name': record_name.name,
                          'html_color': color,
-                         'attribute_type_id': record.id,
+                         'attribute_id': record.id,
                          'image': record_name.image
                     }))
                record.value_ids.unlink()

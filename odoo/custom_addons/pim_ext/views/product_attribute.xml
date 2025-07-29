@@ -3,34 +3,34 @@
 
     <!--    Inherit Attribute Form-->
 
-<!--    <record id="pim_product_attribute_search" model="ir.ui.view">-->
-<!--		<field name="name">pim.product.attribute.search</field>-->
-<!--		<field name="model">product.attribute</field>-->
-<!--		<field name="arch" type="xml">-->
-<!--			<search>-->
-<!--                <field name="name"/>-->
-<!--                <field name="display_type"/>-->
-<!--                <field name="attribute_group"/>-->
-<!--                <filter string="Mandatory" name="filter_mandatory" domain="[('is_mandatory', '=', True)]"/>-->
-<!--                <filter string="Required in clone" name="filter_required_in_clone" domain="[('is_required_in_clone', '=', True)]"/>-->
-<!--&lt;!&ndash;                <filter string="Cloning" name="filter_cloning" domain="[('is_cloning', '=', True)]"/>&ndash;&gt;-->
-<!--                <filter string="Completeness" name="filter_completeness" domain="[('is_completeness', '=', True)]"/>-->
-<!--                <group expand="0" string="Group By">-->
-<!--                    <filter name="group_name" string="Name" domain="[]" context="{'group_by': 'name'}"/>-->
-<!--                    <filter name="group_attribute_rec" string="Attribute Group" domain="[]" context="{'group_by': 'attribute_group'}"/>-->
-<!--                    <filter name="group_attribute_type" string="Type" domain="[]" context="{'group_by': 'display_type'}"/>-->
-
-<!--                    <filter name="group_mandatory" string="Mandatory" domain="[]" context="{'group_by': 'is_mandatory'}"/>-->
-<!--                    <filter name="group_required_in_clone" string="Required in clone" domain="[]" context="{'group_by': 'is_required_in_clone'}"/>-->
-<!--&lt;!&ndash;                    <filter name="group_cloning" string="Cloning" domain="[]" context="{'group_by': 'is_cloning'}"/>&ndash;&gt;-->
-<!--                    <filter name="group_completeness" string="Completeness" domain="[]" context="{'group_by': 'is_completeness'}"/>-->
-<!--                </group>-->
-<!--                <separator/>-->
-<!--&lt;!&ndash;                <filter name="basic_attribute_type" string="Basic Attribute Type" domain="[('attribute_types', '=', 'basic')]"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                <filter name="optional_attribute_type" string="Optional Attribute Type" domain="[('attribute_types', '=', 'optional')]"/>&ndash;&gt;-->
-<!--			</search>-->
-<!--		</field>-->
-<!--	</record>-->
+    <record id="pim_product_attribute_search" model="ir.ui.view">
+		<field name="name">pim.product.attribute.search</field>
+		<field name="model">product.attribute</field>
+        <field name="mode">primary</field>
+		<field name="arch" type="xml">
+			<search>
+                <field name="name"/>
+                <field name="display_type"/>
+                <field name="attribute_group"/>
+                <filter string="Mandatory" name="filter_mandatory" domain="[('is_mandatory', '=', True)]"/>
+                <filter string="Required in clone" name="filter_required_in_clone" domain="[('is_required_in_clone', '=', True)]"/>
+<!--                <filter string="Cloning" name="filter_cloning" domain="[('is_cloning', '=', True)]"/>-->
+                <filter string="Completeness" name="filter_completeness" domain="[('is_completeness', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_name" string="Name" domain="[]" context="{'group_by': 'name'}"/>
+                    <filter name="group_attribute_rec" string="Attribute Group" domain="[]" context="{'group_by': 'attribute_group'}"/>
+                    <filter name="group_attribute_type" string="Type" domain="[]" context="{'group_by': 'display_type'}"/>
+                    <filter name="group_mandatory" string="Mandatory" domain="[]" context="{'group_by': 'is_mandatory'}"/>
+                    <filter name="group_required_in_clone" string="Required in clone" domain="[]" context="{'group_by': 'is_required_in_clone'}"/>
+<!--                    <filter name="group_cloning" string="Cloning" domain="[]" context="{'group_by': 'is_cloning'}"/>-->
+                    <filter name="group_completeness" string="Completeness" domain="[]" context="{'group_by': 'is_completeness'}"/>
+                </group>
+                <separator/>
+<!--                <filter name="basic_attribute_type" string="Basic Attribute Type" domain="[('attribute_types', '=', 'basic')]"/>-->
+<!--                <filter name="optional_attribute_type" string="Optional Attribute Type" domain="[('attribute_types', '=', 'optional')]"/>-->
+			</search>
+		</field>
+	</record>
 
 
     <record id="view_attribute_master_unlink_wizard_form" model="ir.ui.view">
@@ -57,6 +57,7 @@
     <record id="view_product_attribute_master_custom" model="ir.ui.view">
         <field name="name">product.attribute.master.custom.layout</field>
         <field name="model">product.attribute</field>
+        <field name="mode">primary</field>
         <field name="arch" type="xml">
             <form string="Attribute Master" create="false" edit="true" delete="false" class="page_form">
                 <div class="d-flex align-items-start">
@@ -314,6 +315,7 @@
     <record id="product_attribute_pim_tree_view" model="ir.ui.view">
         <field name="name">product.attribute.tree.view</field>
         <field name="model">product.attribute</field>
+        <field name="mode">primary</field>
         <field name="arch" type="xml">
             <list create="false" edit="true" default_order="create_date desc">
                 <header>
