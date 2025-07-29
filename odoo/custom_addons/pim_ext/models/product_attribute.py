@@ -221,21 +221,30 @@ class AttributeForm(models.Model):
                d_type = 'monetary'
           elif d_type in ['table']:
                d_type = 'one2many'
+
           base_vals = {
                'name': vals.original_name,
                'field_description': vals.name,
                'model_id': model_id.id,
-               'ttype': d_type,
           }
 
           if d_type in ['many2one']:
                base_vals.update({
+                    'ttype': d_type,
                     'model': model_id.model,  # only required for backward compatibility
                     'relation': 'product.attribute.value',
                     'domain': '[("attribute_id", "=", %d)]' % vals.id,
                })
+          elif d_type in ['measurement']:
+               uom_model_id = self.env['ir.model'].sudo().search([('model', '=', 'uom.uom')])
+               base_vals.update({
+                    'model': uom_model_id.model,  # only required for backward compatibility
+                    'relation': 'uom.uom',
+                    'ttype': 'many2one',
+               })
           elif d_type in ['many2many']:
                base_vals.update({
+                    'ttype': d_type,
                     'model': model_id.model,  # only required for backward compatibility
                     'relation': 'product.attribute.value',
                     'relation_table': 'x_%s_rel' % vals.original_name.replace('.', '_'),
@@ -245,12 +254,16 @@ class AttributeForm(models.Model):
                })
           elif d_type in ['one2many']:
                base_vals.update({
+                    'ttype': d_type,
                     'model': model_id.model,  # only required for backward compatibility
                     'relation': 'product.attribute',
                     'relation_field': 'parent_attribute_id',
                   #  'domain': '[("parent_attribute_id", "=", %d)]' % vals.id,
                })
-
+          else:
+               base_vals.update({
+                    'ttype': d_type,
+               })
           return base_vals
 
      def create_attributes(self):
@@ -272,7 +285,8 @@ class AttributeForm(models.Model):
                     file_name = vals.original_name + '_file_name'
                     create_vals_file = {'name': file_name,
                                         'field_description': vals.name,
-                                        'model_id': model_id,
+                                        'model': model_id.model,
+                                        'model_id': model_id.id,
                                         'ttype': 'char',
                                         }
                     create_field_file_name = self.env['ir.model.fields'].sudo().create(create_vals_file)
