@@ -105,7 +105,7 @@
                                     <div class="attribute-button">
                                         <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
                                             <i class="fa fa-check fa-2x"></i>
-                                            <span>Checkbox</span>
+                                            <span>Yes/No</span>
                                         </button>
                                     </div>
 <!--                                    comment based on arpita request dec-19-2024-->

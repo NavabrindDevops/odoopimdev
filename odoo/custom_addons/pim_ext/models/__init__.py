@@ -14,3 +14,5 @@ from . import product_family_select
 from . import general_attributes
 from . import supplier
 from . import product_create
+from . import product_attribute
+from . import attribute_group

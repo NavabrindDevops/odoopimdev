@@ -43,146 +43,99 @@
                                             <!-- Button for Date -->
                                             <div class="attribute-button">
                                                 <button name="action_select_date" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-calendar fa-2x"></i>
+                                                    <img src="/pim_ext/static/src/img/icon-date 1.png" alt="File" class="attribute-icon-img"/>
                                                     <span>Date</span>
                                                 </button>
                                             </div>
-                                            <!-- Button for Multi-select -->
                                             <div class="attribute-button">
-                                                <button name="action_select_multiselect" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-plus-square fa-2x"></i>
-                                                    <span>Multi select</span>
+                                                <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-metric 1.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>Measurement</span>
                                                 </button>
                                             </div>
                                             <div class="attribute-button">
                                                 <button name="action_select_simple" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-mouse-pointer fa-2x"></i>
+                                                    <img src="/pim_ext/static/src/img/icon-select.png" alt="File" class="attribute-icon-img"/>
                                                     <span>Simple select</span>
                                                 </button>
                                             </div>
+
                                             <div class="attribute-button">
-                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-dollar fa-2x"></i>
+                                                <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-switch.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>Yes/No</span>
+                                                </button>
+                                            </div>
+                                        </div>
+            <!--                            row2-->
+                                        <div class="d-grid grid_column">
+                                            <div class="attribute-button">
+                                                <button name="action_select_file" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-file.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>File</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="attribute-button">
+                                                <button name="action_select_multiselect" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-multiselect.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>Multi select</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_table" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-table.png" alt="File" class="attribute-icon-img"/>
                                                     <span>Table</span>
                                                 </button>
                                             </div>
 
                                         </div>
-            <!--                            row2-->
-                                        <div class="d-grid grid_column">
-                                            <!-- Button for File -->
-                                            <div class="attribute-button">
-                                                <button name="action_select_file" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-file fa-2x"></i>
-                                                    <span>File</span>
-                                                </button>
-                                            </div>
-                                            <!-- Button for Number -->
-                                            <div class="attribute-button">
-                                                <button name="action_select_number" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-sort-numeric-asc fa-2x"></i>
-                                                    <span>Integer</span>
-                                                </button>
-                                            </div>
-                                            <div class="attribute-button">
-                                                <button name="action_select_text" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-font fa-2x"></i>
-                                                    <span>Text</span>
-                                                </button>
-                                            </div>
-                                            <div class="attribute-button">
-                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-dollar fa-2x"></i>
-                                                    <span>Measurement</span>
-                                                </button>
-                                            </div>
-
-<!--                                            <div class="attribute-button">-->
-<!--                                                <button name="action_select_identifier" type="object" class="btn btn-light attribute-icon-button">-->
-<!--                                                    <i class="fa fa-id-badge fa-2x"></i>-->
-<!--                                                    <span>Identifier</span>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-                                        </div>
             <!--                            row3-->
                                         <div class="d-grid grid_column">
                                             <div class="attribute-button">
-                                                <button name="action_select_text_area" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-text-height fa-2x"></i>
-                                                    <span>Text Area</span>
-                                                </button>
-                                            </div>
-                                            <div class="attribute-button">
                                                 <button name="action_select_image" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-image fa-2x"></i>
+                                                    <img src="/pim_ext/static/src/img/icon-asset.png" alt="File" class="attribute-icon-img"/>
                                                     <span>Image</span>
                                                 </button>
                                             </div>
                                             <div class="attribute-button">
-                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-dollar fa-2x"></i>
-                                                    <span>Price</span>
+                                                <button name="action_select_number" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/fluent-emoji-high-contrast_input-numbers.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>Number</span>
                                                 </button>
                                             </div>
 
-<!--                                            <div class="attribute-button">-->
-<!--                                                <button name="action_select_ref_data_multi" type="object" class="btn btn-light attribute-icon-button">-->
-<!--                                                    <i class="fa fa-plus-square fa-2x"></i>-->
-<!--                                                    <span>Reference data multi select</span>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                             <div class="attribute-button">
+                                                <button name="action_select_text" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-text.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>Text</span>
+                                                </button>
+                                            </div>
+
+
 
                                         </div>
             <!--                            row4-->
                                         <div class="d-grid grid_column">
                                             <div class="attribute-button">
-                                                <button name="action_select_yes_no" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-check fa-2x"></i>
-                                                    <span>Checkbox</span>
-                                                </button>
-                                            </div>
-<!--                                            <div class="attribute-button">-->
-<!--                                                <button name="action_select_radio" type="object" class="btn btn-light attribute-icon-button">-->
-<!--                                                    <i class="fa fa-check-circle fa-2x"></i>-->
-<!--                                                    <span>Radio</span>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-<!--                                                comment based on arpita request dec-19-2024-->
-<!--                                            <div class="attribute-button">-->
-<!--                                                <button name="action_select_measurement" type="object" class="btn btn-light attribute-icon-button">-->
-<!--                                                    <i class="fa fa-ruler fa-2x"></i>-->
-<!--                                                    <span>Measurement</span>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-                                            <div class="attribute-button">
-                                                <button name="action_select_link" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-link fa-2x"></i>
-                                                    <span>Link</span>
-                                                </button>
-                                            </div>
-
-<!--                                            <div class="attribute-button">-->
-<!--                                                <button name="action_select_ref_data_simple" type="object" class="btn btn-light attribute-icon-button">-->
-<!--                                                    <i class="fa fa-mouse-pointer fa-2x"></i>-->
-<!--                                                    <span>Reference data simple select</span>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-
-                                            <div class="attribute-button">
                                                 <button name="action_select_multi_color" type="object" class="btn btn-light attribute-icon-button">
-                                                    <i class="fa fa-paint-brush fa-2x"></i>
+                                                    <img src="/pim_ext/static/src/img/icon-asset.png" alt="File" class="attribute-icon-img"/>
                                                     <span>Color</span>
                                                 </button>
                                             </div>
-
-<!--                                            <div class="attribute-button">-->
-<!--                                                <button name="action_select_multi_checkbox" type="object" class="btn btn-light attribute-icon-button">-->
-<!--                                                    <i class="fa fa-check-circle-o fa-2x"></i>-->
-<!--                                                    <span>Multi Checkbox</span>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <div class="attribute-button">
+                                                <button name="action_select_price" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-price.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>Price</span>
+                                                </button>
+                                            </div>
+                                            <div class="attribute-button">
+                                                <button name="action_select_text_area" type="object" class="btn btn-light attribute-icon-button">
+                                                    <img src="/pim_ext/static/src/img/icon-textarea.png" alt="File" class="attribute-icon-img"/>
+                                                    <span>Text Area</span>
+                                                </button>
+                                            </div>
                                         </div>
-            <!--                            row5-->
                                     </div>
                                 </div>
                             </form>
@@ -323,7 +276,8 @@
                                                    </field>
                                                        </div>
                                                    </div>
-                                                   </div></div>
+                                                   </div>
+                                                   </div>
                                                </page>
                                                <page name="type_label_translation" string="Label Translations" invisible="1">
                                                </page>
@@ -403,13 +357,6 @@
             </field>
         </record>
 
-        <!-- Action to open the custom view -->
-        <record id="action_products_attributes_custom" model="ir.actions.act_window">
-            <field name="name">Create Attribute</field>
-            <field name="res_model">pim.attribute.type</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_tree_pim_attribute_type"/>
-<!--            <field name="target">current</field>-->
-        </record>
+
     </data>
 </odoo>

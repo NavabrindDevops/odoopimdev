@@ -6,10 +6,6 @@ access_manufacturer.attribute,manufacturer.attribute.user,model_manufacturer_att
 access_brand_attribute,brand.attribute.user,model_brand_attribute,,1,1,1,1
 access_family_products,family.products.user,model_family_products,,1,1,1,1
 access_product_select,product.select.user,model_product_select,,1,1,1,1
-access_product_attribute1,product.attribute1.user,model_product_attribute1,,1,1,1,1
-access_product_attribute2,product.attribute2.user,model_product_attribute2,,1,1,1,1
-access_product_attribute3,product.attribute3.user,model_product_attribute3,,1,1,1,1
-access_product_attribute4,product.attribute4.user,model_product_attribute4,,1,1,1,1
 access_product_multi_select,product.multi.select.user,model_product_multi_select,,1,1,1,1
 access_product_val_select,product.val.select.user,model_product_val_select,,1,1,1,1
 

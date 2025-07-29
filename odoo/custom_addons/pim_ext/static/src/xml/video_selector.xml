@@ -18,7 +18,7 @@
     <t t-inherit="html_editor.VideoIframe" t-inherit-mode="extension">
         <xpath expr="//iframe" position="replace">
             <t t-if="props.isUploaded">
-                <video controls="controls" class="o_video_dialog_iframe mw-100 mh-100 overflow-hidden shadow" width="1280" height="720">
+                <video controls="controls" class="o_video_dialog_iframe mw-100 mh-100 overflow-hidden shadow">
                     <source t-att-src="props.src" type="video/mp4"/>
                     Your browser does not support the video tag.
                 </video>
@@ -44,11 +44,8 @@
                 </t>
             </div>
         </xpath>
-        <xpath expr="//VideoIframe" position="replace">
-            <VideoIframe
-                t-if="state.src and !state.errorMessage"
-                src="state.src"
-                isUploaded="state.platform === 'uploaded'"/>
+        <xpath expr="//VideoIframe" position="attributes">
+            <attribute name="isUploaded">state.platform === 'uploaded'</attribute>
         </xpath>
     </t>
 </templates>
