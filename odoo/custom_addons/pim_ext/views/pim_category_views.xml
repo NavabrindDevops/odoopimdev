@@ -42,57 +42,30 @@
             <field name="name">pim.categories.form.view</field>
             <field name="model">pim.category</field>
             <field name="arch" type="xml">
-                <form string="Category" create="true" edit="true" delete="false" class="page_form">
-                    <div class="d-flex align-items-start">
-                        <div class="left-column">
-                            <field name="category_ids">
-                                <list editable="bottom" create="false" edit="false" delete="false">
-                                    <field name="name"/>
-                                    <button name="category_edit_open_form_view" type="object" icon="fa-pencil-square-o"
-                                            class="btn-link"/>
-                                    <button name="category_master_unlink" type="object" icon="fa-trash"
-                                            class="btn-link text-danger"/>
-                                </list>
-                            </field>
-                        </div>
-                        <div class="right-column">
-                            <form create="false" edit="false" delete="false" readonly="1">
-                                <header>
-                                    <button string="Back" type="object" name="action_back_to_category_menu"
-                                            icon="fa-arrow-left"/>
-                                </header>
-                                <div class="pim_oe_title">
-                                    <h2 class="pim_create_category">
-                                        <span class="attr_title">Edit Category</span>
-                                    </h2>
-                                </div>
-                                <sheet>
-                                    <notebook>
-                                        <page string="General">
-                                            <group>
-                                                <field name="name" required="True"/>
-                                                <field name="code"/>
-                                                <field name="parent_id"
-                                                       options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
-                                                <field name="complete_name" readonly="1"/>
-                                                <field name="active" widget="boolean_toggle"/>
-                                            </group>
-                                        </page>
-                                        <page string="History">
-                                            <group>
-                                                <field name="history_log" nolabel="1" readonly="1"/>
-                                            </group>
-                                        </page>
-                                    </notebook>
-                                </sheet>
-                            </form>
-                            <div class="attr_creation" style="margin-top: 16px;">
-                                                <button type="object" string="Save"
-                                                        name="save_attributes" class="oe_highlight"/>
-                                            </div>
-                        </div>
-                    </div>
+                <form string="Category" create="true" edit="true" delete="false" class="page_form"
+                      js_class="category_form_view">
+                    <sheet>
+                        <notebook>
+                            <page string="General">
+                                <group>
+                                    <field name="name" required="True"/>
+                                    <field name="code"/>
+                                    <field name="parent_id"
+                                           options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                                    <field name="complete_name" readonly="1"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </group>
+                            </page>
+                            <page string="History">
+                                <group>
+                                    <field name="history_log" nolabel="1" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                    </sheet>
                 </form>
+
             </field>
         </record>
         <record id="view_pim_category_filter" model="ir.ui.view">

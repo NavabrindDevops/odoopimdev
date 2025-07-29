@@ -22,9 +22,40 @@ class PimCategory(models.Model):
         store=True)
     parent_id = fields.Many2one('pim.category', string='Parent Category', index=True, ondelete="cascade")
     parent_path = fields.Char(index=True, unaccent=False)
-    category_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories', compute='_compute_category_ids')
+    category_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories')
     child_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories')
     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
+
+    def update_parent_category(self,child_id,new_parent_id):
+        print("wwwwwwwwwww",self,child_id,new_parent_id)
+        child_categ = self.env['pim.category'].browse(child_id)
+        parent_categ = self.env['pim.category'].browse(new_parent_id)
+        child_categ.parent_id = parent_categ
+        return self.return_categories_hierarchy()
+
+
+    def return_categories_hierarchy(self):
+        categories = self.env['pim.category'].search([("parent_id", "=", False)])
+        print("lllllllllllllllllll",categories)
+        res = []
+        for category in categories:
+            res.append(category._return_categories_recursive())
+        return res
+
+    def _return_categories_recursive(self):
+        """
+        The method to go by all categories recursively to prepare their list in js_tree format
+
+        Extra info:
+         * Expected singleton
+        """
+        res = {"id": self.id, "text": self.name}
+        child_res = []
+        child_ids = self.search([("id", "in", self.child_ids.ids)])
+        for child in child_ids:
+            child_res.append(child._return_categories_recursive())
+        res.update({"children": child_res})
+        return res
 
     def _log_changes(self, rec, vals, action):
         # Get the current time in UTC

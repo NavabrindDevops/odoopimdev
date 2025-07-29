@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="categoryFormControlPanel" t-inherit="web.ControlPanel" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_control_panel_navigation')]" position="replace">
+        </xpath>
+    </t>
+
+    <t t-name="categoryFormView" t-inherit="web.FormView" t-inherit-mode="primary">
+         <xpath expr="//Layout" position="attributes">
+            <attribute name="className" add="'o_knowledge_form_view d-flex border-top'" separator="+"/>
+        </xpath>
+        <xpath expr="//t[@archInfo='archInfo']" position="attributes">
+            <attribute name="class" add="'p-0 d-flex flex-column flex-grow-1 min-w-0 mw-100'"/>
+        </xpath>
+        <xpath expr="//t[@archInfo='archInfo']" position="before">
+             <aside class="o_knowledge_sidebar d-flex flex-shrink-0 d-print-none bg-view"
+                    t-attf-style="--knowledge-article-sidebar-size: 500px">
+                <div class="d-flex flex-column flex-grow-1 min-w-0">
+                <!-- Search bar -->
+                    <div class="d-flex align-items-center gap-2 px-md-3 px-3 ps-2 py-3">
+                     <div class="fam-cat"
+                          style="max-height:1000px;overflow: hidden;overflow-y: auto;scrollbar-width: thin;margin-bottom: 15px;padding-left:30px;">
+            <div class="jstr-navigation-panel jstr-hide-mobile jstr-hide-tablet">
+            <div class="jstr-panel-content">
+                <div class="jstr-search-input-container" style="border-bottom: 1px solid light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+                    padding-bottom: 20px;
+                    width: 100%;
+                    position: fixed;
+                    max-width: 876px;
+                    background-color: #ffffff;">
+                        </div>
+                <t t-set="Categories" t-value="state.categories"/>
+                <!--                 <t t-esc="props.existingCatList"/>-->
+                <div id="categories" class="jstree jstree-1 jstree-default">
+                    <ul class="jstree-container-ul jstree-children jstree-no-icons">
+                    <t t-foreach="Categories" t-as="categ_id" t-key="categ_id.id">
+                        <li role="none" t-att-id="categ_id.id"  class="jstree-node jstree-closed">
+                                     <i t-on-click="(ev) => this.show_child_categ(ev.currentTarget)"
+                                           class="jstree-icon jstree-ocl" role="presentation"></i>
+                                        <a class="jstree-anchor" href="#" tabindex="-1" role="treeitem" aria-selected="false"
+                                           aria-level="1" aria-expanded="true" t-att-id="categ_id.id+'_anchor'">
+                                            <i class="jstree-icon jstree-checkbox" role="presentation"></i>
+                                            <span styel="height:50px" t-att-id="categ_id.id"><t t-esc="categ_id.text"/></span>
+
+                                            <i t-on-click="(ev) => this.addCatgeory(ev,categ_id.id)" class="fa fa-plus-circle"></i>
+
+                                        </a>
+
+                            <ul class="jstree-children" t-att-id="'categ_'+categ_id.id" t-ref="draggable">
+                            <t t-call="category_hierarchy_widget.category_template">
+                                                            <t t-set="Categories"
+                                                               t-value="categ_id.children"/>
+                            </t>
+                            </ul>
+                        </li>
+                    </t>
+                </ul>
+                </div>
+            </div>
+        </div>
+         </div>
+
+                </div>
+                </div>
+             </aside>
+        </xpath>
+<!--                <div style="padding: 16px;">-->
+<!--                    <div class="col-lg-4 d-flex" style="border: 1px solid #d8dadd;padding: 24px;border-radius: 0.25rem;">-->
+<!--                        <div style="width: 50%;margin-right: 8px;font-size: 16px !important;background-color: #FFF; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;align-content: flex-start;">-->
+<!--                             <div class="col-lg-12 col-lg-6" style="font-size: 16px;padding: 0 1rem;background-color:  #2A5C80;color: #FFFFFF;height:55px;text-align:left;display: flex;justify-content: space-between;align-items: center;width:100% !important; font-weight:bold; border-radius:3px;">-->
+<!--                                <div>Unassigned Accounts:</div>-->
+<!--        &lt;!&ndash;                             <t t-if="state.edit_allowed">&ndash;&gt;-->
+<!--        &lt;!&ndash;                                 <button class="btn btn-secondary family-column-head" t-on-click.stop="(ev) => onAddAccount()">&ndash;&gt;-->
+<!--        &lt;!&ndash;                                    <i title="Select field" t-attf-class="fa fa-plus-circle"></i>&ndash;&gt;-->
+<!--        &lt;!&ndash;                                    Add accounts&ndash;&gt;-->
+<!--        &lt;!&ndash;                                 </button>&ndash;&gt;-->
+<!--        &lt;!&ndash;                             </t>&ndash;&gt;-->
+<!--                            </div>-->
+<!--                            <div class="o_left_panel col-12 d-flex flex-column flex-nowrap" style="padding-left: 30px;padding-right: 30px;padding-bottom: 15px;padding-top: 15px;max-height: 64vh;overflow: hidden;overflow-y: auto;">-->
+<!--                                <input t-ref="search" type="search"  class="form-control mb-3 o_export_search_input"-->
+<!--                                       id="o-export-search-filter" placeholder="Search" t-on-input="onSearch"/>-->
+<!--                                <div class="o_left_field_panel h-100 overflow-auto" style="background-color:#f2f4f7;overflow-x: hidden; overflow-y: auto;scrollbar-width: thin;">-->
+<!--                                        <div class="o_field_tree_structure">-->
+<!--        &lt;!&ndash;                                    <t t-if="accountsAvailable">&ndash;&gt;-->
+<!--                                            <t t-if="state.accounts.length">-->
+<!--                                                <t t-foreach="state.accounts" t-as="account" t-key="account.id" t-att-value="account.id">-->
+<!--                                                <t t-if="!isAccountSelected(account.id)">-->
+<!--                                                    <div t-att-data-field_id="account.id" t-attf-class="o_export_tree_item cursor-pointer position-relative" role="treeitem" t-on-dblclick="() => this.onDoubleClick(account.id)">-->
+<!--                                                        <div style="padding:10px;height:50px;width:100%;background-color:white;border:1px solid #e1e7f0;border-radius:1px;ellipsis; overflow: hidden; white-space: nowrap;" draggable="true" t-attf-class="o_tree_column d-flex align-items-center }}" t-att-id="account.id">-->
+<!--                                                            <span  class="overflow-hidden w-100" t-att-id="account.id"><t t-esc="account.name"/></span>-->
+<!--                                                            <span title="Select field" t-attf-class="oi-fw oi oi-view-list float-end m-1 o_add_field {{ isAccountSelected(account.id) ? 'o_inactive opacity-25' : '' }}" t-on-click.stop="(ev) => !this.isAccountSelected(account.id) and this.onAddItem(account.id,account.name)" />-->
+<!--                &lt;!&ndash;                                            <span title="Select field" t-attf-class="oi-fw oi oi-view-list float-end m-1 o_add_field {{ isAccountSelected(account.id) ? 'o_inactive opacity-25' : '' }}" t-on-click.stop="(ev) => !this.isAccountSelected(account.id) and this.onAddItem(account.id,account.name)" />&ndash;&gt;-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </t>-->
+<!--                                            </t>-->
+
+<!--                                            </t>-->
+<!--                                                <t t-else="">-->
+<!--                                                    <div style="padding: 10px;">-->
+<!--                                                         No Accounts.-->
+<!--                                                    </div>-->
+<!--                                                </t>-->
+<!--                                            </t>-->
+<!--                                        </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div style="width: 50%;margin-left: 8px;font-size: 16px !important;background-color: #FFF; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;align-content: flex-start;">-->
+<!--                             <div class="col-lg-12 col-lg-6" style="font-size: 16px;padding: 0 1rem;background-color:  #2A5C80;color: #FFFFFF;height:55px;text-align:left;display: flex;justify-content: space-between;align-items: center;width:100% !important; font-weight:bold; border-radius:3px;">-->
+<!--                                <div>Pricing Profile Name:</div>-->
+
+<!--                            </div>-->
+<!--                            <div t-attf-class="o_right_panel col-12 d-flex flex-column flex-nowrap mt-3 mt-md-0" style="padding-left: 30px;padding-right: 30px;padding-bottom: 15px;padding-top: 15px;max-height: 64vh;overflow: hidden;overflow-y: auto;">-->
+<!--            &lt;!&ndash;                <div class="o_exported_lists">&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <select class="form-select ms-4 o_exported_lists_select" t-on-change="onChangeProfile">&ndash;&gt;-->
+<!--            &lt;!&ndash;                                    <t t-foreach="state.profiles" t-as="profile" t-key="profile.id"  t-att-value="profile.id">&ndash;&gt;-->
+<!--            &lt;!&ndash;                                        <option t-att-value="profile.id" t-esc="profile.name"/>&ndash;&gt;-->
+<!--            &lt;!&ndash;                                    </t>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        </select>&ndash;&gt;-->
+<!--            &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                            <div class="o_right_field_panel overflow-auto" style="overflow-x: hidden; overflow-y: auto;text-align: justify;scrollbar-width: thin;" id="profile_accounts">-->
+<!--                                    <ul class="o_fields_list list-unstyled mb-0" t-ref="draggable">-->
+<!--                                        <t t-if="state.profiles.length">-->
+<!--                                            <t t-foreach="state.profiles" t-as="profile" t-key="profile.id" t-att-value="profile.id">-->
+<!--                                                 <div t-att-id="profile.id" class="container p-0 mb-2">-->
+<!--                                                        <li>-->
+<!--                                                            <div style="padding:10px;height:auto;width:100%;background-color:#d9dbde;border:1px solid #e1e7f0;border-radius:3px;font-weight: 500;">-->
+<!--                                                                <h3><t t-esc="profile.name"/>-->
+
+<!--                                                                <t t-if="state.edit_allowed">-->
+<!--                                                                     <span title="Clone Profile" t-attf-class="fa fa-copy float-end" t-on-click.stop="(ev) => onCloneProfile(profile.id)"/>-->
+<!--                                                                    <span title="Edit Profile" t-attf-class="fa fa-edit float-end" t-on-click.stop="(ev) => onEditProfile(profile.id)"/>-->
+
+<!--                                                                </t>-->
+<!--                                                                </h3>-->
+<!--                                                                <t t-if="profile.description">-->
+<!--                                                                    <t t-esc="profile.description"/>-->
+<!--                                                                </t>-->
+<!--                                                            </div>-->
+<!--                                                        </li>-->
+<!--                                                        <t t-if="state.profileAccounts[profile.id]">-->
+<!--                                                            <t t-foreach="state.profileAccounts[profile.id]" t-as="prof_account" t-key="prof_account.id"-->
+<!--                                                               t-att-value="prof_account.id">-->
+<!--                                                                        <ul t-att-id="prof_account.id">-->
+<!--                                                                                <div class="price-prof" style="padding:10px;height:50px;width:100%;background-color:white;border:1px solid #e1e7f0;border-radius:1px;"><t t-esc="prof_account.name"/>-->
+<!--                                                                                    <t t-if="state.edit_allowed">-->
+<!--                                                                                         <span class="fa fa-trash-o m-1 pe-2 float-end o_remove_field cursor-pointer" t-att-title="removeFieldText" t-on-click.stop="() => this.onRemoveItemExportList(prof_account.id,prof_account.name,profile.id)" />-->
+<!--                                                                                    </t>-->
+<!--                                                                                   </div>-->
+<!--                                                                        </ul>-->
+<!--                                                                 </t>-->
+<!--                                                            <t t-if="!state.profileAccounts[profile.id].length">-->
+<!--                                                            <div id="no_accounts" style="padding: 10px;">-->
+<!--                                                                <span t-att-id="profile.name"> No Accounts Added</span>-->
+<!--                                                            </div>-->
+<!--                                                        </t>-->
+<!--                                                    </t>-->
+<!--                                                 </div>-->
+<!--                                             </t>-->
+
+<!--                                        </t>-->
+<!--                                        <t t-else="">-->
+<!--                                            <div id="no_accounts" style="padding: 10px;">-->
+<!--                                                <span> No Profiles exist. Please create one.</span>-->
+<!--                                            </div>-->
+<!--                                        </t>-->
+
+<!--                                    </ul>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--              </xpath>-->
+    </t>
+</templates>
