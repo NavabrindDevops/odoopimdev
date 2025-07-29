@@ -84,9 +84,9 @@
               parent="pim_ext.menu_root_product_managements"
               sequence="30"/>
 
-<!--    <menuitem id="menu_pim_attribute_action"-->
-<!--              action="action_product_attributes_custom" name="Attributes"-->
-<!--              parent="pim_ext.menu_root_product_management" sequence="10"/>-->
+    <menuitem id="menu_pim_attribute_action"
+              action="action_product_attributes_custom" name="Attributes"
+              parent="pim_ext.menu_root_product_management" sequence="10"/>
 
     <menuitem id="menu_pim_attribute_action2"
               action="action_attribute_group_view" name="Attributes Groups"
