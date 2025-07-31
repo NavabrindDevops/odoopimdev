@@ -18,7 +18,7 @@
            <xpath expr="//t[@t-set-slot='control-panel-create-button'][2]" position="replace">
             <t t-set-slot="control-panel-create-button">
                  <t t-if="canCreate">
-                    <t t-if="props.resModel == 'pim.category'">
+                    <t t-if="props.resModel == 'product.category'">
                         <button type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c"
                                 t-on-click.stop="create">Create Category</button>
                     </t>

@@ -94,7 +94,7 @@ class ProductCreateMaster(models.Model):
     _description = 'Product creation page'
     _rec_name = 'sku'
 
-    family_id = fields.Many2one('family.attribute', string='Family')
+    family_id = fields.Many2one('family.attribute', string='Family',required=True)
     sku = fields.Char(string='SKU')
     name = fields.Char(string='Name')
     image = fields.Binary("Product Image", attachment=True)
@@ -157,11 +157,11 @@ class ProductCreateMaster(models.Model):
                     # Add field to product template dynamically
                     attributes_list.append(field_name)
                     if attribute.display_type == 'radio':
-                        field_name_xml = f'<field name="{field_name}" widget="radio"/>'
+                        field_name_xml = f'<field name="{field_name}" string="{attribute.name}" widget="radio"/>'
                     elif created_field.ttype == 'many2many':
-                        field_name_xml = f'<field name="{field_name}" widget="many2many_tags"/>'
+                        field_name_xml = f'<field name="{field_name}" string="{attribute.name}" widget="many2many_tags"/>'
                     else:
-                        field_name_xml = f'<field name="{field_name}"/>'
+                        field_name_xml = f'<field name="{field_name}" string="{attribute.name}"/>'
                     new_field_xml += field_name_xml
 
                 new_field_xml += '</group>'

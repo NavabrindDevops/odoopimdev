@@ -1,34 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="template" xml:space="preserve">
-    <t t-name="category_hierarchy_widget.category_template">
-        <t t-foreach="Categories" t-as="categ_id" t-key="categ_id.id">
-                    <t t-if="categ_id.children.length">
-                        <li t-att-id="categ_id.id" class="jstree-node jstree-closed">
-                            <i t-on-click="(ev) => this.show_child_categ(ev.currentTarget)" class="jstree-icon jstree-ocl" role="presentation"></i>
-                            <a  class="jstree-anchor" href="#" tabindex="-1" role="treeitem" aria-selected="false" aria-level="1" aria-expanded="true" t-att-id="categ_id.id+'_anchor'">
-                                <i class="jstree-icon jstree-checkbox" role="presentation"></i>
-                                <span t-att-id="categ_id.id"><t t-esc="categ_id.text"/></span>
-                                <i t-on-click="(ev) => this.addCatgeory(ev,categ_id.id)" class="fa fa-plus-circle"></i>
-                            </a>
-                            <ul class="jstree-children" t-att-id="'categ_-'+categ_id.id" t-ref="draggable">
-                                <t t-call="category_hierarchy_widget.category_template">
-                                    <t t-set="Categories" t-value="categ_id.children"/>
-                                </t>
-                            </ul>
-                        </li>
-                    </t>
-                    <t t-else="">
-                            <li class="jstree-node jstree-leaf" t-att-id="categ_id.id" style="color:#abaaa9">
-                                 <i class="jstree-icon jstree-ocl" role="presentation"></i>
-                                <a  class="jstree-anchor" tabindex="-1" role="treeitem" aria-selected="false" aria-level="1" aria-expanded="true" t-att-id="categ_id.id+'_anchor'">
-                                    <i class="jstree-icon jstree-checkbox" role="presentation"></i>
-                                    <span draggable="true" t-att-id="categ_id.id"><t t-esc="categ_id.text"/></span>
-                                    <i t-on-click="(ev) => this.addCatgeory(ev,categ_id.id)" class="fa fa-plus-circle"></i>
-                            </a>
-                            </li>
-                    </t>
-        </t>
-    </t>
     <t t-name="CategoryHierarchyTemplate" owl="1">
                  <div class="fam-cat" style="max-height:500px;overflow: hidden;overflow-y: auto;scrollbar-width: thin;margin-bottom: 15px;padding-left:30px;">
             <div class="jstr-navigation-panel jstr-hide-mobile jstr-hide-tablet">

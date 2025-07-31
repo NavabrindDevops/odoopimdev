@@ -114,3 +114,12 @@ li.jstr-selected-parent .jstree-checked {
 .jstree-default .jstree-leaf > .jstree-ocl {
   background-position: -68px -4px;
 }
+.btn-secondary {
+    &.gridButton {
+        &:hover {
+            background-color: transparent !important;
+            color: #2A5C80 !important;
+            border-color: #2A5C80;
+        }
+    }
+}

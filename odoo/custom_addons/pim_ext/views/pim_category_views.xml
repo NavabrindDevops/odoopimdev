@@ -3,30 +3,23 @@
     <data>
         <record id="view_tree_pim_categories" model="ir.ui.view">
             <field name="name">pim.categories.tree.view</field>
-            <field name="model">pim.category</field>
+            <field name="model">product.category</field>
             <field name="arch" type="xml">
                 <list create="false" default_order="create_date desc">
-                    <header>
-                        <button name="create_pim_category" type="object" class="btn-primary"
-                                string="Create Category" display="always"
-                                invisible="context.get('active_model', 'pim.category') != 'pim.category'"/>
-                    </header>
                     <field name="code"/>
                     <field name="name"/>
                     <field name="parent_id"/>
                     <field name="complete_name"/>
                     <field name="active" widget="boolean_toggle"/>
-                    <button name="category_edit_open_form_view" type="object" icon="fa-pencil-square-o"
-                            class="btn-link"/>
-                    <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+                   <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
                 </list>
             </field>
         </record>
         <record id="view_hierarchy_pim_categories" model="ir.ui.view">
-            <field name="name">pim.categories.hierarchy</field>
-            <field name="model">pim.category</field>
+            <field name="name">product.categories.hierarchy</field>
+            <field name="model">product.category</field>
             <field name="arch" type="xml">
-                <hierarchy child_field="child_ids" draggable="1">
+                <hierarchy child_field="child_id" draggable="1">
                     <field name="name"/>
                     <templates>
                         <t t-name="hierarchy-box">
@@ -40,18 +33,17 @@
         </record>
         <record id="view_form_pim_categories" model="ir.ui.view">
             <field name="name">pim.categories.form.view</field>
-            <field name="model">pim.category</field>
+            <field name="model">product.category</field>
             <field name="arch" type="xml">
-                <form string="Category" create="true" edit="true" delete="false" class="page_form"
+                <form string="Category" create="false" edit="true" delete="false" class="page_form"
                       js_class="category_form_view">
                     <sheet>
                         <notebook>
                             <page string="General">
                                 <group>
-                                    <field name="name" required="True"/>
+                                    <field name="name"/>
                                     <field name="code"/>
-                                    <field name="parent_id"
-                                           options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                                    <field name="parent_id" readonly="1" />
                                     <field name="complete_name" readonly="1"/>
                                     <field name="active" widget="boolean_toggle"/>
                                 </group>
@@ -62,15 +54,13 @@
                                 </group>
                             </page>
                         </notebook>
-
                     </sheet>
                 </form>
-
             </field>
         </record>
         <record id="view_pim_category_filter" model="ir.ui.view">
             <field name="name">Category</field>
-            <field name="model">pim.category</field>
+            <field name="model">product.category</field>
             <field name="priority" eval="15"/>
             <field name="arch" type="xml">
                 <search string="PIM Category">
@@ -96,13 +86,14 @@
 
         <record id="action_pim_categories" model="ir.actions.act_window">
             <field name="name">Category</field>
-            <field name="res_model">pim.category</field>
-            <field name="view_mode">list,hierarchy</field>
+            <field name="res_model">product.category</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="pim_ext.view_form_pim_categories"/>
         </record>
 
         <menuitem id="menu_pim_categories"
                   name="Manage Categories"
-                  action="action_pim_categories"
+                  action="pim_ext.ir_actions_categories_home_page"
                   parent="pim_ext.menu_root_product_management"
                   sequence="40"/>
 
