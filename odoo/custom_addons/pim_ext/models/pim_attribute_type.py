@@ -9,6 +9,7 @@ import re
 class PIMAttributeType(models.Model):
      _name = 'pim.attribute.type'
      _description = 'PIM Attribute Type'
+     _inherit = ['mail.thread', 'mail.activity.mixin']
      _rec_name = 'name'
 
      name = fields.Char(string="Attribute Name", default=' ')
@@ -16,7 +17,7 @@ class PIMAttributeType(models.Model):
      attribute_types_id = fields.Many2one('pim.attribute.type', string='Parent Attributes', index=True, ondelete="cascade")
      attribute_ids = fields.One2many('pim.attribute.type', 'attribute_types_id', string='Attributes')
      is_invisible=fields.Boolean(default=False, string='Invisible Types')
-     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', tracking=True)
+     attribute_group = fields.Many2one('attribute.group', string='Attribute Group',tracking=True)
      attribute_types = fields.Selection([('basic', 'Basic'), ('optional', 'Optional')], string='Attribute Type')
      is_mandatory = fields.Boolean(string='Mandatory', default=False)
      is_required_in_clone = fields.Boolean(string='Required in Clone', default=True)
@@ -312,7 +313,8 @@ class PIMAttributeType(models.Model):
                self._log_changes(rec, vals, action="update")
 
           return res
-
+     
+     @api.model_create_multi
      def create(self, vals):
           vals['code'] = self.env['ir.sequence'].next_by_code(
                'pim.attribute.type') or None
@@ -762,6 +764,7 @@ class PIMAttributeType(models.Model):
 
 class PimAttributeValue(models.Model):
     _name = 'pim.attribute.value'
+    _description ='Pim Attribute Value'
 
     def _get_default_color(self):
         return randint(1, 11)

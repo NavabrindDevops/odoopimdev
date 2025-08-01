@@ -56,7 +56,7 @@ class AttributeForm(models.Model):
                'simple_select': 'cascade',
           },
      )
-     attribute_group = fields.Many2one('attribute.group', string='Attribute Group', tracking=True)
+     attribute_group = fields.Many2many('attribute.group', string='Attribute Group', tracking=True)
      attribute_type_id = fields.Many2one('pim.attribute.type', string='PIM Attribute Type')
      parent_attribute_id = fields.Many2one('product.attribute', string='Attribute')
      is_mandatory = fields.Boolean(string='Mandatory', default=False)
@@ -131,6 +131,7 @@ class AttributeForm(models.Model):
      widget = fields.Char("Widget")
      max_value = fields.Char("Max Length")
      alpha_numeric_value = fields.Boolean("Alpha Numeric Validation")
+     company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
 
      @api.depends('name')
      def _compute_label_attribute_translation(self):
@@ -382,9 +383,23 @@ class AttributeForm(models.Model):
                     attribute = rec._fields[key].string
 
                     if key == 'attribute_group':
-                         old_value = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
-                         new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
-                              key) else 'N/A'
+                         old_value = ', '.join(rec.attribute_group.mapped('display_name')) or 'N/A'
+
+                         # Extract only the IDs from the command tuples (e.g., (4, id))
+                         command_list = vals.get(key, [])
+                         group_ids = []
+                         for command in command_list:
+                              if isinstance(command, (list, tuple)) and command[0] in [4, 6]:
+                                   if command[0] == 4:
+                                        group_ids.append(command[1])
+                                   elif command[0] == 6 and isinstance(command[1], list):
+                                        group_ids.extend(command[1])
+                         new_value_recs = self.env['attribute.group'].browse(group_ids)
+                         new_value = ', '.join(new_value_recs.mapped('display_name')) or 'N/A'
+                    # if key == 'attribute_group':
+                    #      old_value = rec.attribute_group.display_name if rec.attribute_group else 'N/A'
+                    #      new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(
+                    #           key) else 'N/A'
                     else:
                          # Set old_value to 'N/A' if creating a new record
                          old_value = getattr(rec, key, 'N/A') if action == "update" else 'N/A'
@@ -413,16 +428,54 @@ class AttributeForm(models.Model):
               """
 
                rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
-
+    
+     @api.model_create_multi
      def create(self, vals):
-          # Create the record
-          record = super(AttributeForm, self).create(vals)
-          self._log_changes(record, vals, action="create")
-          return record
+          rec = super(AttributeForm, self).create(vals)
+
+          # If attribute_group is set during creation
+          if vals.get('attribute_group'):
+               for group in rec.attribute_group:
+                    existing_line = group.attribute_group_line_ids.filtered(
+                         lambda l: l.product_attribute_id == rec.id)
+                    if not existing_line:
+                         rec.env['attribute.group.lines'].create({
+                              'attr_group_id': group.id,
+                              'product_attribute_id': rec.id
+                         })
+          self._log_changes(rec, vals, action="create")
+
+          return rec
 
      def write(self, vals):
           for rec in self:
-               self._log_changes(rec, vals, action="update")
+               rec._log_changes(rec, vals, action="update")
+               original_groups = rec.attribute_group
+               result = super(AttributeForm, rec).write(vals)
+
+               if 'attribute_group' in vals:
+                    updated_groups = rec.attribute_group
+                    added_groups = updated_groups - original_groups
+                    for group in added_groups:
+                         existing_line = group.attribute_group_line_ids.filtered(
+                              lambda l: l.product_attribute_id == rec.id)
+                         if not existing_line:
+                              self.env['attribute.group.lines'].create({
+                                   'attr_group_id': group.id,
+                                   'product_attribute_id': rec.id
+                              })
+
+                    removed_groups = original_groups - updated_groups
+                    for group in removed_groups:
+                         if rec in group.attributes_ids:
+                              group.attributes_ids = [(3, rec.id)]
+
+                         lines_to_remove = group.attribute_group_line_ids.filtered(
+                              lambda l: l.product_attribute_id == rec.id)
+                         lines_to_remove.unlink()
+
+               return result
+
           return super(AttributeForm, self).write(vals)
 
      def sort_colors(self):

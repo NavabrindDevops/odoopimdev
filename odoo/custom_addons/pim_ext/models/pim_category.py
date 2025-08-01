@@ -23,7 +23,7 @@ class PimCategory(models.Model):
     parent_id = fields.Many2one('pim.category', string='Parent Category', index=True, ondelete="cascade")
     parent_path = fields.Char(index=True, unaccent=False)
     category_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories')
-    child_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories')
+    child_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories ')
     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
     def update_parent_category(self,child_id,new_parent_id):
@@ -108,7 +108,7 @@ class PimCategory(models.Model):
             self._log_changes(rec, vals, action="update")  # Call the common function with action as "update"
         return super(PimCategory, self).write(vals)
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         vals['code'] = self.env['ir.sequence'].next_by_code(
             'pim.category') or None

@@ -16,3 +16,4 @@ from . import supplier
 from . import product_create
 from . import product_attribute
 from . import attribute_group
+from . import family_attribute

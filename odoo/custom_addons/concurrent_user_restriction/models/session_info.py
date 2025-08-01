@@ -8,6 +8,7 @@ from odoo.http import request
 
 class SessionInfo(models.Model):
     _name = 'session.info'
+    _description ="Session Info"
 
     name = fields.Char()
     session_id = fields.Char()

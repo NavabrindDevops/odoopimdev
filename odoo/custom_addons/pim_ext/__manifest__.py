@@ -8,7 +8,7 @@
         Project Information Management
     """,
     'category': 'product',
-    'depends': ['web', 'base', 'sale', 'product','stock','website_sale','web_hierarchy'],
+    'depends': ['web', 'base', 'sale', 'product','stock','website_sale','web_hierarchy','mail'],
     'data': [
         'security/group_security.xml',
         'security/ir.model.access.csv',
@@ -23,9 +23,9 @@
         'views/product_view.xml',
         'views/product_template_view.xml',
         'views/product_attribute.xml',
-        # 'views/pim_attribute_type_views.xml',
+        'views/family_attribute.xml',
         # 'views/pim_attribute_details_views.xml',
-        'views/pim_attribute_group_views.xml',
+        # 'views/pim_attribute_group_views.xml',
         'wizard/attribute_group_wizard_views.xml',
         'wizard/attribute_wizard_views.xml',
         'wizard/attribute_variant_wizard_views.xml',

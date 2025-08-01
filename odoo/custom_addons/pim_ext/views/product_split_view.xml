@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
         <!-- Define the custom layout view -->
@@ -23,9 +24,9 @@
                                     <field name="active_label"/>
                                     <field name="create_date"/>
                                     <field name="write_date"/>
-                                    <button name="custom_product_open_form_view" string = " " icon="fa-edit" type="object" />
-                                    <button name="custom_product_open_default_form_view" string = " " icon="fa-info" type="object" />
-                                    <button name="custom_product_unlink" string = " " icon="fa-trash-o" type="object" />
+                                    <button name="custom_product_open_form_view" string = " " icon="fa-edit" title='edit' type="object" />
+                                    <button name="custom_product_open_default_form_view" string = " " icon="fa-info" title='info' type="object" />
+                                    <button name="custom_product_unlink" string = " " icon="fa-trash-o" title='delete' type="object" />
                                 </list>
                             </field>
                         </div>
@@ -105,6 +106,18 @@
                                                        </div>
                                                        <div>
                                                        <field name="category_id" nolabel="1"
+                                                                  options="{'no_open': True, 'no_create': True}"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="company_id" string="Company"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                       <field name="company_id" nolabel="1"
                                                                   options="{'no_open': True, 'no_create': True}"
                                                                   class="attribute_type_class"/>
                                                        </div>

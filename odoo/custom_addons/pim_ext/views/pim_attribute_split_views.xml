@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
         <!-- Define the custom layout view -->
@@ -17,8 +18,8 @@
 <!--                                    <field name="is_required_in_clone" widget="boolean_toggle"/>-->
 <!--                                    <field name="is_cloning" widget="boolean_toggle" invisible="1"/>-->
 <!--                                    <field name="is_completeness" widget="boolean_toggle"/>-->
-                                    <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
-                                    <button name="attribute_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+                                    <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" title='view' class="btn-link"/>
+                                    <button name="attribute_master_unlink" type="object" icon="fa-trash" title='delete' class="btn-link text-danger"/>
                                 </list>
                             </field>
                         </div>
@@ -351,8 +352,8 @@
                 <field name="is_cloning" widget="boolean_toggle" column_invisible="True"/>
                 <field name="is_completeness" widget="boolean_toggle"/>
 <!--                <field name="state" widget="badge" decoration-success="state == 'publish'" decoration-danger="state == 'unpublish'"/>-->
-                <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" class="btn-link"/>
-                <button name="attribute_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+                <button name="attribute_edit_open_form_view" type="object" icon="fa-pencil-square-o" title='view' class="btn-link"/>
+                <button name="attribute_master_unlink" type="object" icon="fa-trash" title='delete' class="btn-link text-danger"/>
                 </list>
             </field>
         </record>

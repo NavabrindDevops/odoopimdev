@@ -45,18 +45,35 @@ class AttributeGroup(models.Model):
                 return 1
 
     def clear_edit_session(self):
-        print("clear edit session", self.edit_session_name)
-        if self.env.user.has_group('pim_ext.group_admin_user'):
-            self_session = request.session.sid
-            session_details = self.env['session.info'].search(
-                [('session_id', '=', self_session), ('attribute_group_id', '=', self.id)])
-            if self.edit_session_name == self_session:
-                self.edit_session_id = False
-                self.edit_session_name = False
-                self.editing = False
+        for rec in self:
+            print("clear edit session", rec.edit_session_name)
+
+            if self.env.user.has_group('pim_ext.group_admin_user'):
+                self_session = request.session.sid
+                session_details = self.env['session.info'].search([
+                    ('session_id', '=', self_session),
+                    ('attribute_group_id', '=', rec.id)
+                ])
+                if rec.edit_session_name == self_session:
+                    rec.edit_session_id = False
+                    rec.edit_session_name = False
+                    rec.editing = False
+                    session_details.active_state = False
                 session_details.active_state = False
-            session_details.active_state = False
-            session_details.last_access_time = datetime.now()
+                session_details.last_access_time = datetime.now()
+    # def clear_edit_session(self):
+    #     print("clear edit session", self.edit_session_name)
+    #     if self.env.user.has_group('pim_ext.group_admin_user'):
+    #         self_session = request.session.sid
+    #         session_details = self.env['session.info'].search(
+    #             [('session_id', '=', self_session), ('attribute_group_id', '=', self.id)])
+    #         if self.edit_session_name == self_session:
+    #             self.edit_session_id = False
+    #             self.edit_session_name = False
+    #             self.editing = False
+    #             session_details.active_state = False
+    #         session_details.active_state = False
+    #         session_details.last_access_time = datetime.now()
 
     def save_session(self, self_session):
         session_details = self.env['session.info'].search(

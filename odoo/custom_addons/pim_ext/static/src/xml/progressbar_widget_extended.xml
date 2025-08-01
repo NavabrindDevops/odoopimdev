@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 <!--    <t t-name="pim_ext.inherit_animated_number" t-inherit="web.AnimatedNumber">-->
 <!--        <xpath expr="//div[hasclass('o_animated_number')]" position="replace">-->

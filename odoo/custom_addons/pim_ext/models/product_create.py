@@ -7,6 +7,7 @@ import json
 
 class ProductCreate(models.Model):
     _name = 'product.create'
+    _description ="Product Create"
     _rec_name = 'name'
 
     name = fields.Char(string='Name')
@@ -428,6 +429,7 @@ class ProductCreateMaster(models.Model):
 
 class Many2manySelectionValues(models.Model):
     _name = 'many2many.selection.values'
+    _description = "Many2many Selection Values"
 
     name = fields.Char()
     field_name = fields.Char()

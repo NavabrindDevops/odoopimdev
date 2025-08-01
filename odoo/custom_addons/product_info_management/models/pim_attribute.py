@@ -5,6 +5,7 @@ from odoo import api, fields, models, _
 class PIMAttribute(models.Model):
     _name = 'pim.attribute'
     _description = 'PIM Attributes'
+    _rec_name = 'name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     attribute_type = fields.Selection(

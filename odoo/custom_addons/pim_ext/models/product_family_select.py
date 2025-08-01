@@ -5,6 +5,7 @@ from odoo import api, fields, models, _
 
 class PimSelect(models.TransientModel):
     _name = "product.family.select"
+    _description ="Product Family Select"
     _rec_name = 'sku'
 
     type_name = fields.Char(string="Attribute Type Name")

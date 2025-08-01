@@ -8,21 +8,21 @@ class ProductValSelect(models.TransientModel):
     _name = 'product.val.select'
     _description = 'Product Value Update'
     
-    fieldname = fields.Many2one('ir.model.fields','Field Name',required=1,domain="[('name','in',('mpn_number','status','origin','po_min','po_max','p65','attribute1_id','attribute2_id','attribute3_id','attribute4_id')),('model','=','product.template')]")
+    fieldname = fields.Many2one('ir.model.fields','Field Name',required=True,domain="[('name','in',('mpn_number','status','origin','po_min','po_max','p65','attribute1_id','attribute2_id','attribute3_id','attribute4_id')),('model','=','product.template')]")
     field_value = fields.Char('Value')
-    select_id = fields.Many2one('product.multi.select','Mass Select',required=1)
+    select_id = fields.Many2one('product.multi.select','Mass Select',required=True)
     
 class ProductMultiSelect(models.TransientModel):
     _name = 'product.multi.select'
     _description = 'Update Multiple Products'
     
-    attribute1_id = fields.Many2one('product.attribute1','Attribute 1')
+    # attribute1_id = fields.Many2one('product.attribute1','Attribute 1')
     attribute1_val = fields.Char('Value 1')
-    attribute2_id = fields.Many2one('product.attribute2','Attribute 2')
+    # attribute2_id = fields.Many2one('product.attribute2','Attribute 2')
     attribute2_val = fields.Char('Value 2')
-    attribute3_id = fields.Many2one('product.attribute3','Attribute 3')
+    # attribute3_id = fields.Many2one('product.attribute3','Attribute 3')
     attribute3_val = fields.Char('Value 3')
-    attribute4_id = fields.Many2one('product.attribute4','Attribute 4')
+    # attribute4_id = fields.Many2one('product.attribute4','Attribute 4')
     attribute4_val = fields.Char('Value 4')
     mpn_number = fields.Char('MPN')
     status = fields.Selection([('active','Active'),('inactive','In Active')],'Status')

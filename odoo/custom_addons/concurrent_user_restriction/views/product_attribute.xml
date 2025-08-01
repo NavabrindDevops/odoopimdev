@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
      <record id="attribute_form_view_concurrent_inherit" model="ir.ui.view">
         <field name="name">Attribute Form View</field>
