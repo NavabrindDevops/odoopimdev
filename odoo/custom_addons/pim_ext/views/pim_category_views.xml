@@ -6,12 +6,12 @@
             <field name="model">product.category</field>
             <field name="arch" type="xml">
                 <list create="false" default_order="create_date desc">
-                    <field name="code"/>
+<!--                    <field name="code"/>-->
                     <field name="name"/>
                     <field name="parent_id"/>
                     <field name="complete_name"/>
-                    <field name="active" widget="boolean_toggle"/>
-                   <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+<!--                    <field name="active" widget="boolean_toggle"/>-->
+<!--                   <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>-->
                 </list>
             </field>
         </record>
@@ -42,15 +42,15 @@
                             <page string="General">
                                 <group>
                                     <field name="name"/>
-                                    <field name="code"/>
+<!--                                    <field name="code"/>-->
                                     <field name="parent_id" readonly="1" />
                                     <field name="complete_name" readonly="1"/>
-                                    <field name="active" widget="boolean_toggle"/>
+<!--                                    <field name="active" widget="boolean_toggle"/>-->
                                 </group>
                             </page>
                             <page string="History">
                                 <group>
-                                    <field name="history_log" nolabel="1" readonly="1"/>
+<!--                                    <field name="history_log" nolabel="1" readonly="1"/>-->
                                 </group>
                             </page>
                         </notebook>
@@ -64,15 +64,15 @@
             <field name="priority" eval="15"/>
             <field name="arch" type="xml">
                 <search string="PIM Category">
-                    <field name="code"/>
+<!--                    <field name="code"/>-->
                     <field name="name"/>
                     <field name="parent_id"/>
                     <field name="complete_name"/>
-                    <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
-                    <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
+<!--                    <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>-->
+<!--                    <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>-->
                     <group expand="0" string="Group By">
-                        <filter string="Code" name="category_code" domain="[]"
-                                context="{'group_by': 'code'}"/>
+<!--                        <filter string="Code" name="category_code" domain="[]"-->
+<!--                                context="{'group_by': 'code'}"/>-->
                         <filter string="Name" name="category_name" domain="[]"
                                 context="{'group_by': 'name'}"/>
                         <filter string="Parent Category" name="parent_group" domain="[]"
@@ -91,11 +91,11 @@
             <field name="view_id" ref="pim_ext.view_form_pim_categories"/>
         </record>
 
-        <menuitem id="menu_pim_categories"
-                  name="Manage Categories"
-                  action="pim_ext.ir_actions_categories_home_page"
-                  parent="pim_ext.menu_root_product_management"
-                  sequence="40"/>
+<!--        <menuitem id="menu_pim_categories"-->
+<!--                  name="Manage Categories"-->
+<!--                  action="pim_ext.ir_actions_categories_home_page"-->
+<!--                  parent="pim_ext.menu_root_product_management"-->
+<!--                  sequence="40"/>-->
 
         <record id="view_category_master_unlink_wizard_form" model="ir.ui.view">
             <field name="name">category.master.unlink.wizard.form</field>
