@@ -60,18 +60,15 @@
                                                        <button name="action_open_attribute_group_wizard" type="object" string="Add By Groups" class="oe_button btn-primary"/>
                                                        <button name="action_open_add_attribute_wizard" type="object" string="Add Attribute" class="oe_button btn-primary"/>
                                                    </div>
+                                                   <field name="exist_attribute_ids" string="Exist Attributes" widget="many2many_tags" invisible="0"/>
+                                                   <field name="exist_group_ids" string="Exist Attribute Group" widget="many2many_tags" invisible="0"/>
                                                    <br/>
-                                                   <field name="product_families_ids">
+                                                   <field name="family_attribute_ids">
                                                        <list editable="bottom" edit="false" create="false" default_order="create_date desc">
                                                             <field name="attribute_group_id" widget="many2one"
                                                                    options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
                                                                    group_by="attribute_group_id"/>
-                    <!--                                    <control><create class="btn btn-primary" name="add_line_control" string="Add SKU(s)"/></control>-->
-                                                           <field name="product_id" column_invisible="True"/>
-                                                           <field name="product_id_stored" column_invisible="True"/>
                                                            <field name="attribute_id"/>
-                                                           <field name="completeness_percent" widget="progressbar_extended" optional="hide"/>
-<!--                                                           <field name="attribute_group_id" optional="hide"/>-->
                                                        </list>
                                                    </field>
                                                </page>

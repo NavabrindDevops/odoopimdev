@@ -9,13 +9,13 @@ class AddAttributeWizard(models.TransientModel):
 
     attribute_ids = fields.Many2many('product.attribute', string='Attributes', required=True)
     attribute_family_id = fields.Many2one('family.attribute', string='Families')
+    exist_attribute_ids = fields.Many2many('product.attribute', related='attribute_family_id.exist_attribute_ids')
 
     def add_attributes_to_family(self):
-        family_id = self.attribute_family_id.id
-        family = self.env['family.attribute'].browse(family_id)
+        family = self.attribute_family_id
         for attribute in self.attribute_ids:
             family.write({
-                'product_families_ids': [(0, 0, {
+                'family_attribute_ids': [(0, 0, {
                     'attribute_id': attribute.id,
                 })]
             })

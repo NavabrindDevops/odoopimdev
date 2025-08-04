@@ -44,12 +44,15 @@ class FamilyAttribute(models.Model):
     availability = fields.Selection([('all', 'All Channel')], 'Availability')
     swatch = fields.Selection([('yes', 'Yes'), ('no', 'No')], 'Swatch')
     gift = fields.Selection([('yes', 'Yes'), ('no', 'No')], 'Gift')
-    attribute1_id = fields.Many2one('product.attribute1', 'Attribute 1')
-    attribute2_id = fields.Many2one('product.attribute2', 'Attribute 2')
-    attribute3_id = fields.Many2one('product.attribute3', 'Attribute 3')
-    attribute4_id = fields.Many2one('product.attribute4', 'Attribute 4')
+    # attribute1_id = fields.Many2one('product.attribute1', 'Attribute 1')
+    # attribute2_id = fields.Many2one('product.attribute2', 'Attribute 2')
+    # attribute3_id = fields.Many2one('product.attribute3', 'Attribute 3')
+    # attribute4_id = fields.Many2one('product.attribute4', 'Attribute 4')
+    exist_attribute_ids = fields.Many2many('product.attribute','family_mapped_attributes_rel', 'family_id', 'attribute_id', string='Exist Attributes')
+    exist_group_ids = fields.Many2many('attribute.group','family_mapped_groups_rel', 'family_id', 'attribute_group_id', string='Exist Attribute Groups')
     asn_description = fields.Html('ASN Description')
     product_families_ids = fields.One2many('family.products.line', 'families_id', 'Attributes', readonly=False)
+    family_attribute_ids = fields.One2many('family.attributes', 'family_id', 'Family Attributes', readonly=False)
     variant_line_ids = fields.One2many('family.variant.line', 'variant_familiy_id', 'Variants', readonly=False)
 
     attribute_label = fields.Char(string='English', compute="_compute_family_label_translation")
@@ -225,7 +228,10 @@ class FamilyAttribute(models.Model):
     def write(self, vals):
         for rec in self:
             self._log_changes(rec, vals, action="update")
-        return super(FamilyAttribute, self).write(vals)
+        res = super(FamilyAttribute, self).write(vals)
+        if not self.env.context.get('syncing_exist_attrs'):
+            self.with_context(syncing_exist_attrs=True).sync_exist_attribute_ids()
+        return res
 
     @api.depends('name')
     def _compute_family_label_translation(self):
@@ -298,8 +304,27 @@ class FamilyAttribute(models.Model):
         vals['code'] = self.env['ir.sequence'].next_by_code(
             'family.attribute') or None
         res = super(FamilyAttribute, self).create(vals)
+        if self.family_attribute_ids:
+            self.sync_exist_attribute_ids()
         self._log_changes(res, vals, action="create")
         return res
+
+    def sync_exist_attribute_ids(self):
+        print("_sync_exist_attribute_ids =================")
+        for rec in self:
+            attributes = []
+            groups = []
+            for line in rec.family_attribute_ids:
+                if line.attribute_id:
+                    attributes.append(line.attribute_id.id)
+                if line.attribute_group_id:
+                    groups.append(line.attribute_group_id.id)
+
+            # Use `with_context` to avoid re-triggering `write()` logic
+            rec.with_context(syncing_exist_attrs=True).write({
+                'exist_attribute_ids': [(6, 0, attributes)],
+                'exist_group_ids': [(6, 0, groups)]
+            })
 
     def edit_family(self):
         pass
@@ -391,3 +416,11 @@ class AttributeFamilyUnlinkWizard(models.TransientModel):
                 'menu_id': menu_id.id,
             },
         }
+
+class FamilyAttributes(models.Model):
+    _name = 'family.attributes'
+    _description = 'Family Attributes'
+
+    attribute_id = fields.Many2one('product.attribute', string='Attribute')
+    attribute_group_id = fields.Many2one('attribute.group', string='Attribute Group')
+    family_id = fields.Many2one('family.attribute', 'Family')

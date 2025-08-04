@@ -7,8 +7,9 @@
             <form string="Select Attribute Groups">
                 <group>
                     <!-- Allow multiple attribute groups to be selected -->
-                    <field name="attribute_group_ids" widget="many2many_tags" domain="[('active', '=', True)]"
+                    <field name="attribute_group_ids" widget="many2many_tags" domain="[('active', '=', True),('id', 'not in', exist_group_ids)]"
                            options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                    <field name="exist_group_ids" widget="many2many_tags"/>
                     <field name="attribute_family_id" string="Family" readonly="1" options="{'no_open': True}"/>
                 </group>
                 <footer>

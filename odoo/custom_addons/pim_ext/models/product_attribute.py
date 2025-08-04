@@ -433,16 +433,16 @@ class AttributeForm(models.Model):
      def create(self, vals):
           rec = super(AttributeForm, self).create(vals)
 
-          # If attribute_group is set during creation
-          if vals.get('attribute_group'):
-               for group in rec.attribute_group:
-                    existing_line = group.attribute_group_line_ids.filtered(
-                         lambda l: l.product_attribute_id == rec.id)
-                    if not existing_line:
-                         rec.env['attribute.group.lines'].create({
-                              'attr_group_id': group.id,
-                              'product_attribute_id': rec.id
-                         })
+          # # If attribute_group is set during creation
+          # if vals.get('attribute_group'):
+          #      for group in rec.attribute_group:
+          #           existing_line = group.attribute_group_line_ids.filtered(
+          #                lambda l: l.product_attribute_id == rec.id)
+          #           if not existing_line:
+          #                rec.env['attribute.group.lines'].create({
+          #                     'attr_group_id': group.id,
+          #                     'product_attribute_id': rec.id
+          #                })
           self._log_changes(rec, vals, action="create")
 
           return rec
@@ -455,17 +455,8 @@ class AttributeForm(models.Model):
 
                if 'attribute_group' in vals:
                     updated_groups = rec.attribute_group
-                    added_groups = updated_groups - original_groups
-                    for group in added_groups:
-                         existing_line = group.attribute_group_line_ids.filtered(
-                              lambda l: l.product_attribute_id == rec.id)
-                         if not existing_line:
-                              self.env['attribute.group.lines'].create({
-                                   'attr_group_id': group.id,
-                                   'product_attribute_id': rec.id
-                              })
-
                     removed_groups = original_groups - updated_groups
+
                     for group in removed_groups:
                          if rec in group.attributes_ids:
                               group.attributes_ids = [(3, rec.id)]

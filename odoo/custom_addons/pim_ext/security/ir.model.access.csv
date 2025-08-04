@@ -47,7 +47,7 @@ access_attribute_variant_values_wizard_user,access_attribute_variant_value_wizar
 access_category_master_unlink_wizard,access_category_master_unlink_wizard_wizard,model_category_master_unlink_wizard,,1,1,1,1
 
 access_many2many_selection_values,access_many2many_selection_values,model_many2many_selection_values,base.group_user,1,1,1,1
-
+access_family_attributes,access_family_attributes,model_family_attributes,base.group_user,1,1,1,1
 
 
 
