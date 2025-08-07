@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Product Management Interface",
-    "version": "17.0.1.0.8",
+    "version": "18.0",
     "category": "Sales",
     "author": "faOtools",
     "website": "https://faotools.com/apps/17.0/product-management-interface-827",

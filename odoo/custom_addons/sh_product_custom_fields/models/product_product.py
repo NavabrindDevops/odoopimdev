@@ -123,7 +123,7 @@ class ShCustomModelProductProduct(models.Model):
                 rec.unlink()
         return res
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         if vals.get('field_type'):
             if vals.get('field_type') == 'color':

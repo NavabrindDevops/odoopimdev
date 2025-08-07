@@ -7,8 +7,10 @@
             <form string="Add Attributes">
                 <group>
                     <!-- Allow multiple attribute groups to be selected -->
-                    <field name="attribute_ids" widget="many2many_tags" options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
-                    <field name="attribute_family_id" readonly="1"/>
+                    <field name="attribute_ids" widget="many2many_tags" domain="[('id', 'not in', exist_attribute_ids)]"
+                           options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                    <field name="exist_attribute_ids" string="Exist Attributes" widget="many2many_tags" options="{'no_open': True}"/>
+                    <field name="attribute_family_id" string="Family" readonly="1" options="{'no_open': True}"/>
                 </group>
                 <footer>
                     <button name="add_attributes_to_family" string="Update" type="object" class="btn-primary"/>

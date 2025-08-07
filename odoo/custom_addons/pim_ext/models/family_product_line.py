@@ -11,13 +11,24 @@ class FamilyProductsLine(models.Model):
     # ]
 
     product_id = fields.Many2one('product.template', 'SKU Name')
+    attribute_id = fields.Many2one('product.attribute', string='Attribute')
+    attribute_group_id = fields.Many2one('attribute.group', string='Attribute Group')
     # name = fields.Char('SKU Name')
     # default_code = fields.Integer('SKU #', default=lambda self: self.env['ir.sequence'].next_by_code('family.products'))
     families_id = fields.Many2one('family.attribute', 'Family')
     completeness_percent = fields.Float(compute="_compute_completeness_percent", string="Completeness")
 
+    product_id_stored = fields.Integer(string="SKU #", compute='_compute_product_id')
+
+    @api.depends('product_id')
+    def _compute_product_id(self):
+        for record in self:
+            if record.product_id:
+                record.product_id_stored = record.product_id.id
+            else:
+                record.product_id_stored = False
+
     def _compute_completeness_percent(self):
-        print('dkjdkj')
         for rec in self:
             # required_family_fields = ['name', 'brand_id', 'supplier_id', 'manufacture_id', 'buyer_id', 'description',
             #                           'availability', 'gift', 'swatch', 'attribute1_id', 'attribute2_id', 'attribute3_id']

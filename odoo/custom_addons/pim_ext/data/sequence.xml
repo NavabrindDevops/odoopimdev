@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- family sequence -->
+    <data noupdate="1">
+        <record id="family_sequence_code" model="ir.sequence">
+            <field name="name">Family Sequence</field>
+            <field name="code">family.attribute</field>
+            <field name="prefix">FAM</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+<!-- category sequence -->
+    <data noupdate="1">
+        <record id="category_sequence_code" model="ir.sequence">
+            <field name="name">Category Sequence</field>
+            <field name="code">pim.category</field>
+            <field name="prefix">CAT</field>
+            <field name="padding">3</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+    <!-- attribute sequence -->
+    <data noupdate="1">
+        <record id="pim_attribute_type_sequence_code" model="ir.sequence">
+            <field name="name">Pim Attribute Type Sequence</field>
+            <field name="code">pim.attribute.type</field>
+            <field name="prefix">ATT</field>
+            <field name="padding">3</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+    <!-- attribute group sequence -->
+    <data noupdate="1">
+        <record id="attribute_group_sequence_code" model="ir.sequence">
+            <field name="name">Attribute Group Sequence</field>
+            <field name="code">attribute.group</field>
+            <field name="prefix">ATG</field>
+            <field name="padding">3</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+</odoo>

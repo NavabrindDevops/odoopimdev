@@ -11,7 +11,7 @@
 
     "support": "support@softhealer.com",
 
-    "version": "0.0.1",
+    "version": "18.0",
 
     "category": "Extra Tools",
 

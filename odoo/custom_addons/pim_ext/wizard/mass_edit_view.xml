@@ -8,10 +8,10 @@
             <form>
                 <group>
                     <field name="val_id" nolabel="1" colspan="2">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="fieldname" options="{'no_open':True,'no_create': True}"/>
                             <field name="field_value"/>
-                        </tree>
+                        </list>
                     </field>
                 </group>
                 <footer>

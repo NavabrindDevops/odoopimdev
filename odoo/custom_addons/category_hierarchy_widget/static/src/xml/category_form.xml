@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="categoryFormControlPanel" t-inherit="web.ControlPanel" t-inherit-mode="primary">
+<!--        <xpath expr="//div[hasclass('o_control_panel_breadcrumbs')]" position="replace">-->
+<!--        </xpath>-->
+        <xpath expr="//div[hasclass('o_control_panel_navigation')]" position="replace">
+        </xpath>
+    </t>
+
+        <t t-name="category_hierarchy_widget.category_template">
+        <t t-foreach="Categories" t-as="categ_id" t-key="categ_id.id">
+                    <t t-if="categ_id.children.length">
+                        <li t-att-id="categ_id.id" class="jstree-node jstree-open">
+                            <i t-on-click="(ev) => this.show_child_categ(ev.currentTarget)" class="jstree-icon jstree-ocl" role="presentation"></i>
+                            <a  class="jstree-anchor" t-on-click="() => this.openCategory(categ_id.id)" href="#" tabindex="-1" role="treeitem" aria-selected="false" aria-level="1" aria-expanded="true" t-att-id="categ_id.id+'_anchor'">
+                                <i class="jstree-icon jstree-checkbox" role="presentation"></i>
+                                <span t-att-style="state.currentCategory == categ_id.id? 'color:red' : 'color:rgba(var(--link-color-rgb), var(--link-opacity, 1))'"  t-att-id="categ_id.id"><t t-esc="categ_id.text"/></span>
+                                <i t-on-click="(ev) => this.addCatgeory(ev,categ_id.id)" class="fa fa-plus-circle"></i>
+                            </a>
+                            <ul class="jstree-children" t-att-id="'categ_-'+categ_id.id" t-ref="draggable">
+                                <t t-call="category_hierarchy_widget.category_template">
+                                    <t t-set="Categories" t-value="categ_id.children"/>
+                                </t>
+                            </ul>
+                        </li>
+                    </t>
+                    <t t-else="">
+                            <li class="jstree-node jstree-leaf" t-att-id="categ_id.id" style="color:#abaaa9">
+                                 <i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                <a  class="jstree-anchor" tabindex="-1" t-on-click="() => this.openCategory(categ_id.id)"  role="treeitem" aria-selected="false" aria-level="1" aria-expanded="true" t-att-id="categ_id.id+'_anchor'">
+                                    <i class="jstree-icon jstree-checkbox" role="presentation"></i>
+                                    <span t-att-style="state.currentCategory == categ_id.id? 'color:red' : 'color:rgba(var(--link-color-rgb), var(--link-opacity, 1))'" draggable="true" t-att-id="categ_id.id"><t t-esc="categ_id.text"/></span>
+                                    <i t-on-click="(ev) => this.addCatgeory(ev,categ_id.id)" class="fa fa-plus-circle"></i>
+                            </a>
+                            </li>
+                    </t>
+        </t>
+    </t>
+
+
+    <t t-name="categoryFormView" t-inherit="web.FormView" t-inherit-mode="primary">
+         <xpath expr="//Layout" position="attributes">
+            <attribute name="className" add="'o_knowledge_form_view d-flex border-top'" separator="+"/>
+        </xpath>
+        <xpath expr="//t[@archInfo='archInfo']" position="attributes">
+            <attribute name="class" add="'p-0 d-flex flex-column flex-grow-1 min-w-0 mw-100'"/>
+        </xpath>
+         <xpath expr="//Layout" position="inside">
+            <t t-set-slot="layout-actions">
+                <div class="d-flex">
+                    <button class="btn btn-secondary o_switch_view o_list" t-on-click="() => this.gotoListView()" data-tooltip="List"><i class="oi oi-view-list"></i></button>
+                    <button class="btn btn-secondary o_switch_view o_hierarchy"  t-on-click="() => this.gotoHierarchicalview()" data-tooltip="Hierarchy" title=""><i class="fa fa-share-alt o_hierarchy_icon"></i></button>
+
+                </div>
+               </t>
+        </xpath>
+        <xpath expr="//t[@archInfo='archInfo']" position="before">
+             <aside class="o_knowledge_sidebar d-flex flex-shrink-0 d-print-none bg-view"
+                    t-attf-style="--knowledge-article-sidebar-size: 500px">
+
+                <div class="d-flex flex-column flex-grow-1 min-w-0">
+
+                    <div class="d-flex align-items-center gap-2 px-md-3 px-3 ps-2 py-3">
+                     <div class="fam-cat"
+                          style="max-height:1000px;overflow: hidden;overflow-y: auto;scrollbar-width: thin;margin-bottom: 15px;padding-left:30px;">
+            <div class="jstr-navigation-panel jstr-hide-mobile jstr-hide-tablet">
+            <div class="jstr-panel-content">
+                <t t-set="Categories" t-value="state.categories"/>
+                <div id="categories" class="jstree jstree-1 jstree-default">
+                    <ul class="jstree-container-ul jstree-children jstree-no-icons">
+                    <t t-foreach="Categories" t-as="categ_id" t-key="categ_id.id">
+                        <li role="none" t-att-id="categ_id.id"  class="jstree-node jstree-open">
+                                     <i t-on-click="(ev) => this.show_child_categ(ev.currentTarget)"
+                                           class="jstree-icon jstree-ocl" role="presentation"></i>
+                                        <a class="jstree-anchor" t-on-click="() => this.openCategory(categ_id.id)" href="#" tabindex="-1" role="treeitem" aria-selected="false"
+                                           aria-level="1" aria-expanded="true" t-att-id="categ_id.id+'_anchor'">
+                                            <i class="jstree-icon jstree-checkbox" role="presentation"></i>
+                                            <span t-att-style="state.currentCategory == categ_id.id? 'color:red' : 'color:rgba(var(--link-color-rgb), var(--link-opacity, 1))'" t-att-id="categ_id.id"><t t-esc="categ_id.text"/></span>
+
+                                            <i t-on-click="(ev) => this.addCatgeory(ev,categ_id.id)" class="fa fa-plus-circle"></i>
+
+                                        </a>
+
+                            <ul class="jstree-children" t-att-id="'categ_'+categ_id.id" t-ref="draggable">
+                            <t t-call="category_hierarchy_widget.category_template">
+                                                            <t t-set="Categories"
+                                                               t-value="categ_id.children"/>
+                            </t>
+                            </ul>
+                        </li>
+                    </t>
+                </ul>
+                </div>
+            </div>
+        </div>
+         </div>
+
+                </div>
+                </div>
+
+             </aside>
+             <div>
+                        <t t-if="state.addMode">
+                            <button class="btn btn-primary" t-on-click="saveCategory">
+                            Save
+                        </button>
+                    </t>
+                </div>
+        </xpath>
+    </t>
+
+</templates>

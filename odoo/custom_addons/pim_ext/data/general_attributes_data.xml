@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!--    For Brand Master-->
+    <record id="general_attribute_brand_1" model="general.attribute">
+        <field name="name">Brands: Name</field>
+        <field name="related_field" ref="pim_ext.field_product_brand__name"/>
+    </record>
+    <record id="general_attribute_brand_2" model="general.attribute">
+        <field name="name">Brands: Website</field>
+        <field name="related_field" ref="pim_ext.field_product_brand__website"/>
+    </record>
+    <record id="general_attribute_brand_3" model="general.attribute">
+        <field name="name">Brands: Logo</field>
+        <field name="related_field" ref="pim_ext.field_product_brand__brand_logo"/>
+    </record>
+    <record id="general_attribute_brand_4" model="general.attribute">
+        <field name="name">Brands: Description</field>
+        <field name="related_field" ref="pim_ext.field_product_brand__description"/>
+    </record>
+
+<!--    For Supplier Master-->
+    <record id="general_attribute_supplier_1" model="general.attribute">
+        <field name="name">Supplier: Name</field>
+        <field name="related_field" ref="pim_ext.field_supplier_info__name"/>
+    </record>
+    <record id="general_attribute_supplier_2" model="general.attribute">
+        <field name="name">Supplier: Street</field>
+        <field name="related_field" ref="pim_ext.field_supplier_info__street"/>
+    </record>
+    <record id="general_attribute_supplier_3" model="general.attribute">
+        <field name="name">Supplier: City</field>
+        <field name="related_field" ref="pim_ext.field_supplier_info__city"/>
+    </record>
+    <record id="general_attribute_supplier_4" model="general.attribute">
+        <field name="name">Supplier: Website</field>
+        <field name="related_field" ref="pim_ext.field_supplier_info__website"/>
+    </record>
+    <record id="general_attribute_supplier_5" model="general.attribute">
+        <field name="name">Supplier: Notes</field>
+        <field name="related_field" ref="pim_ext.field_supplier_info__notes"/>
+    </record>
+
+</odoo>

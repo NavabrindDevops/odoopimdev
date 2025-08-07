@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Define the custom layout view -->
+
+
+        <!-- Action to open the custom view -->
+        <record id="action_products_attributes_group_custom" model="ir.actions.act_window">
+            <field name="name">Edit Attribute Group</field>
+            <field name="res_model">attribute.group</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_product_attribute_groups_custom"/>
+            <field name="context">{'default_child_ids': child_ids}</field>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>
