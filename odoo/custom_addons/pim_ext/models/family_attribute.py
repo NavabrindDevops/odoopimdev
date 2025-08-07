@@ -231,7 +231,105 @@ class FamilyAttribute(models.Model):
         res = super(FamilyAttribute, self).write(vals)
         if not self.env.context.get('syncing_exist_attrs'):
             self.with_context(syncing_exist_attrs=True).sync_exist_attribute_ids()
+            self.update_attribute_group_views()
         return res
+
+    def update_attribute_group_views(self):
+        print("update_attribute_group_views ==== ")
+        for rec in self:
+            attributes = rec.mapped('family_attribute_ids').mapped('attribute_id')
+            print("attributes === ", attributes)
+            attribute_lines = rec.family_attribute_ids
+
+            attribute_groups = {}
+            for line in attribute_lines:
+                group_name = line.attribute_group_id.name or "uncategorized"
+                attribute = line.attribute_id
+
+                if group_name in attribute_groups:
+                    attribute_groups[group_name].append(attribute)
+                else:
+                    attribute_groups[group_name] = [attribute]
+            # for attribute in attributes:
+            #     print("attribute == ", attribute)
+            #     print("attribute.attribute_group == ", attribute.attribute_group)
+            #     attribute_group = attribute.attribute_group.name if attribute.attribute_group else 'uncategorized'
+            #     print("attribute_group == ", attribute_group)
+            #     if attribute_group not in attribute_groups:
+            #         attribute_groups[attribute_group] = []
+            #     attribute_groups[attribute_group].append(attribute)
+            print("attribute_groups === ", attribute_groups)
+            for group_name, group_attributes in attribute_groups.items():
+                print("group_name, group_attributes  ==== ", group_name, group_attributes)
+                group_view_name = 'product_attribute_' + group_name.lower().replace(' ', '_')
+                group_exist = self.env['ir.ui.view'].sudo().search([
+                    ('name', 'ilike', group_view_name),
+                    ('active', 'in', [True, False])
+                ], limit=1)
+
+                if not group_exist:
+                    continue
+
+                if group_exist.arch_base:
+                    grp_arch_tree = etree.fromstring(group_exist.arch_base)
+                    updated = False
+                    group_node = grp_arch_tree.find(f".//group[@id='{group_name.lower().replace(' ', '_')}']")
+                    print("group_node === ", group_node)
+                    if group_node is not None:
+                        group_invisible = group_node.get("invisible")
+                        new_id = str(rec.id)
+                        print("grp line new_id === ", new_id)
+                        if group_invisible and group_invisible.strip().lower() != 'false':
+                            match = re.search(r'\[(.*?)\]', group_invisible)
+                            if match:
+                                id_list = [x.strip() for x in match.group(1).split(',') if x.strip()]
+                                print("group id_list --- ", id_list)
+                                if new_id not in id_list:
+                                    id_list.append(new_id)
+                                    group_node.set("invisible", f"family_id not in [{', '.join(id_list)}]")
+                                    updated = True
+                            else:
+                                group_node.set("invisible", f"family_id not in [{new_id}]")
+                                updated = True
+                        else:
+                            group_node.set("invisible", f"family_id not in [{new_id}]")
+                            updated = True
+                    # Show fields that are in default_attrs_val
+                    for a in group_attributes:
+                        print("a == ", a)
+                        # attributes_list.append(a.original_name)
+                        xpath_expr = f".//field[@name='{a.original_name}']"
+                        print("xpath_expr == ", xpath_expr)
+                        field_node = grp_arch_tree.find(xpath_expr)
+                        print("field_node === ", field_node)
+                        if field_node is not None:
+                            column_invisible = field_node.get("invisible")
+                            print("column_invisible === ", column_invisible)
+                            new_id = str(rec.id)
+                            if column_invisible and column_invisible.strip().lower() != 'false':
+                                match = re.search(r'\[(.*?)\]', column_invisible)
+                                print("match === ", match)
+                                if match:
+                                    print("match if")
+                                    id_list = [x.strip() for x in match.group(1).split(',') if x.strip()]
+                                    if new_id not in id_list:
+                                        id_list.append(new_id)
+                                    field_node.set("invisible", f"family_id not in [{', '.join(id_list)}]")
+                                    updated = True
+                                else:
+                                    print("match else ")
+                                    # If column_invisible is set but not in expected format, override it
+                                    field_node.set("invisible", f"family_id not in [{new_id}]")
+                                    updated = True
+                            else:
+                                print("els jnifn")
+                                # If column_invisible is 'False' or not set at all
+                                field_node.set("invisible", f"parent.id not in [{new_id}]")
+                                updated = True
+                    print("updated === ", updated)
+                    if updated:
+                        updated_arch = etree.tostring(grp_arch_tree, pretty_print=True).decode()
+                        group_exist.write({'arch_base': updated_arch})
 
     @api.depends('name')
     def _compute_family_label_translation(self):
@@ -279,6 +377,8 @@ class FamilyAttribute(models.Model):
         }
 
     def save_family(self):
+
+        self.update_attribute_group_views()
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',

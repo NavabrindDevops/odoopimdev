@@ -299,7 +299,8 @@ class AttributeForm(models.Model):
                          print(" sub_create_vals  === ",sub_create_vals)
                          sel_val = self.env['ir.model.fields'].sudo().create(sub_create_vals)
                          print(" sel_val  === ", sel_val)
-
+          self.create_uncategorized_view()
+          self.create_product_list_view()
           # # Check if an existing attribute exists
           # existing_attribute = attribute.search([('name', '=', self.name)], limit=1)
           #
@@ -337,6 +338,157 @@ class AttributeForm(models.Model):
           #           'menu_id': menu_id.id,
           #      },
           # }
+
+     def create_uncategorized_view(self):
+         print("create_uncategorized_view === ")
+         attributes = self or self.env['product.attribute'].sudo().search(
+             [('id', 'in', self.env.context['active_ids'])], order="id asc")
+         widgets_mapping = {
+             'image': 'image',
+             'multi_select': 'many2many_tags',
+             'color': 'color_picker',
+             'price': 'monetary',
+         }
+         form_arch = ''
+         for attr in attributes:
+             field_tag = ''
+             widget = widgets_mapping.get(attr.display_type)
+             print("attr.original_name ========", attr.original_name)
+             print("attr.display_type ========", attr.display_type)
+             if attr.original_name and attr.display_type != 'table':
+                 field_tag += f'''\n<field name="{attr.original_name}" invisible="1"'''
+                 if attr.widget:
+                     field_tag += f''' widget="{widget}"'''
+                 # if attr.usable_in_grid:
+                 #     field_tag += f''' optional="show"'''
+                 if attr.display_type in ['simple_select', 'multi_select']:
+                     field_tag += f"options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+
+                 field_tag += f'''/>\n'''
+             form_arch += field_tag
+         print("form_arch =================", form_arch)
+         # Finding previous values
+         last_attr = self.env['product.attribute'].search([("original_name", "!=", False)],
+                                                          order="id desc", limit=1,offset=1)
+         print("last_attr === ", last_attr.name)
+         if len(last_attr) == 2:
+             last_attr = last_attr[1]
+         elif len(last_attr) == 1:
+             last_attr = last_attr
+         print("last_attr ==== ", last_attr)
+         xpath_expr = f".//field[@name='{last_attr.original_name}']"
+
+         default_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
+         view_name = 'product_attribute_uncategorized'
+         existing_view = self.env['ir.ui.view'].search([
+             ('name', '=', view_name),
+             ('model', '=', 'product.template')
+         ], limit=1)
+
+         if existing_view:
+             print("ecist")
+             exist_arch_tree = etree.fromstring(existing_view.arch_base)
+             find_last_field = exist_arch_tree.find(xpath_expr)
+
+             if find_last_field is not None:
+                 for field_str in form_arch.strip().split('\n'):
+                     if field_str.strip():
+                         field_elem = etree.fromstring(field_str.strip())
+                         field_elem.tail = '\n    '
+                         find_last_field.addnext(field_elem)
+                 etree.indent(exist_arch_tree, space="    ")
+                 updated_arch = etree.tostring(exist_arch_tree, pretty_print=True).decode()
+                 if updated_arch:
+                     existing_view.write({'arch_base': updated_arch})
+         else:
+             view = self.env['ir.ui.view'].sudo().create({
+                 'name': view_name,
+                 'type': 'form',
+                 'model': 'product.template',
+                 'inherit_id': default_view_id,
+                 'active': True,
+                 'arch': """
+                    <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
+                            <group name="uncategorized" string="UNCATEGORIZED" collapsible="1" expanded="1" >
+                                                            %s
+                                                     </group>
+            </xpath>""" % form_arch
+                     ,
+             })
+
+     def create_product_list_view(self):
+         print("create_product_list_view === ")
+         attributes = self or self.env['product.attribute'].sudo().search(
+             [('id', 'in', self.env.context['active_ids'])], order="id asc")
+         widgets_mapping = {
+             'image': 'image',
+             'multi_select': 'many2many_tags',
+             'color': 'color_picker',
+             'price': 'monetary',
+         }
+         form_arch = ''
+         for attr in attributes:
+             field_tag = ''
+             widget = widgets_mapping.get(attr.display_type)
+             print("attr.original_name ========", attr.original_name)
+             print("attr.display_type ========", attr.display_type)
+             if attr.original_name and attr.display_type != 'table' and attr.usable_in_grid:
+                 field_tag += f'''\n<field name="{attr.original_name}" '''
+                 if attr.widget:
+                     field_tag += f''' widget="{widget}"'''
+                 if attr.usable_in_grid:
+                     field_tag += f''' optional="show"'''
+                 # if attr.display_type in ['simple_select', 'multi_select']:
+                 #     field_tag += f"options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+
+                 field_tag += f'''/>\n'''
+             form_arch += field_tag
+         print("form_arch =================", form_arch)
+         # Finding previous values
+         last_attr = self.env['product.attribute'].search([("original_name", "!=", False),("usable_in_grid", "!=", False)],
+                                                          order="id desc", limit=1,offset=1)
+         print("last_attr === ", last_attr.name)
+         if len(last_attr) == 2:
+             last_attr = last_attr[1]
+         elif len(last_attr) == 1:
+             last_attr = last_attr
+         print("last_attr ==== ", last_attr)
+         xpath_expr = f".//field[@name='{last_attr.original_name}']"
+
+         default_view_id = self.env.ref('pim_ext.view_product_management_tree').id
+         view_name = 'product_attribute_list_view'
+         existing_view = self.env['ir.ui.view'].search([
+             ('name', '=', view_name),
+             ('model', '=', 'product.template')
+         ], limit=1)
+
+         if existing_view:
+             print("ecist")
+             exist_arch_tree = etree.fromstring(existing_view.arch_base)
+             find_last_field = exist_arch_tree.find(xpath_expr)
+
+             if find_last_field is not None:
+                 for field_str in form_arch.strip().split('\n'):
+                     if field_str.strip():
+                         field_elem = etree.fromstring(field_str.strip())
+                         field_elem.tail = '\n    '
+                         find_last_field.addnext(field_elem)
+                 etree.indent(exist_arch_tree, space="    ")
+                 updated_arch = etree.tostring(exist_arch_tree, pretty_print=True).decode()
+                 if updated_arch:
+                     existing_view.write({'arch_base': updated_arch})
+         else:
+             view = self.env['ir.ui.view'].sudo().create({
+                 'name': view_name,
+                 'type': 'list',
+                 'model': 'product.template',
+                 'inherit_id': default_view_id,
+                 'active': True,
+                 'arch': """
+                    <xpath expr="//button[@name='custom_product_open_form_view']" position="before">
+                                                            %s
+            </xpath>""" % form_arch,
+             })
 
      def create_pim_attribute_type(self):
           return {
@@ -431,21 +583,52 @@ class AttributeForm(models.Model):
     
      @api.model_create_multi
      def create(self, vals):
-          rec = super(AttributeForm, self).create(vals)
-
+         rec = super(AttributeForm, self).create(vals)
+         for record, vals in zip(records, vals_list):
+             self._log_changes(record, vals, action="create")
+         return rec
           # # If attribute_group is set during creation
           # if vals.get('attribute_group'):
           #      for group in rec.attribute_group:
-          #           existing_line = group.attribute_group_line_ids.filtered(
+          #            existing_line = group.attribute_group_line_ids.filtered(
           #                lambda l: l.product_attribute_id == rec.id)
           #           if not existing_line:
           #                rec.env['attribute.group.lines'].create({
           #                     'attr_group_id': group.id,
           #                     'product_attribute_id': rec.id
           #                })
-          self._log_changes(rec, vals, action="create")
 
-          return rec
+
+     # def write(self, vals):
+     #      for rec in self:
+     #           rec._log_changes(rec, vals, action="update")
+     #           original_groups = rec.attribute_group
+     #           result = super(AttributeForm, rec).write(vals)
+     #
+     #           if 'attribute_group' in vals:
+     #                updated_groups = rec.attribute_group
+     #                added_groups = updated_groups - original_groups
+     #                for group in added_groups:
+     #                     existing_line = group.attribute_group_line_ids.filtered(
+     #                          lambda l: l.product_attribute_id == rec.id)
+     #                     if not existing_line:
+     #                          self.env['attribute.group.lines'].create({
+     #                               'attr_group_id': group.id,
+     #                               'product_attribute_id': rec.id
+     #                          })
+     #
+     #                removed_groups = original_groups - updated_groups
+     #                for group in removed_groups:
+     #                     if rec in group.attributes_ids:
+     #                          group.attributes_ids = [(3, rec.id)]
+     #
+     #                     lines_to_remove = group.attribute_group_line_ids.filtered(
+     #                          lambda l: l.product_attribute_id == rec.id)
+     #                     lines_to_remove.unlink()
+     #
+     #           return result
+     #
+     #      return super(AttributeForm, self).write(vals)
 
      def write(self, vals):
           for rec in self:
@@ -519,3 +702,11 @@ class AttributeMasterUnlinkWizard(models.TransientModel):
              'type': 'ir.actions.client',
              'tag': 'reload',
              }
+
+class ProductAttributeValue(models.Model):
+    _inherit = 'product.attribute.value'
+
+    @api.depends('attribute_id')
+    def _compute_display_name(self):
+        for value in self:
+            value.display_name = f"{value.name}"

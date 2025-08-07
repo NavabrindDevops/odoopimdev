@@ -55,8 +55,8 @@ class AttributeGroup(models.Model):
 
     def _log_changes(self, vals, action):
         updated_write_date_utc = fields.Datetime.now()
-        user_tz = self.env.user.tz or 'UTC'
-        updated_write_date = updated_write_date_utc.astimezone(pytz.timezone(user_tz)).strftime("%d/%m/%Y %H:%M:%S")
+        user_tz = pytz.timezone(self.env.user.tz or 'UTC')
+        updated_write_date = pytz.utc.localize(updated_write_date_utc).astimezone(user_tz).strftime("%d/%m/%Y %H:%M:%S")
         new_write_uid = self.env.user.display_name
 
         changes = []
@@ -65,7 +65,6 @@ class AttributeGroup(models.Model):
         tracked_group_line_fields = ['product_attribute_id', 'display_type', 'enable', 'value_per_channel',
                                      'value_per_locale']
 
-        # Track attribute.group changes
         for key in vals:
             if key in tracked_fields:
                 attribute = self._fields[key].string
@@ -86,7 +85,6 @@ class AttributeGroup(models.Model):
                 """
                 changes.append(change_entry)
 
-        # Track attribute.group.lines changes
         if 'attribute_group_line_ids' in vals:
             for command in vals['attribute_group_line_ids']:
                 if command[0] == 1:
@@ -181,16 +179,18 @@ class AttributeGroup(models.Model):
             self.history_log = tools.html_sanitize(full_message) + (self.history_log or '')
 
     def write(self, vals):
-        for rec in self:
-            rec._log_changes(vals, action="update")
-            super(AttributeGroup, rec).write(vals)
-        return True
+        self._log_changes(vals, action="update")
+        return super(AttributeGroup, self).write(vals)
 
-    def create(self, vals):
-        vals['attribute_code_rec'] = self.env['ir.sequence'].next_by_code('attribute.group') or None
-        record = super(AttributeGroup, self).create(vals)
-        record._log_changes(vals, action="create")
-        return record
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['attribute_code_rec'] = self.env['ir.sequence'].next_by_code('attribute.group') or None
+        records = super(AttributeGroup, self).create(vals_list)
+        for rec, vals in zip(records, vals_list):
+            rec._log_changes(vals, action="create")
+        return records
+
 
     @api.depends('name')
     def _compute_label_translation(self):
@@ -259,15 +259,79 @@ class AttributeGroup(models.Model):
             },
         }
 
+
     def save_attributes(self):
+        widgets_mapping = {
+            'image': 'image',
+            'multi_select': 'many2many_tags',
+            'color': 'color_picker',
+            'price': 'monetary',
+        }
+        self.ensure_one()
+        views = self.env['ir.ui.view']
+        group_name = self.name
+        # Validate lines
         for line in self.attribute_group_line_ids:
             if not line.product_attribute_id:
                 raise UserError(f"No product attribute linked in line {line.id}.")
 
-            # Update the product.attribute if needed
-            line.product_attribute_id.write({
-                'attribute_group': self.id,
+        form_arch = f'''
+        <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
+        <group name="{group_name.lower().replace(' ', '_')}" id="{group_name.lower().replace(' ', '_')}" string="{group_name}" invisible="1" collapsible="1" expanded="1" >
+        '''
+        print("self.attribute_group_line_ids === ", self.attribute_group_line_ids)
+        # Add fields with appropriate widget
+        for line in self.attribute_group_line_ids:
+            print("line == ", line)
+            attr = line.product_attribute_id
+            widget = widgets_mapping.get(attr.display_type)
+            field_tag = ''
+            # self.attribute_field_xml(attr, widget)
+            print("attr.original_name ========", attr.original_name)
+            print("attr.display_type ========", attr.display_type)
+            if attr.original_name and attr.display_type != 'table':
+                field_tag += f'''<field name="{attr.original_name}" invisible="1"'''
+                if attr.widget:
+                    field_tag += f''' widget="{widget}"'''
+                # if attr.usable_in_grid:
+                #     field_tag += f''' optional="show"'''
+                if attr.display_type in ['simple_select','multi_select']:
+                    field_tag += f"options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+                    # field_tag += f''' options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"'''
+                field_tag += f'''/>\n'''
+            # elif attr.original_name and attr.display_type == 'table':
+            #    For Adding one2many table design
+            #     field_tag += f'''<field name="{attr.original_name}"'''
+            #     field_tag += f'''options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'/>\n'''
+
+            form_arch += field_tag
+
+        form_arch += '''
+            </group>
+            </xpath>'''
+        print("form_arch ========== ", form_arch)
+        default_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
+        # Create or update the view
+        view_name = f'product_attribute_{group_name.lower().replace(' ', '_')}'
+        existing_view = views.search([
+            ('name', '=', view_name),
+            ('model', '=', 'product.template')
+        ], limit=1)
+
+        if existing_view:
+            print("existing view")
+            existing_view.arch = form_arch
+        else:
+            print("else ============== ")
+            existing_view = views.sudo().create({
+                'name': view_name,
+                'type': 'form',
+                'model': 'product.template',
+                'inherit_id': default_view_id,
+                'active': True,
+                'arch': form_arch,
             })
+
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
@@ -277,6 +341,26 @@ class AttributeGroup(models.Model):
             'context': {'no_breadcrumbs': True},
             'target': 'current',
         }
+
+
+    # def save_attributes(self):
+    #     for line in self.attribute_group_line_ids:
+    #         if not line.product_attribute_id:
+    #             raise UserError(f"No product attribute linked in line {line.id}.")
+    #
+    #         # Update the product.attribute if needed
+    #         # line.product_attribute_id.write({
+    #         #     'attribute_group': self.id,
+    #         # })
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'view_mode': 'form',
+    #         'res_model': 'attribute.group',
+    #         'view_id': self.env.ref('pim_ext.view_product_attribute_groups_custom').id,
+    #         'res_id': self.id,
+    #         'context': {'no_breadcrumbs': True},
+    #         'target': 'current',
+    #     }
 
     def create_pim_attribute_groups(self):
 

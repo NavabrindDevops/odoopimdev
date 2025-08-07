@@ -303,7 +303,7 @@
                             </div>
                         </form>
                         <div class="attr_creation" style="margin-top: 16px;">
-                                                        <button type="object" string="Save"
+                                                        <button type="object" string="Save" invisible="original_name"
                                                            name="create_attributes" class="oe_highlight"/>
                                                     </div>
                     </div>
@@ -349,4 +349,31 @@
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_attribute_master_custom')}),
                 ]"/>
     </record>
+
+    <record id="action_update_field_view" model="ir.actions.server">
+        <field name="name">Update Attribute View</field>
+        <field name="model_id" ref="product.model_product_attribute"/>
+        <field name="binding_model_id" ref="product.model_product_attribute"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">model.create_uncategorized_view()</field>
+    </record>
+    <record id="action_update_field_tree_view" model="ir.actions.server">
+        <field name="name">Update Attribute Tree View</field>
+        <field name="model_id" ref="product.model_product_attribute"/>
+        <field name="binding_model_id" ref="product.model_product_attribute"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">model.create_product_list_view()</field>
+    </record>
+<!--    <record id="copy_phone_to_mobile" model="ir.actions.server">-->
+<!--        <field name="name">Copy Phone to Mobile</field>-->
+<!--        <field name="model_id" ref="base.model_res_partner"/>-->
+<!--        <field name="binding_model_id" ref="base.model_res_partner"/>-->
+<!--        <field name="binding_view_types">list</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">-->
+<!--            action = records.action_copy_phone_to_mobile()-->
+<!--        </field>-->
+<!--    </record>-->
 </odoo>

@@ -178,7 +178,6 @@ class ProductTemplate(models.Model):
                          continue
 
                excluded_fields = {'id', 'write_date', 'write_uid', 'create_date', 'create_uid', 'history_log'}
-
                for field_name in vals.keys():
                     if field_name in excluded_fields:
                          continue
@@ -282,22 +281,28 @@ class ProductTemplate(models.Model):
                     action_text = 'Created by' if is_create else 'Updated by'
                     user_info = f"<small>{action_text} <strong>{user_name}</strong> on {current_datetime}</small>"
                     full_message = f"""
-                     <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                         <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
                          {user_info}
-                         <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
-                     </div>
-                 """
-                    rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
+                                <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                         </div>
+                        """
+                     # rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
+                    rec.with_context(skip_history_log=True).write({
+                       'history_log': tools.html_sanitize(full_message) + (rec.history_log or '')
+                    })
 
      @api.model_create_multi
-     def create(self, vals):
-          record = super(ProductTemplate, self).create(vals)
-          record._prepare_history_log(vals, is_create=True)
-          return record
+     def create(self, vals_list):
+         records = super(ProductTemplate, self).create(vals_list)
+         for rec, vals in zip(records, vals_list):
+             rec.with_context(skip_history_log=True)._prepare_history_log(vals, is_create=True)
+         return records
 
      def write(self, vals):
-          self._prepare_history_log(vals, is_create=False)
-          return super(ProductTemplate, self).write(vals)
+         if not self.env.context.get('skip_history_log'):
+             self._prepare_history_log(vals, is_create=False)
+         result = super(ProductTemplate, self).write(vals)
+         return result
 
      def _compute_products_ids(self):
           for record in self:
@@ -309,10 +314,11 @@ class ProductTemplate(models.Model):
                'res_model': 'product.template',
                'type': 'ir.actions.act_window',
                'views': [
-                      (self.env.ref('pim_ext.view_product_management_kanban').id, 'kanban'),
                       (self.env.ref('pim_ext.view_product_management_tree').id, 'list'),
+                      (self.env.ref('pim_ext.view_product_management_kanban').id, 'kanban'),
+                      (self.env.ref('pim_ext.view_product_creation_split_view_custom').id, 'form'),
                   ],
-               'view_mode': 'kanban,list',
+               'view_mode': 'list,kanban,form',
                'target': 'current',
                'context': {
                     'no_breadcrumbs': True,
@@ -325,12 +331,12 @@ class ProductTemplate(models.Model):
              filled_count = 0
              total_count = 0
              if product.family_id:
-                 attributes = product.family_id.mapped('product_families_ids').mapped('attribute_id')
+                 attributes = product.family_id.mapped('family_attribute_ids').mapped('attribute_id')
                  for attr_rec in attributes:
                      if attr_rec.is_completeness:
                          total_count += 1
                          # Correctly format the field name to replace spaces with underscores
-                         field_name = f"x_{attr_rec.name.replace(' ', '_').lower()}"
+                         field_name = attr_rec.original_name
                          if field_name in product._fields:
                              attribute_value = getattr(product, field_name, None)
                              if isinstance(product._fields[field_name], fields.Boolean):
@@ -348,17 +354,17 @@ class ProductTemplate(models.Model):
                  product.percentage_complete = 0
 
      def _compute_progress_state(self, percentage_complete):
-          for product in self:
-               if percentage_complete >= 70:
-                    product.progress_state = 'fully_completed'
-               elif percentage_complete >= 55 and percentage_complete < 70:
-                    product.progress_state = 'almost_completed'
-               elif percentage_complete >= 40 and percentage_complete < 55:
-                    product.progress_state = 'partially_completed'
-               elif percentage_complete >= 25 and percentage_complete < 40:
-                    product.progress_state = 'not_completed'
-               else:
-                    product.progress_state = 'incomplete'
+         for product in self:
+             if percentage_complete >= 70:
+                 product.progress_state = 'fully_completed'
+             elif percentage_complete >= 55 and percentage_complete < 70:
+                 product.progress_state = 'almost_completed'
+             elif percentage_complete >= 40 and percentage_complete < 55:
+                 product.progress_state = 'partially_completed'
+             elif percentage_complete >= 25 and percentage_complete < 40:
+                 product.progress_state = 'not_completed'
+             else:
+                 product.progress_state = 'incomplete'
 
      def update_variant_values(self):
           attribute_value = self.variant_id.variant_ids[:1]

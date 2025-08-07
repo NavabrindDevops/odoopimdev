@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!--  screen for selecting product create type  -->
         <record id="view_product_template_custom_form" model="ir.ui.view">
             <field name="name">product.product.template.custom</field>
             <field name="model">product.create</field>
+            <field name="mode">primary</field>
             <field name="arch" type="xml">
                 <form string="Create Product" create="false" delete="false" class="page_form">
                     <div class="d-flex align-items-start">
@@ -77,9 +79,11 @@
             </field>
         </record>
 
+        <!-- Product master screen to show the required data's       -->
         <record id="view_product_template_create_master_custom_form" model="ir.ui.view">
             <field name="name">product.product.template.master.custom</field>
             <field name="model">product.create.master</field>
+            <field name="mode">primary</field>
             <field name="arch" type="xml">
                 <form string="Create Product" create="false" class="page_form">
                     <div class="d-flex align-items-start">
@@ -209,11 +213,202 @@
             </field>
         </record>
 
+
+        <!-- product.template form custom layout view -->
+        <record id="view_product_creation_split_view_custom" model="ir.ui.view">
+            <field name="name">product.creation.custom.slpit.view.layout</field>
+            <field name="model">product.template</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <form string="Products Customs" class="page_form" create="false">
+                    <div class="d-flex align-items-start">
+                        <div class="left-column">
+                            <field name="product_tmplt_ids" domain="[]" nolabel="1" context="{}" widget="one2many_list">
+                                <list create="false" edit="false" default_order="create_date desc" editable="bottom">
+                                    <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
+                                    <field name="sku"/>
+                                    <field name="family_id"/>
+                                    <field name="brand_id"/>
+                                    <field name="category_id"/>
+                                    <field name="name"/>
+                                    <field name="product_attr_values_id" widget="many2many_tags" string="Variant Values"/>
+                                    <field name="is_variant" optional="hide"/>
+                                    <field name="variant_id" optional="hide"/>
+                                    <field name="is_variant_values_updated" optional="hide"/>
+                                    <field name="active_label"/>
+                                    <field name="create_date"/>
+                                    <field name="write_date"/>
+                                    <button name="custom_product_open_form_view" string = " " icon="fa-edit" title='edit' type="object" />
+                                    <button name="custom_product_open_default_form_view" string = " " icon="fa-info" title='info' type="object" />
+                                    <button name="custom_product_unlink" string = " " icon="fa-trash-o" title='delete' type="object" />
+                                </list>
+                            </field>
+                        </div>
+                        <div class="right-column">
+                            <div readonly="1" class="attribute_type">
+                                <header>
+                                    <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
+                                </header>
+                                <div class="pim_oe_title">
+                                    <h2 class="pim_create_attribute"><span class="attr_title">Products</span></h2>
+                                </div>
+<!--                                <div class="pim_oe_title">-->
+<!--                                    <h2 class="choose_pim_attribute_type" style="text-align:left;">Product Master</h2>-->
+<!--                                </div>-->
+                            </div>
+                            <div>
+                                <div class="o_col_6 col-12 attr_form">
+                                   <div class="attr_properties">
+                                       <sheet class="attr_sheet">
+                                           <div class="oe_title">
+                                               <h1 class="name"><field name="name" readonly="1" class="oe_inline choose_pim_attribute_type"/></h1>
+                                           </div>
+                                           <notebook class="type_properties">
+                                               <page string="Attributes" name="attributes_page" id="attributes_page">
+                                               </page>
+                                               <page name="type_properties" string="Product Info">
+                                                   <div id="o_type_properties" class="d-lg-flex top_property">
+                                                       <div id="o_type_properties_main" class="flex-grow-1">
+                                                           <group string="General Parameters" class="general_param">
+                                                               <label for="name" string="Name" style="font-weight:bold;"/>
+                                                           </group>
+                                                       </div>
+                                                   </div>
+                                                   <div class="attr_form_values">
+                                                       <div>
+                                                           <field name="name" readonly="1" nolabel="1" placeholder="Enter attribute name" class="attribute_type_class"/>
+                                                       </div>
+                                                       <div>
+                                                           <div>
+                                                               <group>
+                                                                   <label for="id" string="Product ID" style="font-weight:bold;" required="True"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="id" nolabel="1"
+                                                                  readonly="1" class="attribute_type_class attr_display_type"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="sku" string="SKU"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="sku" nolabel="1"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="family_id" string="Family"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="family_id" nolabel="1"
+                                                                  readonly="1"
+                                                                  options="{'no_open': True, 'no_create': True}"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="category_id" string="Category"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                       <field name="category_id" nolabel="1"
+                                                                  options="{'no_open': True, 'no_create': True}"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="company_id" string="Company"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                       <field name="company_id" nolabel="1"
+                                                                  options="{'no_open': True, 'no_create': True}"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="create_date" string="Created date"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div>
+                                                           <field name="create_date" nolabel="1"
+                                                                  readonly="1"
+                                                                  class="attribute_type_class"/>
+                                                       </div>
+
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="write_date" string="Updated date"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="write_date"
+                                                                  readonly="1"
+                                                                  class="attribute_type_class"/>
+                                                       </div><br/>
+                                                       <div id="o_type_properties">
+                                                           <div id="o_type_properties_main" class="flex-grow-1">
+                                                               <group>
+                                                                   <label for="image_ids" string="Image"/>
+                                                               </group>
+                                                           </div>
+                                                       </div>
+                                                       <div class="d-flex">
+                                                           <field name="image_ids" class="o_website_sale_image_list"
+                                                                  context="{'default_name': name}"
+                                                                  mode="kanban"
+                                                                  add-label="Add Media"
+                                                                  nolabel="1"
+                                                                  widget="x2_many_media_viewer"
+                                                                  options="{'convert_to_webp': True}"/>
+                                                       </div><br/>
+                                                   </div>
+                                               </page>
+                                               <page name="history_products" string="History">
+                                                   <group>
+                                                       <field name="history_log" nolabel="1" readonly="1"/>
+                                                   </group>
+                                               </page>
+                                               <page name="type_label_translation" string="Label Translations" invisible="1">
+                                               </page>
+                                           </notebook>
+                                       </sheet>
+                                   </div>
+                                </div>
+                            </div>
+                            <div class="attr_creation" style="margin-top: 16px;">
+                                <button type="object" string="Save"
+                                        name="save_product_rec" class="oe_highlight"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- product.template kanban custom layout view -->
         <record id="view_product_management_kanban" model="ir.ui.view">
             <field name="name">product.management.kanban</field>
             <field name="model">product.template</field>
+            <field name="mode">primary</field>
             <field name="arch" type="xml">
-                <kanban class="o_kanban_mobile fam_grid_box" default_order="create_date desc" create="0" limit="80" default_group_by="category_id">
+                <kanban class="o_kanban_mobile o_kanban_5_per_row fam_grid_box" default_order="create_date desc" create="0" limit="80">
                     <div class="progress-container w-100 mt-2">
                         <progressbar style="width: 100%; height: 8px;" field="progress_state" colors='{"fully_completed": "info",
                           "almost_completed": "light_green",
@@ -317,10 +512,11 @@
             </field>
         </record>
 
-
+        <!-- product.template tree custom layout view -->
         <record id="view_product_management_tree" model="ir.ui.view">
             <field name="name">product.management.tree</field>
             <field name="model">product.template</field>
+            <field name="mode">primary</field>
             <field name="arch" type="xml">
                 <list create="false" edit="false" default_order="create_date desc">
                     <header>
@@ -348,31 +544,6 @@
             </field>
         </record>
 
-        <record id="view_product_template_form_inherit" model="ir.ui.view">
-            <field name="name">product.template.form.inh</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_only_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//notebook" position="inside">
-                    <page string="Test page" name="test_page" invisible="1">
-                    </page>
-                </xpath>
-<!--                move the pages after attribute-->
-                <xpath expr="//page[@name='test_page']" position="after">
-                    <page name="general_information" position="move"/>
-                    <page name="variants" position="move"/>
-                    <page name="sales" position="move"/>
-                    <page name="inventory" position="move"/>
-                </xpath>
-                <xpath expr="//page[@name='general_information']" position="inside">
-                    <field name="is_update_from_attribute" invisible="1"/>
-                </xpath>
-<!--                <xpath expr="//page[@name='general_information']/field[@name='family_id']" position="after">-->
-<!--                    <field name="brand_id"/>-->
-<!--                </xpath>-->
-            </field>
-        </record>
-
         <record id="inherit_search_view_product_template" model="ir.ui.view">
             <field name="name">inherit.search.product.template.attribute</field>
             <field name="model">product.template</field>
@@ -385,24 +556,17 @@
             </field>
         </record>
 
-        <record id="action_product_creation" model="ir.actions.act_window">
-            <field name="name">Create Product</field>
-            <field name="res_model">product.create</field>
-            <field name="view_mode">form</field>
-        </record>
-
+        <!-- Action for pim product menuitem      -->
         <record id="action_product_management_view" model="ir.actions.act_window">
             <field name="name">Products</field>
             <field name="res_model">product.template</field>
-            <field name="view_mode">kanban,list,form</field>
-            <field name="domain">[('company_id', 'in', allowed_company_ids), ('company_id', '=', False)]</field>
-<!--            <field name="view_id" ref="view_product_management_tree"/>-->
+            <field name="view_mode">list,kanban,form</field>
+<!--            <field name="domain">[('company_id', 'in', allowed_company_ids), ('company_id', '=', False)]</field>-->
             <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_product_management_tree')}),
                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_product_management_kanban')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_creation_split_view_custom')}),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('view_product_management_tree')}),
                 ]"/>
-            <field name="domain">[]</field>
         </record>
 
         <menuitem id="product_creation_menu"

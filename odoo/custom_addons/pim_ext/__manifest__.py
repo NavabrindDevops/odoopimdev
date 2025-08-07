@@ -20,8 +20,7 @@
         'wizard/mass_edit_view.xml',
         'views/pim_attribute_split_views.xml',
         'views/pim.xml',
-        'views/product_view.xml',
-        'views/product_template_view.xml',
+        # 'views/product_template_view.xml',
         'views/product_attribute.xml',
         'views/family_attribute.xml',
         # 'views/pim_attribute_details_views.xml',
@@ -33,17 +32,13 @@
         'views/pim_channels_views.xml',
         'views/brand.xml',
         'views/product_select_family.xml',
-	'views/general_attributes.xml',
+	    'views/general_attributes.xml',
         'views/supplier.xml',
         'views/pim_attribute_group_split_views.xml',
         'views/attribute_master_split_views.xml',
         'views/pim_family_custom_split_view.xml',
-        'views/product_split_view.xml',
         'views/product_creation_views.xml',
-
-
-        # 'views/ir_ui_view.xml',
-
+        'views/product_view.xml',
     ],
     'assets': {
                 'web.assets_backend': [
