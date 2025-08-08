@@ -241,7 +241,7 @@ class AttributeGroup(models.Model):
         }
 
     def action_back_to_menu(self):
-        menu_id = self.env.ref('pim_ext.menu_pim_attribute_action2')
+        menu_id = self.env.ref('pim_ext.menu_pim_attribute_group')
 
         # return {
         #      'type': 'ir.actions.act_window',

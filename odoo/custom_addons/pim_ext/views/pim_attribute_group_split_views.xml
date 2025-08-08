@@ -86,7 +86,7 @@
                                 </div>
                             </form>
                             <div class="attr_creation" style="margin-top: 16px;">
-                                                       <button type="object" string="Save"
+                                                       <button type="object" string="Save" invisible="id"
                                                                name="save_attributes" class="oe_highlight"/>
                                                    </div>
                         </div>
