@@ -71,8 +71,8 @@
         <field name="view_mode">list,form</field>
     </record>
 
-<!--    <menuitem id="menu_product_suppliers"-->
-<!--          action="action_supplier_info" name="Suppliers" groups="base.group_user"-->
-<!--          parent="pim_ext.menu_root_product_management" sequence="60"/>-->
+    <menuitem id="menu_product_suppliers"
+          action="action_supplier_info" name="Suppliers" groups="base.group_user"
+          parent="pim_ext.menu_root_product_management" sequence="60"/>
 
 </odoo>
