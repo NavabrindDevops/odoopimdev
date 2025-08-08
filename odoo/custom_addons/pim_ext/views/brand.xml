@@ -66,11 +66,11 @@
         </record>
 
 
-        <menuitem id="pim_brands_view_main"
-                  name="Brand"
-                  action="actions_product_brand"
-                  parent="pim_ext.menu_root_product_management"
-                  sequence="60"/>
+<!--        <menuitem id="pim_brands_view_main"-->
+<!--                  name="Brand"-->
+<!--                  action="actions_product_brand"-->
+<!--                  parent="pim_ext.menu_root_product_management"-->
+<!--                  sequence="60"/>-->
 
     </data>
 </odoo>
