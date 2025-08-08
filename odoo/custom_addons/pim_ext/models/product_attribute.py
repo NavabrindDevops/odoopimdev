@@ -584,7 +584,7 @@ class AttributeForm(models.Model):
      @api.model_create_multi
      def create(self, vals):
          rec = super(AttributeForm, self).create(vals)
-         for record, vals in zip(records, vals_list):
+         for record, vals in zip(rec, vals):
              self._log_changes(record, vals, action="create")
          return rec
           # # If attribute_group is set during creation

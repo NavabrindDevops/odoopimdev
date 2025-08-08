@@ -35,7 +35,5 @@
         <field name="context">{'search_default_groupby_model': 1}</field>
     </record>
 
-    <menuitem id="menu_general_attributes"
-              action="general_attributes_action" name="General Attributes"
-              parent="pim_ext.menu_root_product_management" sequence="61"/>
+
 </odoo>

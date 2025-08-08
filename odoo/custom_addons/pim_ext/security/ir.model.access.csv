@@ -1,7 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_family_attribute,family.attribute.user,model_family_attribute,,1,1,1,1
 
-access_attribute_group,attribute.group.user,model_attribute_group,pim_ext.attribute_group_user_group,1,1,1,1
+access_attribute_group,attribute.group.user,model_attribute_group,,1,1,1,1
 access_manufacturer.attribute,manufacturer.attribute.user,model_manufacturer_attribute,,1,1,1,1
 access_brand_attribute,brand.attribute.user,model_brand_attribute,,1,1,1,1
 access_family_products,family.products.user,model_family_products,,1,1,1,1
