@@ -38,7 +38,7 @@
         'views/attribute_master_split_views.xml',
         'views/pim_family_custom_split_view.xml',
         'views/product_creation_views.xml',
-        'views/product_view.xml',
+        'views/menuitems.xml',
     ],
     'assets': {
                 'web.assets_backend': [
@@ -50,6 +50,7 @@
                     'pim_ext/static/src/xml/create_button.xml',
                     'pim_ext/static/src/xml/video_selector.xml',
                     'pim_ext/static/src/js/video_selector.js',
+                    'pim_ext/static/src/js/one2many_widget.js',
                     # 'pim_ext/static/src/js/view_button.js',
                     # 'pim_ext/static/src/js/dis_button.js',
                     # 'pim_ext/static/src/xml/view_button.xml',
