@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!--    Inherit Product} Form-->
-    <record id="inherit_product" model="ir.ui.view">
-        <field name="name">Product Form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_normal_form_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='default_code']" position="after">
-                <field name="attribute_group_ids" widget="many2many_tags"/>
-                <field name="attribute_family_ids" widget="many2many_tags"/>
-            </xpath>
-        </field>
-    </record>
-
+    <menuitem id="menu_root_product_managements"
+            name="Product Managements"
+            web_icon="pim_ext,static/src/img/icon.png"
+            sequence="35"/>
     <menuitem id="menu_root_product_management"
               name="Configuration"
               parent="pim_ext.menu_root_product_managements"
@@ -23,15 +14,28 @@
               action="action_product_attributes_custom" name="Attributes"
               parent="pim_ext.menu_root_product_management" sequence="10"/>
 
-    <menuitem id="menu_pim_attribute_action2"
+    <menuitem id="menu_pim_attribute_group"
               action="action_attribute_group_view" name="Attributes Groups"
-              parent="pim_ext.menu_root_product_management" sequence="20"/>
+              parent="pim_ext.menu_root_product_management" sequence="15"/>
 
     <menuitem id="menu_pim_attribute_action3"
               action="action_family_view" name="Families"
               parent="pim_ext.menu_root_product_management" sequence="30"/>
 
 
+    <menuitem id="pim_brands_view_main"
+              name="Brand"
+              action="actions_product_brand"
+              parent="pim_ext.menu_root_product_management"
+              sequence="60"/>
+
+    <menuitem id="menu_general_attributes"
+          action="general_attributes_action" name="General Attributes"
+          parent="pim_ext.menu_root_product_management" sequence="61"/>
+
+    <menuitem id="menu_product_suppliers"
+          action="action_supplier_info" name="Suppliers" groups="base.group_user"
+          parent="pim_ext.menu_root_product_management" sequence="60"/>
 
 
     <record id="product_view_kanban_catalog1" model="ir.ui.view">

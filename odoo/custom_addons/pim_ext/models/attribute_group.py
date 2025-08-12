@@ -241,7 +241,7 @@ class AttributeGroup(models.Model):
         }
 
     def action_back_to_menu(self):
-        menu_id = self.env.ref('pim_ext.menu_pim_attribute_action2')
+        menu_id = self.env.ref('pim_ext.menu_pim_attribute_group')
 
         # return {
         #      'type': 'ir.actions.act_window',
@@ -268,6 +268,7 @@ class AttributeGroup(models.Model):
             'price': 'monetary',
         }
         self.ensure_one()
+        company_name = self.env.company.name
         views = self.env['ir.ui.view']
         group_name = self.name
         # Validate lines
@@ -312,7 +313,7 @@ class AttributeGroup(models.Model):
         print("form_arch ========== ", form_arch)
         default_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
         # Create or update the view
-        view_name = f'product_attribute_{group_name.lower().replace(' ', '_')}'
+        view_name = f'product_attribute_{company_name.lower().replace(' ', '_')}_{group_name.lower().replace(' ', '_')}'
         existing_view = views.search([
             ('name', '=', view_name),
             ('model', '=', 'product.template')

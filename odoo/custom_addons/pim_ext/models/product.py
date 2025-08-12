@@ -141,7 +141,8 @@ class ProductTemplate(models.Model):
      product_attr_values_id = fields.Many2many('product.attribute.value', 'attr_value_id', 'products_id', string='Attribute Values ', readonly=True)
      product_attr_ids = fields.One2many('product.attribute', 'products_id', string='Attributes')
      is_variant_update = fields.Boolean(string='Variant updated', default=False)
-     image_1 = fields.Image("Image1", max_width=1920, max_height=1920)
+     image_1 = fields.Image("Image1", max_width=1920, max_height=1920, compute="_compute_first_image",
+        store=False)
      image_2 = fields.Image("Image2", max_width=1920, max_height=1920)
      image_3= fields.Image("Image3", max_width=1920, max_height=1920)
      image_4 = fields.Image("Image4", max_width=1920, max_height=1920)
@@ -155,6 +156,15 @@ class ProductTemplate(models.Model):
           'product_tmpl_id',
           string='Images'
      )
+
+     @api.depends('image_ids.image_1920')
+     def _compute_first_image(self):
+         for record in self:
+             if record.image_ids:
+                 record.image_1 = record.image_ids[0].image_1920
+                 record.image_1920 = record.image_ids[0].image_1920
+             else:
+                 record.image_1 = False
      company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
 
      def _prepare_history_log(self, vals, is_create=False):

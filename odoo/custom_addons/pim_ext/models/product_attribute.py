@@ -194,9 +194,10 @@ class AttributeForm(models.Model):
           name = re.sub(r'[^a-z0-9_]', '_', name)
           name = re.sub(r'_+', '_', name)
           name = name.strip('_')
-          name = f'x_{name}'
+          company_name = self.env.company.name
+          name = f'x_{name}_{company_name.lower().replace(' ', '_')}'
           if not name[0].isalpha():
-               name = 'x_' + name
+               name = 'x_' + name + company_name.lower().replace(' ', '_')
           return name[:63]
 
      def get_create_vals(self, vals, model_id, d_type):
@@ -362,7 +363,7 @@ class AttributeForm(models.Model):
                  # if attr.usable_in_grid:
                  #     field_tag += f''' optional="show"'''
                  if attr.display_type in ['simple_select', 'multi_select']:
-                     field_tag += f"options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+                     field_tag += f" options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
 
                  field_tag += f'''/>\n'''
              form_arch += field_tag
@@ -505,8 +506,8 @@ class AttributeForm(models.Model):
           print("check_attribute_name -------------------------")
           pattern = "^(?=.*[a-zA-Z0-9])[A-Za-z0-9 ]+$"
           for rec in self:
-               name_count2 = self.search([('name', '=ilike', rec.name)])
-               name_count = self.search_count([('name', '=ilike', rec.name)])
+               name_count2 = self.search([('name', '=ilike', rec.name),('company_id', '=', rec.company_id.id)])
+               name_count = self.search_count([('name', '=ilike', rec.name),('company_id', '=', rec.company_id.id)])
                print("name_count ------------------ ", name_count)
                print("name_count2 ------------------ ", name_count2)
                if name_count > 1:
@@ -584,7 +585,7 @@ class AttributeForm(models.Model):
      @api.model_create_multi
      def create(self, vals):
          rec = super(AttributeForm, self).create(vals)
-         for record, vals in zip(records, vals_list):
+         for record, vals in zip(rec, vals):
              self._log_changes(record, vals, action="create")
          return rec
           # # If attribute_group is set during creation
