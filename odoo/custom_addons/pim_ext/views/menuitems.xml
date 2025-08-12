@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-
+    <menuitem id="menu_root_product_managements"
+            name="Product Managements"
+            web_icon="pim_ext,static/src/img/icon.png"
+            sequence="35"/>
     <menuitem id="menu_root_product_management"
               name="Configuration"
               parent="pim_ext.menu_root_product_managements"

@@ -236,6 +236,7 @@ class FamilyAttribute(models.Model):
 
     def update_attribute_group_views(self):
         print("update_attribute_group_views ==== ")
+        company_name = self.env.company.name
         for rec in self:
             attributes = rec.mapped('family_attribute_ids').mapped('attribute_id')
             print("attributes === ", attributes)
@@ -261,8 +262,8 @@ class FamilyAttribute(models.Model):
             print("attribute_groups === ", attribute_groups)
             for group_name, group_attributes in attribute_groups.items():
                 print("group_name, group_attributes  ==== ", group_name, group_attributes)
-                group_view_name = 'product_attribute_' + group_name.lower().replace(' ', '_')
-                group_exist = self.env['ir.ui.view'].sudo().search([
+                group_view_name = 'product_attribute_'+ company_name.lower().replace(' ', '_') + '_' + group_name.lower().replace(' ', '_')
+                group_exist = self.env['ir.ui.view'].search([
                     ('name', 'ilike', group_view_name),
                     ('active', 'in', [True, False])
                 ], limit=1)

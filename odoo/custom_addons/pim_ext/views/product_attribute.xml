@@ -72,15 +72,15 @@
                     </div>
 
                     <div class="right-column">
-                        <form create="false" edit="false" delete="false" readonly="1" class="attribute_type">
+                        <div class="attribute_type">
                             <header>
                                 <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_attribute_menu"/>
                             </header>
                             <div class="pim_oe_title">
                                 <h2 class="pim_create_attribute"><span class="attr_title">Edit Attribute</span></h2>
                             </div>
-                        </form>
-                        <form>
+                        </div>
+                        <div>
                             <div class="o_col_6 col-12 attr_form">
                                 <div class="attr_properties">
                                     <sheet class="attr_sheet">
@@ -301,7 +301,7 @@
                                     </sheet>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                         <div class="attr_creation" style="margin-top: 16px;">
                                                         <button type="object" string="Save" invisible="original_name"
                                                            name="create_attributes" class="oe_highlight"/>

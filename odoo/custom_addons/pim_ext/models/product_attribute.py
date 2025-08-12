@@ -363,7 +363,7 @@ class AttributeForm(models.Model):
                  # if attr.usable_in_grid:
                  #     field_tag += f''' optional="show"'''
                  if attr.display_type in ['simple_select', 'multi_select']:
-                     field_tag += f"options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+                     field_tag += f" options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
 
                  field_tag += f'''/>\n'''
              form_arch += field_tag

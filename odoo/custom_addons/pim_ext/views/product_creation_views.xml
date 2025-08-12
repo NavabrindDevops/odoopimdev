@@ -283,6 +283,7 @@
                                            context="{'default_name': name}"
                                            add-label="Add Media"
                                            options="{'convert_to_webp': True}"/>
+                                    <field name="image_1" invisible="True"/>
                                 </group>
                             </page>
 
@@ -370,7 +371,7 @@
                                         <li class="mb4 fam_list_title">
                                             <span>SKU: &#160;<field name="sku"/></span>
                                         </li>
-                                        <li class="mb4 fam_list_title">
+                                        <li class="mb4 fam_list_title kanban-product-name">
                                             <span>Name: &#160;<field name="name"/></span>
                                         </li>
                                         <div class="d-flex fam_list_value">
@@ -433,7 +434,7 @@
                                 invisible="context.get('active_model', 'product.template') != 'product.template'"/>
                     </header>
                     <field name="id"/>
-                    <field name="image_ids" widget="image" options="{'size': [50, 50]}"/>
+                    <field name="image_1920" widget="image" options="{'size': [50, 50]}"/>
                     <field name="sku"/>
                     <field name="family_id"/>
                     <field name="brand_id"/>
