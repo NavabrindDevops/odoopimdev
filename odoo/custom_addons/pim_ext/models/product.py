@@ -96,7 +96,7 @@ class ProductTemplate(models.Model):
      family_id = fields.Many2one('family.attribute', string='Family', readonly=True)
      sku = fields.Char(string='SKU')
      brand_id = fields.Many2one('product.brand', string='Brand')
-     category_id = fields.Many2one('pim.category', string='Category')
+     category_id = fields.Many2one('product.category', string='Category')
 
      parent_id = fields.Many2one(
           'product.create',
