@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _, tools
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from datetime import datetime
 import pytz
 
@@ -9,38 +9,69 @@ class PimCategory(models.Model):
     _name = 'pim.category'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Category'
-    _parent_name = "parent_id"
-    _parent_store = True
-    _rec_name = 'complete_name'
     _order = 'complete_name'
 
     name = fields.Char(string='Name', required=True, translate=False)
-    code = fields.Char(string='Code', readonly=True)
-    active = fields.Boolean('Active', default=True)
+    categ_name = fields.Char(string='Name')
+    category_id = fields.Many2one('product.category')
+    code = fields.Char(string='Code')
     complete_name = fields.Char(
-        'Complete Name', compute='_compute_complete_name', recursive=True,
-        store=True)
-    parent_id = fields.Many2one('pim.category', string='Parent Category', index=True, ondelete="cascade")
-    parent_path = fields.Char(index=True, unaccent=False)
-    category_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories')
-    child_ids = fields.One2many('pim.category', 'parent_id', string='Children Categories ')
+        'Complete Name',related='category_id.complete_name',   store=True)
+    parent_id = fields.Many2one('product.category',related='category_id.parent_id', string='Parent Category')
+    history_log = fields.Html(string='History Log', related='category_id.history_log', help="This field stores the history of changes.")
+    category_active = fields.Boolean(related='category_id.active')
+    active = fields.Boolean(default=True)
+
+
+class ProductCategory(models.Model):
+    _inherit = 'product.category'
+
+    name = fields.Char(translate=True)
+    code = fields.Char(string='Code')
     history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
+    active = fields.Boolean(default=True)
 
-    def update_parent_category(self,child_id,new_parent_id):
-        print("wwwwwwwwwww",self,child_id,new_parent_id)
-        child_categ = self.env['pim.category'].browse(child_id)
-        parent_categ = self.env['pim.category'].browse(new_parent_id)
-        child_categ.parent_id = parent_categ
-        return self.return_categories_hierarchy()
 
+    def action_home_page(self):
+        """ Redirect to the home page of knowledge, which displays an article.
+        Chosen articles comes from
+
+          * either self if it is not void (taking the first article);
+          * ``res_id`` key from context;
+          * find the first accessible article, based on favorites and sequence
+            (see ``_get_first_accessible_article``);
+        """
+        category = self[0] if self else False
+        if not category and self.env.context.get('res_id', False):
+            category = self.browse([self.env.context["res_id"]])
+            if not category.exists():
+                raise UserError(_("The Article you are trying to access has been deleted"))
+        if not category:
+            category = self.env['product.category'].search([("parent_id", "=", False)],limit=1)
+
+        action = self.env['ir.actions.act_window']._for_xml_id('pim_ext.action_pim_categories')
+        action['res_id'] = category.id
+        return action
+
+    def create_new_category(self, parent_id, name):
+        print(parent_id, name)
+        new_id = self.env['product.category'].create({'name':name,'parent_id':parent_id})
+        return {'category_tree':self.return_categories_hierarchy(),'new_id':new_id.id}
 
     def return_categories_hierarchy(self):
-        categories = self.env['pim.category'].search([("parent_id", "=", False)])
-        print("lllllllllllllllllll",categories)
+        categories = self.env['product.category'].search([("parent_id", "=", False)])
         res = []
         for category in categories:
             res.append(category._return_categories_recursive())
         return res
+
+    def update_parent_category(self, child_id, new_parent_id):
+        print("wwwwwwwwwww", self, child_id, new_parent_id)
+        child_categ = self.env['product.category'].browse(child_id)
+        parent_categ = self.env['product.category'].browse(new_parent_id)
+        child_categ.parent_id = parent_categ
+        return self.return_categories_hierarchy()
+
 
     def _return_categories_recursive(self):
         """
@@ -51,7 +82,7 @@ class PimCategory(models.Model):
         """
         res = {"id": self.id, "text": self.name}
         child_res = []
-        child_ids = self.search([("id", "in", self.child_ids.ids)])
+        child_ids = self.search([("id", "in", self.child_id.ids)])
         for child in child_ids:
             child_res.append(child._return_categories_recursive())
         res.update({"children": child_res})
@@ -73,7 +104,7 @@ class PimCategory(models.Model):
 
                 if key == 'parent_id':
                     old_value = rec.parent_id.display_name if rec.parent_id else 'N/A'
-                    new_value = self.env['pim.category'].browse(vals[key]).display_name if vals.get(key) else 'N/A'
+                    new_value = self.env['product.category'].browse(vals[key]).display_name if vals.get(key) else 'N/A'
                 else:
                     # Set old_value to 'N/A' if creating a new record
                     old_value = getattr(rec, key, 'N/A') if action == "update" else 'N/A'
@@ -106,13 +137,13 @@ class PimCategory(models.Model):
     def write(self, vals):
         for rec in self:
             self._log_changes(rec, vals, action="update")  # Call the common function with action as "update"
-        return super(PimCategory, self).write(vals)
+        return super(ProductCategory, self).write(vals)
 
-    @api.model_create_multi
+    @api.model
     def create(self, vals):
         vals['code'] = self.env['ir.sequence'].next_by_code(
-            'pim.category') or None
-        res = super(PimCategory, self).create(vals)
+            'product.category') or None
+        res = super(ProductCategory, self).create(vals)
         self._log_changes(res, vals, action="create")
         return res
 
@@ -127,7 +158,7 @@ class PimCategory(models.Model):
 
     @api.constrains('name')
     def check_name(self):
-        if self.env['pim.category'].search([('name', '=', self.name), ('id', '!=', self.id)]):
+        if self.env['product.category'].search([('name', '=', self.name), ('id', '!=', self.id)]):
             raise ValidationError("The category name already exists.")
 
     def _compute_display_name(self):
@@ -139,23 +170,23 @@ class PimCategory(models.Model):
             'name': _('Create Category'),
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
-            'res_model': 'pim.category',
+            'res_model': 'product.category',
             'view_id': self.env.ref('pim_ext.view_form_pim_categories').id,
             'target': 'current',
             'context': {
-                'default_category_ids': self.env['pim.category'].search([]).ids,
+                'default_category_ids': self.env['product.category'].search([]).ids,
             },
         }
 
-    def _compute_category_ids(self):
-        for record in self:
-            record.category_ids = self.env['pim.category'].search([])
+    # def _compute_category_ids(self):
+    #     for record in self:
+    #         record.category_ids = self.env['product.category'].search([])
 
     def save_attributes(self):
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
-            'res_model': 'pim.category',
+            'res_model': 'product.category',
             'view_id': self.env.ref('pim_ext.view_form_pim_categories').id,
             'res_id': self.id,
             'context': {'no_breadcrumbs': True},
@@ -167,7 +198,7 @@ class PimCategory(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Edit Category',
-            'res_model': 'pim.category',
+            'res_model': 'product.category',
             'view_mode': 'form',
             'view_id': self.env.ref('pim_ext.view_form_pim_categories').id,
             'context': {'no_breadcrumbs': True},
@@ -198,7 +229,7 @@ class CategoryMasterUnlinkWizard(models.TransientModel):
     _name = 'category.master.unlink.wizard'
     _description = 'Wizard to Confirm Deletion of Category master'
 
-    category_id = fields.Many2one('pim.category', string="Category Master")
+    category_id = fields.Many2one('product.category', string="Category Master")
 
     def confirm_unlink(self):
         menu_id = self.env['ir.ui.menu'].search([('name', '=', 'Manage Categories')])

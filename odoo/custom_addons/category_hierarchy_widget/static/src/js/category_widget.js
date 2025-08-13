@@ -2,7 +2,6 @@
 import { Component , useState,onWillStart,onWillUpdateProps} from "@odoo/owl";
 import {useService} from "@web/core/utils/hooks";
 import { registry } from "@web/core/registry";
-//import { JsTreeContainer } from "@category_hierarchy_widget/jstree_container/jstree_container";
 import { CategoryHierarchyDialog } from "@category_hierarchy_widget/js/category_dialog";
 import { rpc } from "@web/core/network/rpc";
 
@@ -22,19 +21,13 @@ export class enhancedCategorywidget extends Component {
         self.state.family_id = this.props.record.resId;
         self.getCategories();
         onWillStart(async () => {
-//            this.state.edit_allowed = await self.orm.call('family.attribute','check_access', [this.props.record.resId]);
-
         });
         onWillUpdateProps(async (nextProps) => {
-//            this.state.family_id = nextProps.record.resId;
-//            this.get_taxonomies();
-//            this.props = nextProps;
         });
-
    }
 
    async getCategories(){
-        var jstreeData = await this.orm.call('pim.category', "return_categories_hierarchy", [1]);
+        var jstreeData = await this.orm.call('product.category', "return_categories_hierarchy", [1]);
         Object.assign(this.state, { categories: jstreeData });
         console.log("jstreeData ",jstreeData )
     }

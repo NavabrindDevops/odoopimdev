@@ -14,14 +14,6 @@ import { useSortable } from "@web/core/utils/sortable_owl";
 import { fuzzyLookup } from "@web/core/utils/search";
 import { ControlPanel } from "@web/search/control_panel/control_panel";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-//import {
-//    onMounted,
-//    onWillStart,
-//    useChildSubEnv,
-//    useEffect,
-//    useExternalListener,
-//    useRef,
-//} from "@odoo/owl";
 
 class categoryController extends FormController {
    setup() {
@@ -69,11 +61,6 @@ class categoryController extends FormController {
             return;
         }
 
-
-        // blur to remove focus on the active element
-//        document.activeElement.blur();
-
-        // load the new record
         try {
         await this.model.load({ resId });
         } catch {
@@ -102,7 +89,7 @@ class categoryController extends FormController {
                 const account = document.getElementById(data);
                 const element = document.getElementById(ev.target.id);
                 console.log(data,account,element,ev.target.id)
-                const res = await  self.orm.call('pim.category','update_parent_category', [self.props.resId,Number(data),Number(ev.target.id)]);
+                const res = await  self.orm.call('product.category','update_parent_category', [self.props.resId,Number(data),Number(ev.target.id)]);
                 self.state.categories = res;
     }
     async getCategories(){
@@ -210,7 +197,7 @@ class categoryController extends FormController {
                type: "ir.actions.act_window",
                res_model: "product.category",
                view_mode: "list",
-               views: [['pim_ext.view_tree_pim_categories', "list"]],
+               views: [[false, "list"]],
                target: "main",
             });
     }

@@ -15,6 +15,7 @@
         'data/general_attributes_data.xml',
         'data/sequence.xml',
         'data/server_actions.xml',
+        'data/pim_category_data.xml',
         'wizard/product_view.xml',
         'wizard/delete_family.xml',
         'wizard/mass_edit_view.xml',
