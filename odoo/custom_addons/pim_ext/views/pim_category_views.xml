@@ -51,7 +51,7 @@
                             </page>
                             <page string="History">
                                 <group>
-<!--                                    <field name="history_log" nolabel="1" readonly="1"/>-->
+                                    <field name="history_log" nolabel="1" readonly="1"/>
                                 </group>
                             </page>
                         </notebook>
@@ -91,22 +91,11 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="pim_ext.view_form_pim_categories"/>
         </record>
-        <record id="action_pim_categories_1" model="ir.actions.act_window">
-            <field name="name">Category PIM</field>
-            <field name="res_model">pim.category</field>
-            <field name="view_mode">list</field>
-        </record>
-
         <menuitem id="menu_pim_categories"
                   name="Manage Categories"
                   action="pim_ext.ir_actions_categories_home_page"
                   parent="pim_ext.menu_root_product_management"
                   sequence="40"/>
-        <menuitem id="menu_pim_categories"
-                  name="Manage PIM Categories"
-                  action="pim_ext.action_pim_categories_1"
-                  parent="pim_ext.menu_root_product_management"
-                  sequence="41"/>
 
         <record id="view_category_master_unlink_wizard_form" model="ir.ui.view">
             <field name="name">category.master.unlink.wizard.form</field>
