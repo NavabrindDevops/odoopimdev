@@ -311,8 +311,31 @@ class ProductTemplate(models.Model):
      def write(self, vals):
          if not self.env.context.get('skip_history_log'):
              self._prepare_history_log(vals, is_create=False)
+         self.attribute_validation_conditions(vals)
          result = super(ProductTemplate, self).write(vals)
          return result
+
+     def attribute_validation_conditions(self, vals):
+         # pattern = "^(?=.*[a-zA-Z0-9])[A-Za-z0-9 ]+$"
+         pattern = r"^(?=.*[A-Za-z])[A-Za-z0-9 ]+$"
+
+         for rec in self:
+             for attr in rec.family_id.exist_attribute_ids:
+                 print("attr - ", attr.original_name,"attr.alpha_numeric_value - ", attr.alpha_numeric_value,"attr.unique_value = ", attr.unique_value)
+                 if attr.original_name in vals:
+                     print("if attribute exist")
+                     if attr.alpha_numeric_value == 'yes':
+                         print("vals  == ", vals[attr.original_name])
+                         if vals[attr.original_name] and not re.match(pattern, vals[attr.original_name]):
+                             raise ValidationError("Attribute Name should be AlphaNumeric")
+                     if attr.unique_value == 'yes':
+                         print("unique validation", vals[attr.original_name])
+                         field_val_count = self.env['product.template'].search(
+                             [(attr.original_name, '=ilike', vals[attr.original_name]), ('company_id', '=', rec.company_id.id)])
+                         print("field_val_count  == ", field_val_count)
+                         print("len - field_val_count  == ", len(field_val_count))
+                         if len(field_val_count) > 1:
+                             raise ValidationError(_('%s value already exist.', attr.name))
 
      def _compute_products_ids(self):
           for record in self:
@@ -387,6 +410,7 @@ class ProductTemplate(models.Model):
                            'default_product_id': self.id,
                            'default_variant_id': self.variant_id.id,
                            'default_attribute_id': attribute_value.id if attribute_value else False,
+                           'no_breadcrumbs': True,
                            },
           }
 
@@ -459,7 +483,7 @@ class ProductTemplate(models.Model):
                'res_model': 'product.template.unlink.wizard',
                'view_mode': 'form',
                'target': 'new',
-               'context': {'default_product_id': self.id},
+               'context': {'default_product_id': self.id,  'no_breadcrumbs': True,},
           }
 
 

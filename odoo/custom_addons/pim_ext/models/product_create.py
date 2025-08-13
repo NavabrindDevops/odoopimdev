@@ -462,7 +462,6 @@ class ProductCreateMaster(models.Model):
             'view_mode': 'kanban',
             'view_id': self.env.ref('pim_ext.view_product_management_kanban').id,
             'context': {'no_breadcrumbs': True},
-
         }
 
 class Many2manySelectionValues(models.Model):

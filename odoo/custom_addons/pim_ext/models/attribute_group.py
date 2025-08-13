@@ -294,10 +294,10 @@ class AttributeGroup(models.Model):
                 field_tag += f'''<field name="{attr.original_name}" invisible="1"'''
                 if attr.widget:
                     field_tag += f''' widget="{widget}"'''
-                # if attr.usable_in_grid:
-                #     field_tag += f''' optional="show"'''
+                if attr.is_mandatory:
+                    field_tag += f''' required="0"'''
                 if attr.display_type in ['simple_select','multi_select']:
-                    field_tag += f"options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+                    field_tag += f" options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
                     # field_tag += f''' options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"'''
                 field_tag += f'''/>\n'''
             # elif attr.original_name and attr.display_type == 'table':
