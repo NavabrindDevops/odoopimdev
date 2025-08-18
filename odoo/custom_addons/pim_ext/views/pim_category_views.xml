@@ -6,12 +6,12 @@
             <field name="model">product.category</field>
             <field name="arch" type="xml">
                 <list create="false" default_order="create_date desc">
-                    <field name="code"/>
+<!--                    <field name="code"/>-->
                     <field name="name"/>
                     <field name="parent_id"/>
                     <field name="complete_name"/>
-                    <field name="active" widget="boolean_toggle"/>
-                   <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>
+<!--                    <field name="active" widget="boolean_toggle"/>-->
+<!--                   <button name="category_master_unlink" type="object" icon="fa-trash" class="btn-link text-danger"/>-->
                 </list>
             </field>
         </record>
@@ -51,7 +51,7 @@
                             </page>
                             <page string="History">
                                 <group>
-                                    <field name="history_log" nolabel="1" readonly="1"/>
+<!--                                    <field name="history_log" nolabel="1" readonly="1"/>-->
                                 </group>
                             </page>
                         </notebook>
@@ -91,9 +91,10 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="pim_ext.view_form_pim_categories"/>
         </record>
+
         <menuitem id="menu_pim_categories"
                   name="Manage Categories"
-                  action="pim_ext.ir_actions_categories_home_page"
+                  action="action_pim_categories"
                   parent="pim_ext.menu_root_product_management"
                   sequence="40"/>
 

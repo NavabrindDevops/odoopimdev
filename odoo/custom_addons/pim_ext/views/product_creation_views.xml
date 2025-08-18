@@ -274,7 +274,7 @@
                                             <field name="id" readonly="1"/>
                                             <field name="sku"/>
                                             <field name="family_id" readonly="1" options="{'no_open': True, 'no_create': True}"/>
-                                            <field name="category_id" options="{'no_open': True, 'no_create': True}"/>
+                                            <field name="categ_id" options="{'no_open': True, 'no_create': True}"/>
                                             <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
 <!--                                            <field name="create_date" readonly="1"/>-->
 <!--                                            <field name="write_date" readonly="1"/>-->

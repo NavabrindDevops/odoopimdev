@@ -355,21 +355,21 @@
     </record>
 
     <record id="action_update_field_view" model="ir.actions.server">
-        <field name="name">Update Attribute View</field>
+        <field name="name">Update Attribute</field>
         <field name="model_id" ref="product.model_product_attribute"/>
         <field name="binding_model_id" ref="product.model_product_attribute"/>
         <field name="binding_view_types">list,form</field>
         <field name="state">code</field>
-        <field name="code">model.create_uncategorized_view()</field>
+        <field name="code">model.create_attributes()</field>
     </record>
-    <record id="action_update_field_tree_view" model="ir.actions.server">
-        <field name="name">Update Attribute Tree View</field>
-        <field name="model_id" ref="product.model_product_attribute"/>
-        <field name="binding_model_id" ref="product.model_product_attribute"/>
-        <field name="binding_view_types">list,form</field>
-        <field name="state">code</field>
-        <field name="code">model.create_product_list_view()</field>
-    </record>
+<!--    <record id="action_update_field_tree_view" model="ir.actions.server">-->
+<!--        <field name="name">Update Attribute Tree View</field>-->
+<!--        <field name="model_id" ref="product.model_product_attribute"/>-->
+<!--        <field name="binding_model_id" ref="product.model_product_attribute"/>-->
+<!--        <field name="binding_view_types">list,form</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">model.create_product_list_view()</field>-->
+<!--    </record>-->
 <!--    <record id="copy_phone_to_mobile" model="ir.actions.server">-->
 <!--        <field name="name">Copy Phone to Mobile</field>-->
 <!--        <field name="model_id" ref="base.model_res_partner"/>-->

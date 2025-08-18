@@ -280,45 +280,47 @@ class AttributeForm(models.Model):
           print("create_attributes ========== product attribute")
           self.ensure_one()
           model_id = self.env['ir.model'].sudo().search([('model', '=', 'product.template')])
+          attributes = self or self.env['product.attribute'].sudo().search(
+              [('id', 'in', self.env.context['active_ids'])], order="id asc")
+          for vals in attributes:
+               if not vals.original_name:
+                   vals.original_name = self.sanitize_field_name(vals.name)
 
-          for vals in self:
-               vals.original_name = self.sanitize_field_name(vals.name)
+                   create_vals = self.get_create_vals(vals, model_id, vals.display_type)
 
-               create_vals = self.get_create_vals(vals, model_id, vals.display_type)
+                   print("create_vals === ", create_vals)
+                   create_field = self.env['ir.model.fields'].sudo().create(create_vals)
+                   print(" create_field  === ", create_field)
+                   # creates a filename field for binary field
+                   if vals.display_type in ['link', 'file', 'image']:
+                        file_name = vals.original_name + '_file_name'
+                        create_vals_file = {'name': file_name,
+                                            'field_description': vals.name,
+                                            'model': model_id.model,
+                                            'model_id': model_id.id,
+                                            'ttype': 'char',
+                                            }
+                        create_field_file_name = self.env['ir.model.fields'].sudo().create(create_vals_file)
 
-               print("create_vals === ", create_vals)
-               create_field = self.env['ir.model.fields'].sudo().create(create_vals)
-               print(" create_field  === ", create_field)
-               # creates a filename field for binary field
-               if vals.display_type in ['link', 'file', 'image']:
-                    file_name = vals.original_name + '_file_name'
-                    create_vals_file = {'name': file_name,
-                                        'field_description': vals.name,
-                                        'model': model_id.model,
-                                        'model_id': model_id.id,
-                                        'ttype': 'char',
-                                        }
-                    create_field_file_name = self.env['ir.model.fields'].sudo().create(create_vals_file)
-
-               if vals.display_type == 'table' and vals.sub_attribute_ids:
-                    for rec in vals.sub_attribute_ids:
-                         rec.original_name = rec.sanitize_field_name(rec.name)
-                         sub_create_vals = self.get_create_vals(rec, model_id, rec.display_type)
-                         print(" sub_create_vals  === ",sub_create_vals)
-                         sel_val = self.env['ir.model.fields'].sudo().create(sub_create_vals)
-                         print(" sel_val  === ", sel_val)
-               if vals.display_type in ['select', 'color'] and vals.value_ids:
-                    print("color type ==============")
-                    for v in vals.value_ids:
-                        sel_name = v.name
-                        sel_val = self.env['ir.model.fields.selection'].sudo().create({
-                            'name': sel_name,
-                            'value': sel_name,
-                            'field_id': create_field.id
-                        })
-                        print("sel_val === ", sel_val)
-          self.create_uncategorized_view()
-          self.create_product_list_view()
+                   if vals.display_type == 'table' and vals.sub_attribute_ids:
+                        for rec in vals.sub_attribute_ids:
+                             rec.original_name = rec.sanitize_field_name(rec.name)
+                             sub_create_vals = self.get_create_vals(rec, model_id, rec.display_type)
+                             print(" sub_create_vals  === ",sub_create_vals)
+                             sel_val = self.env['ir.model.fields'].sudo().create(sub_create_vals)
+                             print(" sel_val  === ", sel_val)
+                   if vals.display_type in ['select', 'color'] and vals.value_ids:
+                        print("color type ==============")
+                        for v in vals.value_ids:
+                            sel_name = v.name
+                            sel_val = self.env['ir.model.fields.selection'].sudo().create({
+                                'name': sel_name,
+                                'value': sel_name,
+                                'field_id': create_field.id
+                            })
+                            print("sel_val === ", sel_val)
+                   vals.create_uncategorized_view()
+                   vals.create_product_list_view()
           # # Check if an existing attribute exists
           # existing_attribute = attribute.search([('name', '=', self.name)], limit=1)
           #
@@ -715,16 +717,76 @@ class AttributeForm(models.Model):
                record.value_ids.unlink()
                record.value_ids = vals_list
 
-     def unlink(self):
-         for rec in self:
+
+     def remove_attributes_from_view(self):
+         print("remove_attributes_from_view === ")
+         attr = self or self.env['product.attribute'].sudo().search(
+             [('id', 'in', self.env.context['active_ids'])], order="id asc")
+         print("attr == ", attr)
+         for rec in attr:
+             # if rec.display_type in ['link', 'file', 'image'] and rec.original_name:
+             #     field_file_name = rec.original_name + '_file_name'
+             #     field_val_binary = self.env['ir.model.fields'].sudo().search([('name', '=ilike', field_file_name)])
+             #     field_val_binary.unlink()
+
+             extra_view_ids = []
+             attribute_groups = self.env['attribute.group.lines'].search(
+                 [('product_attribute_id', '=', rec.id)])
+             print("attribute_groups ================ ", attribute_groups)
+             if attribute_groups:
+                 for group in attribute_groups:
+                     company_name = group.attr_group_id.company_id.name
+                     group_name = group.attr_group_id.name
+                     if group.attr_group_id:
+                         view_name = f'product_attribute_{company_name.lower().replace(' ', '_')}_{group_name.lower().replace(' ', '_')}'
+                         print("view name  ========= ", view_name)
+                         attribute_group_views = self.env['ir.ui.view'].sudo().search(
+                             [('name', '=', view_name), ('active', 'in', [True, False])])
+                         if attribute_group_views:
+                             extra_view_ids.append(attribute_group_views)
+             # Uncategorized Group View
+             companies = self.env['res.company'].search([])
+             for com in companies:
+                 name = com.name
+                 com_view_name = 'product_attribute_' + name.lower().replace(' ', '_') + '_uncategorized'
+                 print("com_view_name === ", com_view_name)
+                 company_views = self.env['ir.ui.view'].sudo().search(
+                     [('name', '=', com_view_name), ('active', 'in', [True, False])])
+                 if company_views:
+                     extra_view_ids.append(company_views)
+             print("extra_view_ids =======================================", extra_view_ids)
+             if extra_view_ids:
+                 for view in extra_view_ids:
+                     if view:
+                         arch_tree = etree.fromstring(view.arch_db)
+                         # Define field names to remove
+                         fields_to_remove = [rec.original_name]
+                         # if rec.display_type == 'link':
+                         #     field_file_name = f"{rec.original_name}_file_name"
+                         #     fields_to_remove.append(field_file_name)
+                         for field_name in fields_to_remove:
+                             # Find the field node
+                             field_node = arch_tree.xpath(f"//field[@name='{field_name}']")
+                             if field_node:
+                                 # Remove the field node
+                                 parent_node = field_node[0].getparent()
+                                 parent_node.remove(field_node[0])
+
+                         # Save the modified XML back to the view
+                         view.write({'arch_db': etree.tostring(arch_tree, encoding='utf-8').decode('utf-8')})
+
+
              if rec.original_name:
-                 field_val = self.env['ir.model.fields'].sudo().search([('name', '=ilike', rec.original_name)])
+                 field_val = self.env['ir.model.fields'].sudo().search([('name', '=ilike', rec.original_name),('model', '=', 'product.product')])
+                 print("field_val === ", field_val)
                  field_val.unlink()
 
-             if rec.display_type in ['link', 'file', 'image'] and rec.original_name:
-                 field_file_name = rec.original_name + '_file_name'
-                 field_val_binary = self.env['ir.model.fields'].sudo().search([('name', '=ilike', field_file_name)])
-                 field_val_binary.unlink()
+
+     def unlink(self):
+         print("unlink =================================")
+         for rec in self:
+             if rec.original_name:
+                 self.remove_attributes_from_view()
 
          result = super(AttributeForm, self).unlink()
          return result
