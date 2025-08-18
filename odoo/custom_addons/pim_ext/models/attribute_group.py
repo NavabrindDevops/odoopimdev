@@ -11,7 +11,7 @@ from lxml import etree
 from odoo import models, api, fields,_, tools
 from odoo.exceptions import UserError, ValidationError
 import traceback,pdb,inspect
-
+import xml.sax.saxutils as saxutils
 import logging
 from googletrans import Translator
 
@@ -294,10 +294,10 @@ class AttributeGroup(models.Model):
                 field_tag += f'''<field name="{attr.original_name}" invisible="1"'''
                 if attr.widget:
                     field_tag += f''' widget="{widget}"'''
-                # if attr.usable_in_grid:
-                #     field_tag += f''' optional="show"'''
+                if attr.is_mandatory:
+                    field_tag += f''' required="0"'''
                 if attr.display_type in ['simple_select','multi_select']:
-                    field_tag += f"options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+                    field_tag += f" options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
                     # field_tag += f''' options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"'''
                 field_tag += f'''/>\n'''
             # elif attr.original_name and attr.display_type == 'table':
@@ -342,6 +342,91 @@ class AttributeGroup(models.Model):
             'context': {'no_breadcrumbs': True},
             'target': 'current',
         }
+
+    def update_attribute_group_view(self):
+        attr_grp = self or self.env['attribute.group'].sudo().search(
+             [('id', 'in', self.env.context['active_ids'])], order="id asc")
+        widgets_mapping = {
+            'image': 'image',
+            'multi_select': 'many2many_tags',
+            'color': 'color_picker',
+            'price': 'monetary',
+        }
+        company_name = self.env.company.name
+        views = self.env['ir.ui.view']
+        for rec in attr_grp:
+            group_name = rec.name
+            safe_group_name = saxutils.escape(group_name)  # for string label
+            safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')  # for name/id (no special chars)
+            form_arch = f'''
+                        <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
+                        <group name="{safe_group_id}" id="{safe_group_id}" string="{safe_group_name}" invisible="1" collapsible="1" expanded="1" >
+                        '''
+            # form_arch = f'''
+            #         <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
+            #         <group name="{group_name.lower().replace(' ', '_')}" id="{group_name.lower().replace(' ', '_')}" string="{group_name}" invisible="1" collapsible="1" expanded="1" >
+            #         '''
+            print("self.attribute_group_line_ids === ", form_arch)
+            # Add fields with appropriate widget
+            for line in rec.attribute_group_line_ids:
+                print("line == ", line)
+                attr = line.product_attribute_id
+                widget = widgets_mapping.get(attr.display_type)
+                field_tag = ''
+                # self.attribute_field_xml(attr, widget)
+                print("attr.original_name ========", attr.original_name)
+                print("attr.display_type ========", attr.id)
+                family_list = self.env['family.attribute'].search([('exist_attribute_ids', 'in', attr.id)])
+                print("family_list == ", family_list)
+                print("family_list ids == ", family_list.ids)
+                if attr.original_name and attr.display_type != 'table':
+                    field_tag += f'''<field name="{attr.original_name}"'''
+                    if family_list:
+                        field_tag += f''' invisible="family_id not in {family_list.ids}"'''
+                    else:
+                        field_tag += f''' invisible="1"'''
+
+                    if attr.widget:
+                        field_tag += f''' widget="{widget}"'''
+                    if attr.is_mandatory:
+                        field_tag += f''' required="0"'''
+                    if attr.display_type in ['simple_select', 'multi_select']:
+                        field_tag += f" options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
+                        # field_tag += f''' options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"'''
+                    field_tag += f'''/>\n'''
+                # elif attr.original_name and attr.display_type == 'table':
+                #    For Adding one2many table design
+                #     field_tag += f'''<field name="{attr.original_name}"'''
+                #     field_tag += f'''options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'/>\n'''
+
+                form_arch += field_tag
+
+            form_arch += '''
+                        </group>
+                        </xpath>'''
+            print("form_arch ========== ", form_arch)
+            default_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
+            # Create or update the view
+            view_name = f'product_attribute_{company_name.lower().replace(' ', '_')}_{group_name.lower().replace(' ', '_')}'
+            existing_view = views.search([
+                ('name', '=', view_name),
+                ('model', '=', 'product.template')
+            ], limit=1)
+
+            if existing_view:
+                print("existing view")
+                existing_view.arch = form_arch
+            else:
+                print("else ============== ")
+                existing_view = views.sudo().create({
+                    'name': view_name,
+                    'type': 'form',
+                    'model': 'product.template',
+                    'inherit_id': default_view_id,
+                    'active': True,
+                    'arch': form_arch,
+                })
+
 
 
     # def save_attributes(self):

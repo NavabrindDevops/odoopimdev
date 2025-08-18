@@ -18,8 +18,8 @@
                                     <field name="name"/>
                                     <field name="family_id"/>
                                     <field name="active_label" string="Status"/>
-                                    <field name="create_date" string="Created"/>
-                                    <field name="write_date" string="Updated"/>
+<!--                                    <field name="create_date" string="Created"/>-->
+<!--                                    <field name="write_date" string="Updated"/>-->
                                 </list>
                             </field>
                         </div>
@@ -96,8 +96,8 @@
                                     <field name="name"/>
                                     <field name="family_id"/>
                                     <field name="active_label" string="Status"/>
-                                    <field name="create_date" string="Created"/>
-                                    <field name="write_date" string="Updated"/>
+<!--                                    <field name="create_date" string="Created"/>-->
+<!--                                    <field name="write_date" string="Updated"/>-->
                                 </list>
                             </field>
                         </div>
@@ -213,101 +213,101 @@
             </field>
         </record>
 
-       <record id="view_product_creation_split_view_custom" model="ir.ui.view">
-    <field name="name">product.creation.custom.split.view.layout</field>
-    <field name="model">product.template</field>
-    <field name="mode">primary</field>
-    <field name="arch" type="xml">
-        <form string="Products Custom" class="page_form" create="false">
-            <!-- Split Layout Container -->
-            <div class="d-flex flex-wrap align-items-start" style="gap: 10px;">
+        <record id="view_product_creation_split_view_custom" model="ir.ui.view">
+            <field name="name">product.creation.custom.split.view.layout</field>
+            <field name="model">product.template</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <form string="Products Custom" class="page_form" create="false">
+                    <!-- Split Layout Container -->
+                    <div class="d-flex flex-wrap align-items-start" style="gap: 10px;">
 
-                <!-- LEFT COLUMN: One2many List -->
-                <div class="left-column" style="flex: 1; min-width: 400px;">
-                    <field name="product_tmplt_ids" widget="master_product_one2many" nolabel="1" domain="[]" context="{}">
-                        <list create="false" edit="false" default_order="create_date desc" editable="bottom" widget="one2many_list">
-                            <field name="image_1920" widget="image" options="{'size': [40, 40]}" class="o_image_small"/>
-                            <field name="sku" string="SKU" class="oe_inline"/>
-                            <field name="family_id" class="oe_inline"/>
-                            <field name="brand_id" class="oe_inline"/>
-                            <field name="category_id" class="oe_inline"/>
-                            <field name="name" string="Product Name" class="oe_inline"/>
-                            <field name="product_attr_values_id" widget="many2many_tags" string="Variants" class="oe_inline"/>
-                            <field name="is_variant" optional="hide"/>
-                            <field name="variant_id" optional="hide"/>
-                            <field name="is_variant_values_updated" optional="hide"/>
-                            <field name="active_label" string="Status" class="oe_inline"/>
-                            <field name="create_date" string="Created on" class="oe_inline"/>
-                            <field name="write_date" string="Updated on" class="oe_inline"/>
-                            <button name="custom_product_open_form_view" icon="fa-edit" title="Edit" type="object" class="btn-sm"/>
-                            <button name="custom_product_open_default_form_view" icon="fa-info" title="Info" type="object" class="btn-sm"/>
-                            <button name="custom_product_unlink" icon="fa-trash-o" title="Delete" type="object" class="btn-sm text-danger"/>
-                        </list>
-                    </field>
+                        <!-- LEFT COLUMN: One2many List -->
+                        <div class="left-column" style="flex: 1; min-width: 400px;">
+                            <field name="product_tmplt_ids" widget="master_product_one2many" nolabel="1" domain="[]" context="{}">
+                                <list create="false" edit="false" default_order="create_date desc" editable="bottom" widget="one2many_list">
+                                    <field name="image_1920" widget="image" options="{'size': [40, 40]}" class="o_image_small"/>
+                                    <field name="sku" string="SKU" class="oe_inline"/>
+                                    <field name="family_id" class="oe_inline"/>
+                                    <field name="brand_id" class="oe_inline"/>
+                                    <field name="category_id" class="oe_inline"/>
+                                    <field name="name" string="Product Name" class="oe_inline"/>
+                                    <field name="product_attr_values_id" widget="many2many_tags" string="Variants" class="oe_inline"/>
+                                    <field name="is_variant" optional="hide"/>
+                                    <field name="variant_id" optional="hide"/>
+                                    <field name="is_variant_values_updated" optional="hide"/>
+                                    <field name="active_label" string="Status" class="oe_inline"/>
+<!--                                    <field name="create_date" string="Created on" class="oe_inline"/>-->
+<!--                                    <field name="write_date" string="Updated on" class="oe_inline"/>-->
+                                    <button name="custom_product_open_form_view" icon="fa-edit" title="Edit" type="object" class="btn-sm"/>
+                                    <button name="custom_product_open_default_form_view" icon="fa-info" title="Info" type="object" class="btn-sm"/>
+                                    <button name="custom_product_unlink" icon="fa-trash-o" title="Delete" type="object" class="btn-sm text-danger"/>
+                                </list>
+                            </field>
 
-                </div>
-
-                <!-- RIGHT COLUMN: Product Info + Actions -->
-                <div class="right-column" style="flex: 1; min-width: 400px;">
-                    <header>
-                        <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
-                    </header>
-
-                    <div class="pim_oe_title">
-                        <h2 class="pim_create_attribute"><span class="attr_title">Products</span></h2>
-                    </div>
-
-                    <sheet class="attr_sheet">
-                        <div class="oe_title">
-                            <h1 class="name">
-                                <field name="name" readonly="1" class="oe_inline choose_pim_attribute_type"/>
-                            </h1>
                         </div>
 
-                        <notebook>
-                            <page string="Attributes" name="attributes_page" id="attributes_page">
-                            </page>
-                            <!-- Product Info -->
-                            <page string="Product Info" name="type_properties">
-                                <group string="General Info">
-                                    <field name="name" readonly="1"/>
-                                    <field name="id" readonly="1"/>
-                                    <field name="sku"/>
-                                    <field name="family_id" readonly="1" options="{'no_open': True, 'no_create': True}"/>
-                                    <field name="category_id" options="{'no_open': True, 'no_create': True}"/>
-                                    <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
-                                    <field name="create_date" readonly="1"/>
-                                    <field name="write_date" readonly="1"/>
-                                    <field name="image_ids" widget="x2_many_media_viewer" mode="kanban"
-                                           class="o_website_sale_image_list"
-                                           context="{'default_name': name}"
-                                           add-label="Add Media"
-                                           options="{'convert_to_webp': True}"/>
-                                    <field name="image_1" invisible="True"/>
-                                </group>
-                            </page>
+                        <!-- RIGHT COLUMN: Product Info + Actions -->
+                        <div class="right-column" style="flex: 1; min-width: 400px;">
+                            <header>
+                                <button string="Back" type="object" icon="fa-arrow-left" name="action_back_to_product_menu"/>
+                            </header>
 
-                            <!-- History Tab -->
-                            <page string="History" name="history_products">
-                                <group>
-                                    <field name="history_log" readonly="1" nolabel="1"/>
-                                </group>
-                            </page>
+                            <div class="pim_oe_title">
+                                <h2 class="pim_create_attribute"><span class="attr_title">Products</span></h2>
+                            </div>
 
-                            <!-- Hidden Translations Tab -->
-                            <page name="type_label_translation" string="Label Translations" invisible="1"/>
-                        </notebook>
-                    </sheet>
+                            <sheet class="attr_sheet">
+                                <div class="oe_title">
+                                    <h1 class="name">
+                                        <field name="name" readonly="1" class="oe_inline choose_pim_attribute_type"/>
+                                    </h1>
+                                </div>
 
-                    <!-- Save Button -->
-                    <div class="attr_creation" style="margin-top: 16px;">
-                        <button type="object" string="Save" invisible="id" name="save_product_rec" class="oe_highlight"/>
+                                <notebook>
+                                    <page string="Attributes" name="attributes_page" id="attributes_page">
+                                    </page>
+                                    <!-- Product Info -->
+                                    <page string="Product Info" name="type_properties">
+                                        <group string="General Info">
+                                            <field name="name" readonly="1"/>
+                                            <field name="id" readonly="1"/>
+                                            <field name="sku"/>
+                                            <field name="family_id" readonly="1" options="{'no_open': True, 'no_create': True}"/>
+                                            <field name="categ_id" options="{'no_open': True, 'no_create': True}"/>
+                                            <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
+<!--                                            <field name="create_date" readonly="1"/>-->
+<!--                                            <field name="write_date" readonly="1"/>-->
+                                            <field name="image_ids" widget="x2_many_media_viewer" mode="kanban"
+                                                   class="o_website_sale_image_list"
+                                                   context="{'default_name': name}"
+                                                   add-label="Add Media"
+                                                   options="{'convert_to_webp': True}"/>
+                                            <field name="image_1" invisible="True"/>
+                                        </group>
+                                    </page>
+
+                                    <!-- History Tab -->
+                                    <page string="History" name="history_products">
+                                        <group>
+                                            <field name="history_log" readonly="1" nolabel="1"/>
+                                        </group>
+                                    </page>
+
+                                    <!-- Hidden Translations Tab -->
+                                    <page name="type_label_translation" string="Label Translations" invisible="1"/>
+                                </notebook>
+                            </sheet>
+
+                            <!-- Save Button -->
+                            <div class="attr_creation" style="margin-top: 16px;">
+                                <button type="object" string="Save" invisible="id" name="save_product_rec" class="oe_highlight"/>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </form>
-    </field>
-</record>
+                </form>
+            </field>
+        </record>
 
 
 
@@ -443,8 +443,8 @@
                     <field name="name"/>
                     <field name="product_attr_values_id" widget="many2many_tags" string="Variant Values"/>
                     <field name="active_label"/>
-                    <field name="create_date" string="Created"/>
-                    <field name="write_date" string="Updated"/>
+<!--                    <field name="create_date" string="Created"/>-->
+<!--                    <field name="write_date" string="Updated"/>-->
                     <field name="readable_variant_names" string="Variant products"/>
                     <button name="custom_product_open_form_view" string = " " icon="fa-edit" title='edit' type="object" />
                     <button name="custom_product_open_default_form_view" string = " " icon="fa-info" title='info' type="object" />

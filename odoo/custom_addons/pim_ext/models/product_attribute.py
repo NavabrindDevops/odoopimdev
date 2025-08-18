@@ -130,7 +130,10 @@ class AttributeForm(models.Model):
 
      widget = fields.Char("Widget")
      max_value = fields.Char("Max Length")
-     alpha_numeric_value = fields.Boolean("Alpha Numeric Validation")
+     alpha_numeric_value = fields.Selection(
+          [('yes', 'Yes'), ('no', 'No')],
+          string='Alpha Numeric',
+     )
      company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
 
      @api.depends('name')
@@ -266,42 +269,58 @@ class AttributeForm(models.Model):
                base_vals.update({
                     'ttype': d_type,
                })
+          if self.max_value and d_type in ['char']:
+              base_vals.update({
+                  'size': self.max_value,
+              })
+
           return base_vals
 
      def create_attributes(self):
           print("create_attributes ========== product attribute")
           self.ensure_one()
           model_id = self.env['ir.model'].sudo().search([('model', '=', 'product.template')])
+          attributes = self or self.env['product.attribute'].sudo().search(
+              [('id', 'in', self.env.context['active_ids'])], order="id asc")
+          for vals in attributes:
+               if not vals.original_name:
+                   vals.original_name = self.sanitize_field_name(vals.name)
 
-          for vals in self:
-               vals.original_name = self.sanitize_field_name(vals.name)
+                   create_vals = self.get_create_vals(vals, model_id, vals.display_type)
 
-               create_vals = self.get_create_vals(vals, model_id, vals.display_type)
+                   print("create_vals === ", create_vals)
+                   create_field = self.env['ir.model.fields'].sudo().create(create_vals)
+                   print(" create_field  === ", create_field)
+                   # creates a filename field for binary field
+                   if vals.display_type in ['link', 'file', 'image']:
+                        file_name = vals.original_name + '_file_name'
+                        create_vals_file = {'name': file_name,
+                                            'field_description': vals.name,
+                                            'model': model_id.model,
+                                            'model_id': model_id.id,
+                                            'ttype': 'char',
+                                            }
+                        create_field_file_name = self.env['ir.model.fields'].sudo().create(create_vals_file)
 
-
-               print("create_vals === ", create_vals)
-               create_field = self.env['ir.model.fields'].sudo().create(create_vals)
-               print(" create_field  === ", create_field)
-               # creates a filename field for binary field
-               if vals.display_type in ['link', 'file', 'image']:
-                    file_name = vals.original_name + '_file_name'
-                    create_vals_file = {'name': file_name,
-                                        'field_description': vals.name,
-                                        'model': model_id.model,
-                                        'model_id': model_id.id,
-                                        'ttype': 'char',
-                                        }
-                    create_field_file_name = self.env['ir.model.fields'].sudo().create(create_vals_file)
-
-               if vals.display_type == 'table' and vals.sub_attribute_ids:
-                    for rec in vals.sub_attribute_ids:
-                         rec.original_name = rec.sanitize_field_name(rec.name)
-                         sub_create_vals = self.get_create_vals(rec, model_id, rec.display_type)
-                         print(" sub_create_vals  === ",sub_create_vals)
-                         sel_val = self.env['ir.model.fields'].sudo().create(sub_create_vals)
-                         print(" sel_val  === ", sel_val)
-          self.create_uncategorized_view()
-          self.create_product_list_view()
+                   if vals.display_type == 'table' and vals.sub_attribute_ids:
+                        for rec in vals.sub_attribute_ids:
+                             rec.original_name = rec.sanitize_field_name(rec.name)
+                             sub_create_vals = self.get_create_vals(rec, model_id, rec.display_type)
+                             print(" sub_create_vals  === ",sub_create_vals)
+                             sel_val = self.env['ir.model.fields'].sudo().create(sub_create_vals)
+                             print(" sel_val  === ", sel_val)
+                   if vals.display_type in ['select', 'color'] and vals.value_ids:
+                        print("color type ==============")
+                        for v in vals.value_ids:
+                            sel_name = v.name
+                            sel_val = self.env['ir.model.fields.selection'].sudo().create({
+                                'name': sel_name,
+                                'value': sel_name,
+                                'field_id': create_field.id
+                            })
+                            print("sel_val === ", sel_val)
+                   vals.create_uncategorized_view()
+                   vals.create_product_list_view()
           # # Check if an existing attribute exists
           # existing_attribute = attribute.search([('name', '=', self.name)], limit=1)
           #
@@ -342,6 +361,7 @@ class AttributeForm(models.Model):
 
      def create_uncategorized_view(self):
          print("create_uncategorized_view === ")
+         company_name = self.env.company.name
          attributes = self or self.env['product.attribute'].sudo().search(
              [('id', 'in', self.env.context['active_ids'])], order="id asc")
          widgets_mapping = {
@@ -380,7 +400,7 @@ class AttributeForm(models.Model):
          xpath_expr = f".//field[@name='{last_attr.original_name}']"
 
          default_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
-         view_name = 'product_attribute_uncategorized'
+         view_name = 'product_attribute_' + company_name.lower().replace(' ', '_') + '_uncategorized'
          existing_view = self.env['ir.ui.view'].search([
              ('name', '=', view_name),
              ('model', '=', 'product.template')
@@ -419,6 +439,7 @@ class AttributeForm(models.Model):
 
      def create_product_list_view(self):
          print("create_product_list_view === ")
+         company_name = self.env.company.name
          attributes = self or self.env['product.attribute'].sudo().search(
              [('id', 'in', self.env.context['active_ids'])], order="id asc")
          widgets_mapping = {
@@ -457,7 +478,7 @@ class AttributeForm(models.Model):
          xpath_expr = f".//field[@name='{last_attr.original_name}']"
 
          default_view_id = self.env.ref('pim_ext.view_product_management_tree').id
-         view_name = 'product_attribute_list_view'
+         view_name = 'product_attribute_list_view' + company_name.lower().replace(' ', '_')
          existing_view = self.env['ir.ui.view'].search([
              ('name', '=', view_name),
              ('model', '=', 'product.template')
@@ -581,23 +602,34 @@ class AttributeForm(models.Model):
               """
 
                rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
-    
+
+
+     def add_attribute_group(self, vals):
+         print("attribute_added", vals)
+         # for rec in self:
+             # for g in rec.attribute_group:
+                 # group = self.env['attribute.group.lines'].create({
+                 #     'attr_group_id': g.id,
+                 #     'product_attribute_id': self.id,
+                 #
+                 # })
      @api.model_create_multi
      def create(self, vals):
          rec = super(AttributeForm, self).create(vals)
          for record, vals in zip(rec, vals):
              self._log_changes(record, vals, action="create")
+         # If attribute_group is set during creation
+         if vals.get('attribute_group'):
+             for group in rec.attribute_group:
+                 existing_line = group.attribute_group_line_ids.filtered(
+                     lambda l: l.product_attribute_id == rec.id)
+                 if not existing_line:
+                     rec.env['attribute.group.lines'].create({
+                         'attr_group_id': group.id,
+                         'product_attribute_id': rec.id
+                     })
          return rec
-          # # If attribute_group is set during creation
-          # if vals.get('attribute_group'):
-          #      for group in rec.attribute_group:
-          #            existing_line = group.attribute_group_line_ids.filtered(
-          #                lambda l: l.product_attribute_id == rec.id)
-          #           if not existing_line:
-          #                rec.env['attribute.group.lines'].create({
-          #                     'attr_group_id': group.id,
-          #                     'product_attribute_id': rec.id
-          #                })
+
 
 
      # def write(self, vals):
@@ -632,26 +664,35 @@ class AttributeForm(models.Model):
      #      return super(AttributeForm, self).write(vals)
 
      def write(self, vals):
-          for rec in self:
-               rec._log_changes(rec, vals, action="update")
-               original_groups = rec.attribute_group
-               result = super(AttributeForm, rec).write(vals)
+         original_groups = ''
+         for rec in self:
+             rec._log_changes(rec, vals, action="update")
+             original_groups = rec.attribute_group
+         result = super(AttributeForm, self).write(vals)
+         print("original_groups ===", original_groups)
+         for rec in self:
+             if 'attribute_group' in vals:
+                 updated_groups = rec.attribute_group
+                 # Find removed groups
+                 removed_groups = original_groups - updated_groups
+                 print("removed_groups == ", removed_groups)
+                 for group in removed_groups:
+                     lines_to_remove = group.attribute_group_line_ids.filtered(
+                         lambda l: l.product_attribute_id.id == rec.id
+                     )
+                     print("lines_to_remove === ", lines_to_remove)
+                     lines_to_remove.unlink()
 
-               if 'attribute_group' in vals:
-                    updated_groups = rec.attribute_group
-                    removed_groups = original_groups - updated_groups
+                 # Find newly added groups
+                 added_groups = updated_groups - original_groups
+                 print("added_groups ---- ", added_groups)
+                 for group in added_groups:
+                     self.env['attribute.group.lines'].create({
+                         'attr_group_id': group.id,
+                         'product_attribute_id': rec.id,
+                     })
 
-                    for group in removed_groups:
-                         if rec in group.attributes_ids:
-                              group.attributes_ids = [(3, rec.id)]
-
-                         lines_to_remove = group.attribute_group_line_ids.filtered(
-                              lambda l: l.product_attribute_id == rec.id)
-                         lines_to_remove.unlink()
-
-               return result
-
-          return super(AttributeForm, self).write(vals)
+         return result
 
      def sort_colors(self):
           for record in self:
@@ -676,18 +717,79 @@ class AttributeForm(models.Model):
                record.value_ids.unlink()
                record.value_ids = vals_list
 
+
+     def remove_attributes_from_view(self):
+         print("remove_attributes_from_view === ")
+         attr = self or self.env['product.attribute'].sudo().search(
+             [('id', 'in', self.env.context['active_ids'])], order="id asc")
+         print("attr == ", attr)
+         for rec in attr:
+             # if rec.display_type in ['link', 'file', 'image'] and rec.original_name:
+             #     field_file_name = rec.original_name + '_file_name'
+             #     field_val_binary = self.env['ir.model.fields'].sudo().search([('name', '=ilike', field_file_name)])
+             #     field_val_binary.unlink()
+
+             extra_view_ids = []
+             attribute_groups = self.env['attribute.group.lines'].search(
+                 [('product_attribute_id', '=', rec.id)])
+             print("attribute_groups ================ ", attribute_groups)
+             if attribute_groups:
+                 for group in attribute_groups:
+                     company_name = group.attr_group_id.company_id.name
+                     group_name = group.attr_group_id.name
+                     if group.attr_group_id:
+                         view_name = f'product_attribute_{company_name.lower().replace(' ', '_')}_{group_name.lower().replace(' ', '_')}'
+                         print("view name  ========= ", view_name)
+                         attribute_group_views = self.env['ir.ui.view'].sudo().search(
+                             [('name', '=', view_name), ('active', 'in', [True, False])])
+                         if attribute_group_views:
+                             extra_view_ids.append(attribute_group_views)
+             # Uncategorized Group View
+             companies = self.env['res.company'].search([])
+             for com in companies:
+                 name = com.name
+                 com_view_name = 'product_attribute_' + name.lower().replace(' ', '_') + '_uncategorized'
+                 print("com_view_name === ", com_view_name)
+                 company_views = self.env['ir.ui.view'].sudo().search(
+                     [('name', '=', com_view_name), ('active', 'in', [True, False])])
+                 if company_views:
+                     extra_view_ids.append(company_views)
+             print("extra_view_ids =======================================", extra_view_ids)
+             if extra_view_ids:
+                 for view in extra_view_ids:
+                     if view:
+                         arch_tree = etree.fromstring(view.arch_db)
+                         # Define field names to remove
+                         fields_to_remove = [rec.original_name]
+                         # if rec.display_type == 'link':
+                         #     field_file_name = f"{rec.original_name}_file_name"
+                         #     fields_to_remove.append(field_file_name)
+                         for field_name in fields_to_remove:
+                             # Find the field node
+                             field_node = arch_tree.xpath(f"//field[@name='{field_name}']")
+                             if field_node:
+                                 # Remove the field node
+                                 parent_node = field_node[0].getparent()
+                                 parent_node.remove(field_node[0])
+
+                         # Save the modified XML back to the view
+                         view.write({'arch_db': etree.tostring(arch_tree, encoding='utf-8').decode('utf-8')})
+
+
+             if rec.original_name:
+                 field_val = self.env['ir.model.fields'].sudo().search([('name', '=ilike', rec.original_name),('model', '=', 'product.product')])
+                 print("field_val === ", field_val)
+                 field_val.unlink()
+
+
      def unlink(self):
-          for rec in self:
-               field_val = self.env['ir.model.fields'].sudo().search([('name', '=ilike', rec.original_name)])
-               field_val.unlink()
+         print("unlink =================================")
+         for rec in self:
+             if rec.original_name:
+                 self.remove_attributes_from_view()
 
-               if rec.display_type in ['link', 'file', 'image']:
-                    field_file_name = rec.original_name + '_file_name'
-                    field_val_binary = self.env['ir.model.fields'].sudo().search([('name', '=ilike', field_file_name)])
-                    field_val_binary.unlink()
-
-          result = super(AttributeForm, self).unlink()
-          return result
+         result = super(AttributeForm, self).unlink()
+         return result
 
 
 class AttributeMasterUnlinkWizard(models.TransientModel):

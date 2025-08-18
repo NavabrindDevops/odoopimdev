@@ -134,38 +134,42 @@
                                                               options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
                                                               class="attribute_type_class"/>
                                                     </div>
-                                                    <div id="o_type_properties">
-                                                        <div id="o_type_properties_main" class="flex-grow-1">
-                                                            <group>
-                                                                <label for="max_value" string="Maximum"/>
-                                                            </group>
+                                                    <div  invisible="display_type not in ['text','text_area']">
+                                                        <div id="o_type_properties">
+                                                            <div id="o_type_properties_main" class="flex-grow-1">
+                                                                <group>
+                                                                    <label for="max_value" string="Maximum"/>
+                                                                </group>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                           <field name="max_value" nolabel="1" class="attribute_type_class"/>
                                                         </div>
                                                     </div>
-                                                    <div>
-                                                       <field name="max_value" nolabel="1" class="attribute_type_class"/>
-                                                    </div>
-                                                    <div id="o_type_properties">
-                                                        <div id="o_type_properties_main" class="flex-grow-1">
-                                                            <group>
-                                                                <label for="alpha_numeric_value" string="Alpha Numeric Validation"/>
-                                                            </group>
+                                                    <div invisible="display_type not in ['text']">
+                                                        <div id="o_type_properties">
+                                                            <div id="o_type_properties_main" class="flex-grow-1">
+                                                                <group>
+                                                                    <label for="alpha_numeric_value" string="Alpha Numeric Validation"/>
+                                                                </group>
+                                                            </div>
                                                         </div>
+                                                        <div>
+                                                            <field name="alpha_numeric_value" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
+                                                        </div><br/>
                                                     </div>
-                                                    <div>
-                                                        <field name="alpha_numeric_value" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
-                                                    </div><br/>
-
-                                                    <div id="o_type_properties">
-                                                        <div id="o_type_properties_main" class="flex-grow-1">
-                                                            <group>
-                                                                <label for="unique_value" string="Unique value"/>
-                                                            </group>
+                                                    <div invisible="display_type not in ['text']">
+                                                        <div id="o_type_properties">
+                                                            <div id="o_type_properties_main" class="flex-grow-1">
+                                                                <group>
+                                                                    <label for="unique_value" string="Unique value"/>
+                                                                </group>
+                                                            </div>
                                                         </div>
+                                                        <div class="d-flex">
+                                                            <field name="unique_value" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
+                                                        </div><br/>
                                                     </div>
-                                                    <div class="d-flex">
-                                                        <field name="unique_value" widget="radio" options="{'horizontal': true}" class="o_radio_horizontal"/>
-                                                    </div><br/>
-
                                                     <div id="o_type_properties">
                                                         <div id="o_type_properties_main" class="flex-grow-1">
                                                             <group>
@@ -351,21 +355,21 @@
     </record>
 
     <record id="action_update_field_view" model="ir.actions.server">
-        <field name="name">Update Attribute View</field>
+        <field name="name">Update Attribute</field>
         <field name="model_id" ref="product.model_product_attribute"/>
         <field name="binding_model_id" ref="product.model_product_attribute"/>
         <field name="binding_view_types">list,form</field>
         <field name="state">code</field>
-        <field name="code">model.create_uncategorized_view()</field>
+        <field name="code">model.create_attributes()</field>
     </record>
-    <record id="action_update_field_tree_view" model="ir.actions.server">
-        <field name="name">Update Attribute Tree View</field>
-        <field name="model_id" ref="product.model_product_attribute"/>
-        <field name="binding_model_id" ref="product.model_product_attribute"/>
-        <field name="binding_view_types">list,form</field>
-        <field name="state">code</field>
-        <field name="code">model.create_product_list_view()</field>
-    </record>
+<!--    <record id="action_update_field_tree_view" model="ir.actions.server">-->
+<!--        <field name="name">Update Attribute Tree View</field>-->
+<!--        <field name="model_id" ref="product.model_product_attribute"/>-->
+<!--        <field name="binding_model_id" ref="product.model_product_attribute"/>-->
+<!--        <field name="binding_view_types">list,form</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">model.create_product_list_view()</field>-->
+<!--    </record>-->
 <!--    <record id="copy_phone_to_mobile" model="ir.actions.server">-->
 <!--        <field name="name">Copy Phone to Mobile</field>-->
 <!--        <field name="model_id" ref="base.model_res_partner"/>-->
