@@ -278,10 +278,10 @@ class AttributeForm(models.Model):
 
      def create_attributes(self):
           print("create_attributes ========== product attribute")
-          self.ensure_one()
-          model_id = self.env['ir.model'].sudo().search([('model', '=', 'product.template')])
           attributes = self or self.env['product.attribute'].sudo().search(
               [('id', 'in', self.env.context['active_ids'])], order="id asc")
+          model_id = self.env['ir.model'].sudo().search([('model', '=', 'product.template')])
+
           for vals in attributes:
                if not vals.original_name:
                    vals.original_name = self.sanitize_field_name(vals.name)
