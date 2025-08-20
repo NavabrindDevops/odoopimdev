@@ -10,6 +10,7 @@ class AttributeGroupWizard(models.TransientModel):
     attribute_group_ids = fields.Many2many('attribute.group', string='Attribute Groups', required=True)
     attribute_family_id = fields.Many2one('family.attribute', string='Families')
     exist_group_ids = fields.Many2many('attribute.group', related='attribute_family_id.exist_group_ids')
+    company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
 
     def apply_group_attributes(self):
         print('apply_group_attributes')

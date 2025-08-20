@@ -17,6 +17,7 @@ class AttributeVariantWizard(models.TransientModel):
         column2='variant_id',
     )
     attribute_family_id = fields.Many2one('family.attribute', string='Families')
+    company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
 
     # def add_attributes_variant_to_family(self):
     #     print('dkfodkf')
