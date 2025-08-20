@@ -165,6 +165,7 @@ class ProductTemplate(models.Model):
                  record.image_1920 = record.image_ids[0].image_1920
              else:
                  record.image_1 = False
+
      company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
 
      def _prepare_history_log(self, vals, is_create=False):

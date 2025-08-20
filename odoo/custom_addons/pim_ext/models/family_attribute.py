@@ -244,7 +244,7 @@ class FamilyAttribute(models.Model):
 
             attribute_groups = {}
             for line in attribute_lines:
-                group_name = line.attribute_group_id.name or "uncategorized"
+                group_name = line.attribute_group_id.name or "default"
                 attribute = line.attribute_id
 
                 if group_name in attribute_groups:
@@ -263,6 +263,7 @@ class FamilyAttribute(models.Model):
             for group_name, group_attributes in attribute_groups.items():
                 print("group_name, group_attributes  ==== ", group_name, group_attributes)
                 group_view_name = 'product_attribute_'+ company_name.lower().replace(' ', '_') + '_' + group_name.lower().replace(' ', '_')
+                print("group_view_name === ", group_view_name)
                 group_exist = self.env['ir.ui.view'].search([
                     ('name', 'ilike', group_view_name),
                     ('active', 'in', [True, False])
@@ -274,7 +275,9 @@ class FamilyAttribute(models.Model):
                 if group_exist.arch_base:
                     grp_arch_tree = etree.fromstring(group_exist.arch_base)
                     updated = False
-                    group_node = grp_arch_tree.find(f".//group[@id='{group_name.lower().replace(' ', '_')}']")
+                    safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')
+                    group_node = grp_arch_tree.find(f".//group[@id='{safe_group_id}']")
+                    print("group_name === ", safe_group_id)
                     print("group_node === ", group_node)
                     if group_node is not None:
                         group_invisible = group_node.get("invisible")

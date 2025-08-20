@@ -72,7 +72,7 @@ class AttributeForm(models.Model):
 
      position_ref_field_id = fields.Many2one("ir.model.fields", string="Position After", domain="[('model_id.model','=','product.management')]")
 
-     code = fields.Char(string='Code', readonly=True)
+     code = fields.Char(string='Code', readonly=False)
 
      unique_value = fields.Selection(
           [('yes', 'Yes'), ('no', 'No')],
@@ -194,13 +194,16 @@ class AttributeForm(models.Model):
      def sanitize_field_name(self, name):
           name = name.lower()
           name = name.replace(' #', '_1')
+          name = name.replace('-', '')
           name = re.sub(r'[^a-z0-9_]', '_', name)
           name = re.sub(r'_+', '_', name)
           name = name.strip('_')
           company_name = self.env.company.name
           name = f'x_{name}_{company_name.lower().replace(' ', '_')}'
+          print("name === ", name)
           if not name[0].isalpha():
                name = 'x_' + name + company_name.lower().replace(' ', '_')
+          print("name == ", name)
           return name[:63]
 
      def get_create_vals(self, vals, model_id, d_type):
@@ -284,7 +287,7 @@ class AttributeForm(models.Model):
 
           for vals in attributes:
                if not vals.original_name:
-                   vals.original_name = self.sanitize_field_name(vals.name)
+                   vals.original_name = self.sanitize_field_name(vals.code)
 
                    create_vals = self.get_create_vals(vals, model_id, vals.display_type)
 
@@ -400,7 +403,7 @@ class AttributeForm(models.Model):
          xpath_expr = f".//field[@name='{last_attr.original_name}']"
 
          default_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
-         view_name = 'product_attribute_' + company_name.lower().replace(' ', '_') + '_uncategorized'
+         view_name = 'product_attribute_' + company_name.lower().replace(' ', '_') + '_default'
          existing_view = self.env['ir.ui.view'].search([
              ('name', '=', view_name),
              ('model', '=', 'product.template')
@@ -430,11 +433,10 @@ class AttributeForm(models.Model):
                  'active': True,
                  'arch': """
                     <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
-                            <group name="uncategorized" string="UNCATEGORIZED" collapsible="1" expanded="1" >
+                            <group name="default" string="Default" invisible="company_id not in [%s]" collapsible="1" expanded="1" >
                                                             %s
                                                      </group>
-            </xpath>""" % form_arch
-                     ,
+            </xpath>""" % (self.company_id.id, form_arch),
              })
 
      def create_product_list_view(self):
@@ -522,17 +524,13 @@ class AttributeForm(models.Model):
                'target': 'current',
           }
 
-     @api.constrains('name', 'value_ids')
+     @api.constrains('name','code', 'value_ids')
      def check_attribute_name(self):
-          print("check_attribute_name -------------------------")
           pattern = "^(?=.*[a-zA-Z0-9])[A-Za-z0-9 ]+$"
           for rec in self:
-               name_count2 = self.search([('name', '=ilike', rec.name),('company_id', '=', rec.company_id.id)])
-               name_count = self.search_count([('name', '=ilike', rec.name),('company_id', '=', rec.company_id.id)])
-               print("name_count ------------------ ", name_count)
-               print("name_count2 ------------------ ", name_count2)
+               name_count = self.search_count([('code', '=ilike', rec.code),('company_id', '=', rec.company_id.id)])
                if name_count > 1:
-                    raise ValidationError("Attribute name already exist")
+                    raise ValidationError("Attribute code already exist")
                if rec.name and not re.match(pattern, rec.name):
                     raise ValidationError("Attribute Name should be AlphaNumeric")
 
@@ -613,24 +611,38 @@ class AttributeForm(models.Model):
                  #     'product_attribute_id': self.id,
                  #
                  # })
+
      @api.model_create_multi
-     def create(self, vals):
-         rec = super(AttributeForm, self).create(vals)
-         for record, vals in zip(rec, vals):
+     def create(self, vals_list):
+         print("vals ------------", vals_list)
+
+         # assign sequence code if missing
+         for vals in vals_list:
+             if not vals.get('code'):
+                 print("vals not in vals")
+                 code_val = self.env['ir.sequence'].next_by_code('pim.attribute.type') or None
+                 vals['code'] = code_val
+
+         # create records
+         recs = super(AttributeForm, self).create(vals_list)
+
+         # log changes for each created record
+         for record, vals in zip(recs, vals_list):
              self._log_changes(record, vals, action="create")
-         # If attribute_group is set during creation
-         if vals.get('attribute_group'):
-             for group in rec.attribute_group:
-                 existing_line = group.attribute_group_line_ids.filtered(
-                     lambda l: l.product_attribute_id == rec.id)
-                 if not existing_line:
-                     rec.env['attribute.group.lines'].create({
-                         'attr_group_id': group.id,
-                         'product_attribute_id': rec.id
-                     })
-         return rec
 
+             # handle attribute group lines
+             if vals.get('attribute_group'):
+                 for group in record.attribute_group:
+                     existing_line = group.attribute_group_line_ids.filtered(
+                         lambda l: l.product_attribute_id == record.id
+                     )
+                     if not existing_line:
+                         self.env['attribute.group.lines'].create({
+                             'attr_group_id': group.id,
+                             'product_attribute_id': record.id
+                         })
 
+         return recs
 
      # def write(self, vals):
      #      for rec in self:
@@ -748,7 +760,7 @@ class AttributeForm(models.Model):
              companies = self.env['res.company'].search([])
              for com in companies:
                  name = com.name
-                 com_view_name = 'product_attribute_' + name.lower().replace(' ', '_') + '_uncategorized'
+                 com_view_name = 'product_attribute_' + name.lower().replace(' ', '_') + '_default'
                  print("com_view_name === ", com_view_name)
                  company_views = self.env['ir.ui.view'].sudo().search(
                      [('name', '=', com_view_name), ('active', 'in', [True, False])])

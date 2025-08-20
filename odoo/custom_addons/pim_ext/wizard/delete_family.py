@@ -7,6 +7,7 @@ class CloneProductWizard(models.TransientModel):
 
     family_id = fields.Many2one('family.attribute',string="Alternate Family", domain="[('id','!=',current_family_id)]")
     current_family_id = fields.Many2one('family.attribute', string="Current Family")
+    company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
 
     def change_family(self):
         products = self.env['product.management'].search([('family_id','=',self.current_family_id.id)])

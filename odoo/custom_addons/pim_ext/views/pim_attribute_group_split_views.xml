@@ -66,7 +66,7 @@
                                                        <list string="Attributes" editable="bottom" default_order="create_date desc">
                                                            <field name="used_attribute_ids" column_invisible="True"/>
                                                            <field name="product_attribute_id" string="Attribute" required="1"
-                                                                 options="{'no_create': True, 'no_create_edit': True}"/>
+                                                                 options="{'no_create': True, 'no_create_edit': True}" domain="[('company_id', '=', parent.company_id)]"/>
                                                            <field name="display_type" string="Type" column_invisible="True"/>
                                                            <field name="related_display_type" string="Type"/>
                                                            <field name="value_per_channel" string="Value per channel"/>
@@ -158,6 +158,14 @@
         <field name="binding_view_types">list,form</field>
         <field name="state">code</field>
         <field name="code">model.update_attribute_group_view()</field>
+    </record>
+    <record id="action_update_attribute_group_according_to_mapped" model="ir.actions.server">
+        <field name="name">Update Attribute Group Mapping</field>
+        <field name="model_id" ref="pim_ext.model_attribute_group"/>
+        <field name="binding_model_id" ref="pim_ext.model_attribute_group"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">model.update_attributes_according_to_mapped_groups()</field>
     </record>
     </data>
 </odoo>

@@ -58,75 +58,100 @@ class AttributeGroup(models.Model):
         user_tz = pytz.timezone(self.env.user.tz or 'UTC')
         updated_write_date = pytz.utc.localize(updated_write_date_utc).astimezone(user_tz).strftime("%d/%m/%Y %H:%M:%S")
         new_write_uid = self.env.user.display_name
+        for rec in self:
+            changes = []
 
-        changes = []
+            tracked_fields = ['name', 'attribute_code_rec', 'active', 'parent_id', 'description', 'attribute_code']
+            tracked_group_line_fields = ['product_attribute_id', 'display_type', 'enable', 'value_per_channel',
+                                         'value_per_locale']
 
-        tracked_fields = ['name', 'attribute_code_rec', 'active', 'parent_id', 'description', 'attribute_code']
-        tracked_group_line_fields = ['product_attribute_id', 'display_type', 'enable', 'value_per_channel',
-                                     'value_per_locale']
+            for key in vals:
+                if key in tracked_fields:
+                    attribute = self._fields[key].string
+                    old_value = getattr(self, key, 'N/A') if action == "update" else 'N/A'
+                    new_value = vals[key] or 'N/A'
 
-        for key in vals:
-            if key in tracked_fields:
-                attribute = self._fields[key].string
-                old_value = getattr(self, key, 'N/A') if action == "update" else 'N/A'
-                new_value = vals[key] or 'N/A'
+                    if key == 'parent_id':
+                        old_value = self.parent_id.display_name if self.parent_id else 'N/A'
+                        new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(key) else 'N/A'
 
-                if key == 'parent_id':
-                    old_value = self.parent_id.display_name if self.parent_id else 'N/A'
-                    new_value = self.env['attribute.group'].browse(vals[key]).display_name if vals.get(key) else 'N/A'
+                    change_entry = f"""
+                        <li>
+                            <strong>{attribute}</strong><br>
+                            <span style='color: red;'>Old value:</span> {old_value}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span style='color: green;'>New value:</span> {new_value}
+                        </li>
+                    """
+                    changes.append(change_entry)
 
-                change_entry = f"""
-                    <li>
-                        <strong>{attribute}</strong><br>
-                        <span style='color: red;'>Old value:</span> {old_value}
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span style='color: green;'>New value:</span> {new_value}
-                    </li>
-                """
-                changes.append(change_entry)
+            if 'attribute_group_line_ids' in vals:
+                for command in vals['attribute_group_line_ids']:
+                    if command[0] == 1:
+                        line_id = self.env['attribute.group.lines'].browse(command[1])
+                        line_changes = []
+                        for field in tracked_group_line_fields:
+                            if field in command[2]:
+                                old_value = getattr(line_id, field, 'N/A')
+                                new_value = command[2][field] or 'N/A'
+                                if field == 'product_attribute_id':
+                                    old_value = line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'
+                                    new_value = self.env['product.attribute'].browse(
+                                        new_value).display_name if new_value else 'N/A'
 
-        if 'attribute_group_line_ids' in vals:
-            for command in vals['attribute_group_line_ids']:
-                if command[0] == 1:
-                    line_id = self.env['attribute.group.lines'].browse(command[1])
-                    line_changes = []
-                    for field in tracked_group_line_fields:
-                        if field in command[2]:
-                            old_value = getattr(line_id, field, 'N/A')
-                            new_value = command[2][field] or 'N/A'
-                            if field == 'product_attribute_id':
-                                old_value = line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'
-                                new_value = self.env['product.attribute'].browse(
-                                    new_value).display_name if new_value else 'N/A'
-
-                            line_changes.append(f"""
+                                line_changes.append(f"""
+                                    <li>
+                                        <strong>{line_id._fields[field].string}</strong><br>
+                                        <span style='color: red;'>Old:</span> {old_value}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style='color: green;'>New:</span> {new_value}
+                                    </li>
+                                """)
+                        if line_changes:
+                            changes.append(f"""
                                 <li>
-                                    <strong>{line_id._fields[field].string}</strong><br>
-                                    <span style='color: red;'>Old:</span> {old_value}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <span style='color: green;'>New:</span> {new_value}
+                                    <strong>Updated Attribute Group Line (ID {line_id.id})</strong>
+                                    <ul>{''.join(line_changes)}</ul>
                                 </li>
                             """)
-                    if line_changes:
-                        changes.append(f"""
-                            <li>
-                                <strong>Updated Attribute Group Line (ID {line_id.id})</strong>
-                                <ul>{''.join(line_changes)}</ul>
-                            </li>
-                        """)
 
-                elif command[0] == 0:
-                    new_values = command[2]
-                    new_line_changes = []
-                    for field in tracked_group_line_fields:
-                        if field in new_values:
-                            field_label = self.env['attribute.group.lines']._fields[field].string
-                            new_value = new_values[field] or 'N/A'
-                            old_value = "N/A"
+                    elif command[0] == 0:
+                        new_values = command[2]
+                        new_line_changes = []
+                        for field in tracked_group_line_fields:
+                            if field in new_values:
+                                field_label = self.env['attribute.group.lines']._fields[field].string
+                                new_value = new_values[field] or 'N/A'
+                                old_value = "N/A"
+                                if field == 'product_attribute_id':
+                                    new_value = self.env['product.attribute'].browse(
+                                        new_value).display_name if new_value else 'N/A'
+                                new_line_changes.append(f"""
+                                    <li>
+                                        <strong>{field_label}</strong><br>
+                                        <span style='color: red;'>Old value:</span> {old_value}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style='color: green;'>New value:</span> {new_value}
+                                    </li>
+                                """)
+                        if new_line_changes:
+                            changes.append(f"""
+                                <li>
+                                    <strong>New Attribute Group Line Added:</strong><br>
+                                    <ul>{''.join(new_line_changes)}</ul>
+                                </li>
+                            """)
+
+                    elif command[0] == 2:
+                        line_id = self.env['attribute.group.lines'].browse(command[1])
+                        removed_line_changes = []
+                        for field in tracked_group_line_fields:
+                            field_label = line_id._fields[field].string
+                            old_value = getattr(line_id, field, 'N/A')
+                            new_value = "N/A"
                             if field == 'product_attribute_id':
-                                new_value = self.env['product.attribute'].browse(
-                                    new_value).display_name if new_value else 'N/A'
-                            new_line_changes.append(f"""
+                                old_value = line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'
+                            removed_line_changes.append(f"""
                                 <li>
                                     <strong>{field_label}</strong><br>
                                     <span style='color: red;'>Old value:</span> {old_value}
@@ -134,52 +159,29 @@ class AttributeGroup(models.Model):
                                     <span style='color: green;'>New value:</span> {new_value}
                                 </li>
                             """)
-                    if new_line_changes:
-                        changes.append(f"""
-                            <li>
-                                <strong>New Attribute Group Line Added:</strong><br>
-                                <ul>{''.join(new_line_changes)}</ul>
-                            </li>
-                        """)
+                        if removed_line_changes:
+                            changes.append(f"""
+                                <li>
+                                    <strong>Removed Attribute Group Line:</strong><br>
+                                    <ul>{''.join(removed_line_changes)}</ul>
+                                </li>
+                            """)
 
-                elif command[0] == 2:
-                    line_id = self.env['attribute.group.lines'].browse(command[1])
-                    removed_line_changes = []
-                    for field in tracked_group_line_fields:
-                        field_label = line_id._fields[field].string
-                        old_value = getattr(line_id, field, 'N/A')
-                        new_value = "N/A"
-                        if field == 'product_attribute_id':
-                            old_value = line_id.product_attribute_id.display_name if line_id.product_attribute_id else 'N/A'
-                        removed_line_changes.append(f"""
-                            <li>
-                                <strong>{field_label}</strong><br>
-                                <span style='color: red;'>Old value:</span> {old_value}
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style='color: green;'>New value:</span> {new_value}
-                            </li>
-                        """)
-                    if removed_line_changes:
-                        changes.append(f"""
-                            <li>
-                                <strong>Removed Attribute Group Line:</strong><br>
-                                <ul>{''.join(removed_line_changes)}</ul>
-                            </li>
-                        """)
-
-        if changes:
-            action_text = "Created by" if action == "create" else "Updated by"
-            user_info = f"<small>{action_text} <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
-            full_message = f"""
-                <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
-                    {user_info}
-                    <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
-                </div>
-            """
-            self.history_log = tools.html_sanitize(full_message) + (self.history_log or '')
+            if changes:
+                action_text = "Created by" if action == "create" else "Updated by"
+                user_info = f"<small>{action_text} <strong>{new_write_uid}</strong> on {updated_write_date}</small>"
+                full_message = f"""
+                    <div style="border-left: 3px solid #6C757D; padding-left: 10px; margin-bottom: 15px;">
+                        {user_info}
+                        <ul style="list-style-type: none; padding-left: 0;">{''.join(changes)}</ul>
+                    </div>
+                """
+                rec.history_log = tools.html_sanitize(full_message) + (rec.history_log or '')
 
     def write(self, vals):
-        self._log_changes(vals, action="update")
+        print("vals === ", vals)
+        for rec in self:
+            rec._log_changes(vals, action="update")
         return super(AttributeGroup, self).write(vals)
 
     @api.model_create_multi
@@ -261,78 +263,7 @@ class AttributeGroup(models.Model):
 
 
     def save_attributes(self):
-        widgets_mapping = {
-            'image': 'image',
-            'multi_select': 'many2many_tags',
-            'color': 'color_picker',
-            'price': 'monetary',
-        }
-        self.ensure_one()
-        company_name = self.env.company.name
-        views = self.env['ir.ui.view']
-        group_name = self.name
-        # Validate lines
-        for line in self.attribute_group_line_ids:
-            if not line.product_attribute_id:
-                raise UserError(f"No product attribute linked in line {line.id}.")
-
-        form_arch = f'''
-        <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
-        <group name="{group_name.lower().replace(' ', '_')}" id="{group_name.lower().replace(' ', '_')}" string="{group_name}" invisible="1" collapsible="1" expanded="1" >
-        '''
-        print("self.attribute_group_line_ids === ", self.attribute_group_line_ids)
-        # Add fields with appropriate widget
-        for line in self.attribute_group_line_ids:
-            print("line == ", line)
-            attr = line.product_attribute_id
-            widget = widgets_mapping.get(attr.display_type)
-            field_tag = ''
-            # self.attribute_field_xml(attr, widget)
-            print("attr.original_name ========", attr.original_name)
-            print("attr.display_type ========", attr.display_type)
-            if attr.original_name and attr.display_type != 'table':
-                field_tag += f'''<field name="{attr.original_name}" invisible="1"'''
-                if attr.widget:
-                    field_tag += f''' widget="{widget}"'''
-                if attr.is_mandatory:
-                    field_tag += f''' required="0"'''
-                if attr.display_type in ['simple_select','multi_select']:
-                    field_tag += f" options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'"
-                    # field_tag += f''' options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"'''
-                field_tag += f'''/>\n'''
-            # elif attr.original_name and attr.display_type == 'table':
-            #    For Adding one2many table design
-            #     field_tag += f'''<field name="{attr.original_name}"'''
-            #     field_tag += f'''options='{{\"no_create_edit\": True, \"no_edit\": True, \"no_open\": True}}'/>\n'''
-
-            form_arch += field_tag
-
-        form_arch += '''
-            </group>
-            </xpath>'''
-        print("form_arch ========== ", form_arch)
-        default_view_id = self.env.ref('pim_ext.view_product_creation_split_view_custom').id
-        # Create or update the view
-        view_name = f'product_attribute_{company_name.lower().replace(' ', '_')}_{group_name.lower().replace(' ', '_')}'
-        existing_view = views.search([
-            ('name', '=', view_name),
-            ('model', '=', 'product.template')
-        ], limit=1)
-
-        if existing_view:
-            print("existing view")
-            existing_view.arch = form_arch
-        else:
-            print("else ============== ")
-            existing_view = views.sudo().create({
-                'name': view_name,
-                'type': 'form',
-                'model': 'product.template',
-                'inherit_id': default_view_id,
-                'active': True,
-                'arch': form_arch,
-            })
-
+        self.update_attribute_group_view()
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
@@ -356,16 +287,12 @@ class AttributeGroup(models.Model):
         views = self.env['ir.ui.view']
         for rec in attr_grp:
             group_name = rec.name
-            safe_group_name = saxutils.escape(group_name)  # for string label
-            safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')  # for name/id (no special chars)
+            safe_group_name = saxutils.escape(group_name)
+            safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')
             form_arch = f'''
                         <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
                         <group name="{safe_group_id}" id="{safe_group_id}" string="{safe_group_name}" invisible="1" collapsible="1" expanded="1" >
                         '''
-            # form_arch = f'''
-            #         <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
-            #         <group name="{group_name.lower().replace(' ', '_')}" id="{group_name.lower().replace(' ', '_')}" string="{group_name}" invisible="1" collapsible="1" expanded="1" >
-            #         '''
             print("self.attribute_group_line_ids === ", form_arch)
             # Add fields with appropriate widget
             for line in rec.attribute_group_line_ids:
@@ -428,26 +355,6 @@ class AttributeGroup(models.Model):
                 })
 
 
-
-    # def save_attributes(self):
-    #     for line in self.attribute_group_line_ids:
-    #         if not line.product_attribute_id:
-    #             raise UserError(f"No product attribute linked in line {line.id}.")
-    #
-    #         # Update the product.attribute if needed
-    #         # line.product_attribute_id.write({
-    #         #     'attribute_group': self.id,
-    #         # })
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'view_mode': 'form',
-    #         'res_model': 'attribute.group',
-    #         'view_id': self.env.ref('pim_ext.view_product_attribute_groups_custom').id,
-    #         'res_id': self.id,
-    #         'context': {'no_breadcrumbs': True},
-    #         'target': 'current',
-    #     }
-
     def create_pim_attribute_groups(self):
 
         return {
@@ -463,6 +370,50 @@ class AttributeGroup(models.Model):
             },
         }
 
+
+    # def update_attributes(self):
+    #     attribute_group = self or self.env['attribute.group'].search([('id', '=',  self.env.context['active_ids'])])
+    #     print("attributes == ", attributes)
+    #     for attr_grp in attribute_group:
+    #         if attr_grp.attribute_group_line_ids:
+    #             for attr in attr_grp.attribute_group_line_ids:
+    #                 print("attr 0000 ", attr)
+    #                 if attr.attribute_group:
+    #                     print("")
+
+    def update_attributes_according_to_mapped_groups(self):
+        attribute_group = self or self.env['attribute.group'].search([('id', '=',  self.env.context['active_ids'])])
+        print("attribute_group === ",attribute_group)
+        """Sync and validate attribute groups with product.attribute considering company_id"""
+        for group in attribute_group:
+            # Collect all attributes from lines
+            line_attributes = group.attribute_group_line_ids.mapped('product_attribute_id')
+            print("line_attributes === ", line_attributes)
+            # ✅ Forward check: attributes in lines should have the group assigned
+            for attr in line_attributes:
+                print("attr  == ", attr)
+                if attr.company_id == group.company_id:
+                    if group not in attr.attribute_group:
+                        attr.write({'attribute_group': [(4, group.id)]})  # add group
+
+            # ✅ Reverse check: attributes that have this group should exist in group lines
+            attrs_with_group = self.env['product.attribute'].search([
+                ('attribute_group', 'in', group.id),
+                ('company_id', '=', group.company_id.id)
+            ])
+            print("attrs_with_group === ", attrs_with_group)
+            for attr in attrs_with_group:
+                if attr not in line_attributes:
+                    # Create missing line (only for same company)
+                    self.env['attribute.group.lines'].create({
+                        'attr_group_id': group.id,
+                        'product_attribute_id': attr.id,
+                    })
+
+
+
+
+    # Old Codes
     # @api.model
     # def create(self, vals):
     #      print('fkdjfkdfd', vals)
@@ -566,6 +517,7 @@ class AttributeGroupLine(models.Model):
                                                           %s
                                                   </xpath>""" % new_field_xml
         return arch
+
 
     @api.model
     def create(self, vals):
