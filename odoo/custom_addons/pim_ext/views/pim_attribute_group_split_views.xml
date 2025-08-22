@@ -131,6 +131,8 @@
         <field name="priority" eval="15"/>
         <field name="arch" type="xml">
             <search string="Attribute Group">
+                <field name="name"/>
+                <field name="company_id"/>
                 <group expand="0" string="Group By">
                     <filter string="Attribute Group Name" name="attribute_group" domain="[]" context="{'group_by': 'name'}"/>
                 </group>

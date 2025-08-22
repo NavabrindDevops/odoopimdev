@@ -190,7 +190,8 @@
                                                            </div>
                                                        </div>
                                                        <div>
-                                                           <field name="attribute_group" nolabel="1"
+                                                           <field name="company_id" invisible="1"/>
+                                                           <field name="attribute_group" nolabel="1" domain="[('company_id', '=', company_id)]"
                                                                   options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
                                                                   class="attribute_type_class"/>
                                                        </div>

@@ -86,6 +86,8 @@ class PIMAttributeType(models.Model):
 
      history_log = fields.Html(string='History Log', help="This field stores the history of changes.")
 
+     company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
+
      def _compute_attribute_ids(self):
           for record in self:
                record.attribute_ids = self.env['pim.attribute.type'].search([])

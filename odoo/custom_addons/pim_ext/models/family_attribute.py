@@ -251,18 +251,11 @@ class FamilyAttribute(models.Model):
                     attribute_groups[group_name].append(attribute)
                 else:
                     attribute_groups[group_name] = [attribute]
-            # for attribute in attributes:
-            #     print("attribute == ", attribute)
-            #     print("attribute.attribute_group == ", attribute.attribute_group)
-            #     attribute_group = attribute.attribute_group.name if attribute.attribute_group else 'uncategorized'
-            #     print("attribute_group == ", attribute_group)
-            #     if attribute_group not in attribute_groups:
-            #         attribute_groups[attribute_group] = []
-            #     attribute_groups[attribute_group].append(attribute)
             print("attribute_groups === ", attribute_groups)
             for group_name, group_attributes in attribute_groups.items():
                 print("group_name, group_attributes  ==== ", group_name, group_attributes)
-                group_view_name = 'product_attribute_'+ company_name.lower().replace(' ', '_') + '_' + group_name.lower().replace(' ', '_')
+                safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')
+                group_view_name = 'product_attribute_'+ company_name.lower().replace(' ', '_') + '_' + safe_group_id
                 print("group_view_name === ", group_view_name)
                 group_exist = self.env['ir.ui.view'].search([
                     ('name', 'ilike', group_view_name),
@@ -275,29 +268,65 @@ class FamilyAttribute(models.Model):
                 if group_exist.arch_base:
                     grp_arch_tree = etree.fromstring(group_exist.arch_base)
                     updated = False
-                    safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')
                     group_node = grp_arch_tree.find(f".//group[@id='{safe_group_id}']")
                     print("group_name === ", safe_group_id)
                     print("group_node === ", group_node)
                     if group_node is not None:
                         group_invisible = group_node.get("invisible")
                         new_id = str(rec.id)
-                        print("grp line new_id === ", new_id)
+                        print("grp line new_id 11 === ", new_id)
+                        print("group_invisible 11 == ", group_invisible)
+                        # Prepare new family condition
+                        family_condition = f"family_id not in [{new_id}]"
+
                         if group_invisible and group_invisible.strip().lower() != 'false':
-                            match = re.search(r'\[(.*?)\]', group_invisible)
+                            # If family_id already exists in condition, just extend its list
+                            match = re.search(r'family_id\s+not\s+in\s+\[(.*?)\]', group_invisible)
+                            print("match == ", match)
                             if match:
                                 id_list = [x.strip() for x in match.group(1).split(',') if x.strip()]
                                 print("group id_list --- ", id_list)
                                 if new_id not in id_list:
                                     id_list.append(new_id)
-                                    group_node.set("invisible", f"family_id not in [{', '.join(id_list)}]")
-                                    updated = True
+                                family_condition = f"family_id not in [{', '.join(id_list)}]"
+
+                                # Replace only the family part, keep company_id intact
+                                updated_invisible = re.sub(
+                                    r'family_id\s+not\s+in\s+\[.*?\]',
+                                    family_condition,
+                                    group_invisible
+                                )
+
                             else:
-                                group_node.set("invisible", f"family_id not in [{new_id}]")
-                                updated = True
+                                print("esle === ")
+                                # family_id condition not found → append it with AND
+                                updated_invisible = f"({group_invisible}) and ({family_condition})"
                         else:
-                            group_node.set("invisible", f"family_id not in [{new_id}]")
-                            updated = True
+                            # No condition → start with family_id only
+                            updated_invisible = family_condition
+                            print("if no family kbsob")
+                        print("updated_invisible === ", updated_invisible)
+                        group_node.set("invisible", updated_invisible)
+                        updated = True
+                    # if group_node is not None:
+                    #     group_invisible = group_node.get("invisible")
+                    #     new_id = str(rec.id)
+                    #     print("grp line new_id === ", new_id)
+                    #     if group_invisible and group_invisible.strip().lower() != 'false':
+                    #         match = re.search(r'\[(.*?)\]', group_invisible)
+                    #         if match:
+                    #             id_list = [x.strip() for x in match.group(1).split(',') if x.strip()]
+                    #             print("group id_list --- ", id_list)
+                    #             if new_id not in id_list:
+                    #                 id_list.append(new_id)
+                    #                 group_node.set("invisible", f"family_id not in [{', '.join(id_list)}]")
+                    #                 updated = True
+                    #         else:
+                    #             group_node.set("invisible", f"family_id not in [{new_id}]")
+                    #             updated = True
+                    #     else:
+                    #         group_node.set("invisible", f"family_id not in [{new_id}]")
+                    #         updated = True
                     # Show fields that are in default_attrs_val
                     for a in group_attributes:
                         print("a == ", a)

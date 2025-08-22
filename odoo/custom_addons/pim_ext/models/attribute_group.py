@@ -291,7 +291,7 @@ class AttributeGroup(models.Model):
             safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')
             form_arch = f'''
                         <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
-                        <group name="{safe_group_id}" id="{safe_group_id}" string="{safe_group_name}" invisible="1" collapsible="1" expanded="1" >
+                        <group name="{safe_group_id}" id="{safe_group_id}" string="{safe_group_name}" invisible="company_id not in [{rec.company_id.id}]" collapsible="1" expanded="1" >
                         '''
             print("self.attribute_group_line_ids === ", form_arch)
             # Add fields with appropriate widget
