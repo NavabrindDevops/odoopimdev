@@ -289,9 +289,17 @@ class AttributeGroup(models.Model):
             group_name = rec.name
             safe_group_name = saxutils.escape(group_name)
             safe_group_id = group_name.lower().replace(' ', '_').replace('&', 'and')
+            family_group_list = self.env['family.attribute'].search([('exist_group_ids', 'in', rec.id)])
+            print("family_group_list == ", family_group_list)
+            if family_group_list:
+                family_condition = f'''family_id not in [{family_group_list.ids}]'''
+            else:
+                family_condition = f'''invisible="1"'''
+            updated_invisible = f"(company_id not in [{rec.company_id.id}]) and ({family_condition})"
+
             form_arch = f'''
                         <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
-                        <group name="{safe_group_id}" id="{safe_group_id}" string="{safe_group_name}" invisible="company_id not in [{rec.company_id.id}]" collapsible="1" expanded="1" >
+                        <group name="{safe_group_id}" id="{safe_group_id}" string="{safe_group_name}" invisible="{updated_invisible}" collapsible="1" expanded="1" >
                         '''
             print("self.attribute_group_line_ids === ", form_arch)
             # Add fields with appropriate widget
