@@ -293,9 +293,10 @@ class AttributeGroup(models.Model):
             print("family_group_list == ", family_group_list)
             if family_group_list:
                 family_condition = f'''family_id not in [{family_group_list.ids}]'''
+                updated_invisible = f"(company_id not in [{rec.company_id.id}]) and ({family_condition})"
+
             else:
-                family_condition = f'''invisible="1"'''
-            updated_invisible = f"(company_id not in [{rec.company_id.id}]) and ({family_condition})"
+                updated_invisible = f"company_id not in [{rec.company_id.id}]"
 
             form_arch = f'''
                         <xpath expr="//notebook/page[@id='attributes_page']" position="inside">
